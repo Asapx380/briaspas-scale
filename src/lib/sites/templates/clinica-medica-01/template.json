@@ -1,0 +1,35 @@
+{
+  "id": "clinica-medica-01",
+  "version": 1,
+  "name": "Clínica médica acolhedora",
+  "categories": [
+    "clínica médica",
+    "consultório médico",
+    "médico",
+    "nutricionista",
+    "nutrição"
+  ],
+  "style": [
+    "acolhedor",
+    "claro",
+    "profissional"
+  ],
+  "requiredTokens": [
+    "business_name",
+    "category",
+    "whatsapp_number",
+    "whatsapp_message",
+    "address",
+    "headline",
+    "subheadline",
+    "about_text"
+  ],
+  "optionalSections": {},
+  "imageSlots": [
+    {
+      "token": "hero_image_url",
+      "fallback": "pexels"
+    }
+  ],
+  "tokenizationFamily": "inline-links"
+}

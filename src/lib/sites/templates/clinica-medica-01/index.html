@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="briaspas-template" content="clinica-medica-01">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{meta_description}}">
+    <title>{{page_title}}</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- =====================================================
+         HEADER - Navegação principal
+         ===================================================== -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <!-- EDITÁVEL: Nome do profissional/clínica -->
+                <a href="#inicio" class="logo">🥗 {{business_name}}</a>
+
+                <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#inicio">Início</a></li>
+                    <li><a href="#sobre">Sobre</a></li>
+                    <li><a href="#servicos">Serviços</a></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- =====================================================
+         HERO - Seção principal
+         ===================================================== -->
+    <section class="hero" id="inicio">
+        <div class="hero-background">
+            <img src="{{hero_image_url}}" alt="Alimentação saudável" class="hero-bg-image">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">🌿 Nutrição com ciência e acolhimento</div>
+                <!-- EDITÁVEL: Título principal -->
+                <h1>{{headline}}</h1>
+                <!-- EDITÁVEL: Subtítulo -->
+                <p class="hero-subtitle">{{subheadline}}</p>
+                <div class="hero-buttons">
+                    <a href="#contato" class="btn btn-primary">Agendar Consulta</a>
+                    <!-- EDITÁVEL: Link do WhatsApp -->
+                    <a href="{{whatsapp_url}}" class="btn btn-secondary" target="_blank">Falar no WhatsApp</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">+3.000</span>
+                        <span class="stat-label">Pacientes atendidos</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">8+</span>
+                        <span class="stat-label">Anos de experiência</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">97%</span>
+                        <span class="stat-label">Taxa de satisfação</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-image-container">
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=600&q=80" alt="Nutricionista profissional" class="hero-main-image">
+                    <div class="floating-badge">Primeira consulta com desconto</div>
+                </div>
+            </div>
+        </div>
+    <div class="briaspas-stock-credit">{{stock_credit_html}}</div></section>
+
+    <!-- =====================================================
+         SOBRE - Apresentação do profissional
+         ===================================================== -->
+    <section class="sobre" id="sobre">
+        <div class="container">
+            <div class="section-header">
+                <h2>Sobre a Dra. Camila</h2>
+                <p>{{about_text}}</p>
+            </div>
+            <div class="sobre-content">
+                <div class="sobre-image">
+                    <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=600&q=80" alt="Dra. Camila - Nutricionista">
+                </div>
+                <div class="sobre-info">
+                    <div class="sobre-text">
+                        <!-- EDITÁVEL: Texto sobre o profissional -->
+                        <p>Sou a <strong>Dra. Camila Rodrigues</strong>, nutricionista formada pela USP com especialização em Nutrição Clínica e Esportiva. Há mais de 8 anos, ajudo pessoas a transformarem sua relação com a alimentação de forma sustentável e prazerosa.</p>
+                        <p>Minha abordagem é baseada em ciência e respeito à individualidade de cada paciente. Não acredito em dietas restritivas ou fórmulas mágicas – acredito em <strong>educação nutricional</strong>, mudança de comportamento e resultados que duram a vida toda.</p>
+                    </div>
+                    <div class="sobre-features">
+                        <div class="feature">
+                            <div class="feature-icon">🎓</div>
+                            <h3>Formação Sólida</h3>
+                            <p>USP, especializações em clínica e esportiva</p>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">🔬</div>
+                            <h3>Abordagem Científica</h3>
+                            <p>Baseada em evidências e atualização constante</p>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">💚</div>
+                            <h3>Atendimento Humanizado</h3>
+                            <p>Foco no paciente, não apenas nos números</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         GALERIA - Fotos do consultório e atendimento
+         ===================================================== -->
+    
+
+    <!-- =====================================================
+         SERVIÇOS - Tipos de atendimento
+         ===================================================== -->
+    <section class="servicos" id="servicos">
+        <div class="container">
+            <div class="section-header">
+                <h2>Serviços Oferecidos</h2>
+                <p>Atendimentos personalizados para cada objetivo</p>
+            </div>
+            <div class="servicos-grid">
+                <!-- EDITÁVEL: Cards de serviços -->
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=80" alt="Consulta nutricional">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Consulta Nutricional</h3>
+                        <p>Avaliação completa com bioimpedância, anamnese detalhada e plano alimentar personalizado para seus objetivos.</p>
+                        <span class="preco">A partir de R$ 350,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=80" alt="Emagrecimento saudável">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Emagrecimento Saudável</h3>
+                        <p>Perca peso de forma sustentável, sem dietas restritivas. Plano alimentar personalizado e acompanhamento quinzenal.</p>
+                        <span class="preco">A partir de R$ 350,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=80" alt="Nutrição esportiva">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Nutrição Esportiva</h3>
+                        <p>Otimize sua performance e recuperação. Para atletas amadores e profissionais de todas as modalidades.</p>
+                        <span class="preco">A partir de R$ 400,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80" alt="Reeducação alimentar">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Reeducação Alimentar</h3>
+                        <p>Aprenda a comer bem sem neuras. Desenvolva uma relação saudável e equilibrada com a comida.</p>
+                        <span class="preco">A partir de R$ 350,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=400&q=80" alt="Nutrição funcional">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Nutrição Funcional</h3>
+                        <p>Tratamento nutricional para diabetes, hipertensão, colesterol alto, doenças gastrointestinais e outras condições.</p>
+                        <span class="preco">A partir de R$ 380,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80" alt="Acompanhamento online">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Acompanhamento Online</h3>
+                        <p>Atendimento por videochamada com a mesma qualidade do presencial. Prático e seguro.</p>
+                        <span class="preco">A partir de R$ 300,00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         DESTAQUES - Resultados dos pacientes
+         ===================================================== -->
+    
+
+    <!-- =====================================================
+         BENEFÍCIOS
+         ===================================================== -->
+    
+
+    
+    
+
+    <!-- =====================================================
+         FAQ
+         ===================================================== -->
+    
+
+    <!-- =====================================================
+         CONTATO
+         ===================================================== -->
+    <section class="contato" id="contato">
+        <div class="container">
+            <div class="section-header">
+                <h2>Agende sua Consulta</h2>
+                <p>Comece hoje sua transformação nutricional</p>
+            </div>
+            <div class="contato-content">
+                <div class="contato-info">
+                    <!-- EDITÁVEL: Informações de contato -->
+                    <div class="info-item">
+                        <div class="info-icon">📞</div>
+                        <div>
+                            <h4>Telefone</h4>
+                            <p>{{phone_display}}</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📱</div>
+                        <div>
+                            <h4>WhatsApp</h4>
+                            <p>{{phone_display}}</p>
+                            <a href="{{whatsapp_url}}" class="btn btn-whatsapp" target="_blank">Agendar pelo WhatsApp</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📍</div>
+                        <div>
+                            <h4>Endereço</h4>
+                            <!-- EDITÁVEL: Endereço -->
+                            <p>Av. Brasil, 2000 - Sala 308<br>Jardim Paulista, São Paulo - SP</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">🕐</div>
+                        <div>
+                            <h4>Horário de Funcionamento</h4>
+                            <!-- EDITÁVEL: Horário -->
+                            <p>Seg a Sex: 8h às 19h<br>Sábado: 8h às 12h</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contato-mapa">
+                    <div class="mapa-placeholder">
+                        <div class="mapa-pin">📍</div>
+                        <p>{{business_name}}</p>
+                        <span>Clique para ver no Google Maps</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Área reservada para agente de IA no futuro -->
+    <div id="ai-agent-container" class="ai-agent-area">
+        <!-- O widget do agente de IA será inserido aqui -->
+    </div>
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">🥗 {{business_name}}</div>
+                <p>Nutrição com ciência e acolhimento há mais de 8 anos.</p>
+                <div class="footer-links">
+                    <a href="#inicio">Início</a>
+                    <a href="#sobre">Sobre</a>
+                    <a href="#servicos">Serviços</a>
+                    <a href="#contato">Contato</a>
+                </div>
+                <div class="footer-social">
+                    <a href="#" aria-label="Instagram">📷</a>
+                    <a href="#" aria-label="Facebook">👍</a>
+                    <a href="#" aria-label="WhatsApp">📱</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Dra. Camila Rodrigues. Todos os direitos reservados.</p>
+                <p>CRN-3: 12345 | Nutricionista Clínica e Esportiva</p>
+                <p><a href="#privacidade">Política de Privacidade</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <section class="privacidade" id="privacidade">
+        <div class="container">
+            <h3>Política de Privacidade</h3>
+            <p>A Dra. Camila Rodrigues respeita sua privacidade. Os dados coletados são utilizados apenas para agendamentos, prontuários e comunicação com pacientes. Não compartilhamos informações pessoais com terceiros sem consentimento, seguindo as diretrizes do CFN e LGPD.</p>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

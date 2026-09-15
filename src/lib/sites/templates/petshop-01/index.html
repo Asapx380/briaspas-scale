@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{{meta_description}}">
+  <meta name="theme-color" content="{{color_primary}}">
+  <title>{{page_title}}</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐾</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="{{google_fonts_url}}" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header" id="header">
+    <div class="container">
+      <div class="header-content">
+        <a href="#home" class="logo" aria-label="Ir para o início">
+          <span class="logo-icon" aria-hidden="true">🐾</span>
+          <span class="logo-text">
+            <span class="logo-name">{{business_name}}</span>
+            <span class="logo-tagline">{{category}}</span>
+          </span>
+        </a>
+        <nav class="nav" id="nav-menu" aria-label="Navegação principal">
+          <ul class="nav-list">
+            <li><a href="#home" class="nav-link">Início</a></li>
+            <li><a href="#sobre" class="nav-link">Sobre</a></li>
+            <li><a href="#servicos" class="nav-link">Serviços</a></li>
+            <li><a href="#contato" class="nav-link">Contato</a></li>
+          </ul>
+        </nav>
+        <a href="{{whatsapp_url}}" class="btn btn-primary btn-header" target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a>
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Abrir menu" aria-controls="nav-menu" aria-expanded="false"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <!-- SECTION:hero_background:start -->
+      <div class="hero-background" style="background-image: url('{{hero_image_url}}');"></div>
+      <!-- SECTION:hero_background:end -->
+      <div class="hero-overlay"></div>
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1 class="hero-title">{{headline}}</h1>
+            <p class="hero-description">{{subheadline}}</p>
+            <div class="hero-buttons">
+              <a href="{{whatsapp_url}}" class="btn btn-primary btn-large" target="_blank" rel="noopener noreferrer">{{cta_text}}</a>
+              <a href="#servicos" class="btn btn-secondary btn-large">Conhecer possibilidades</a>
+            </div>
+            <!-- SECTION:social_proof:start -->
+            <div class="rating-summary" aria-label="Avaliação do negócio">
+              <span class="rating-stars" aria-hidden="true">★★★★★</span>
+              <strong>{{rating}}</strong>
+              <span>{{review_count_text}}</span>
+            </div>
+            <!-- SECTION:social_proof:end -->
+          </div>
+          <!-- SECTION:hero_image:start -->
+          <div class="hero-image">
+            <div class="hero-image-container"><img src="{{hero_image_url}}" alt="Imagem representativa de {{category}}" width="600" height="600"></div>
+            {{stock_credit_html}}
+          </div>
+          <!-- SECTION:hero_image:end -->
+        </div>
+      </div>
+    </section>
+
+    <section class="sobre" id="sobre">
+      <div class="container">
+        <div class="sobre-content">
+          <!-- SECTION:about_image:start -->
+          <div class="sobre-image"><img src="{{about_image_url}}" alt="{{business_name}} — {{category}}" width="600" height="500"></div>
+          <!-- SECTION:about_image:end -->
+          <div class="sobre-text">
+            <span class="section-label">Sobre</span>
+            <h2 class="section-title">Informações para cuidar melhor do seu pet</h2>
+            <p class="sobre-description">{{about_text}}</p>
+            <p class="sobre-description">Consulte diretamente o estabelecimento para confirmar serviços, disponibilidade e condições de atendimento.</p>
+            <a href="{{whatsapp_url}}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Pedir informações</a>
+          </div>
+        </div>
+        <!-- SECTION:gallery:start -->
+        <div class="galeria">{{gallery_html}}</div>
+        <!-- SECTION:gallery:end -->
+      </div>
+    </section>
+
+    <section class="servicos" id="servicos">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Possibilidades</span>
+          <h2 class="section-title">Serviços que podem estar disponíveis</h2>
+          <p class="section-description">Veja possibilidades comuns para este segmento e confirme diretamente com {{business_name}}.</p>
+        </div>
+        <div class="servicos-grid">{{services_html}}</div>
+        <p class="template-notice">Consulte o estabelecimento para confirmar os serviços oferecidos.</p>
+      </div>
+    </section>
+
+    <section class="destaques">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Antes de agendar</span>
+          <h2 class="section-title">Informações que vale confirmar</h2>
+          <p class="section-description">Use o contato direto para tirar dúvidas importantes antes da visita.</p>
+        </div>
+        <div class="destaques-grid">{{differentials_html}}</div>
+      </div>
+    </section>
+
+    <section class="contato" id="contato">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Contato e localização</span>
+          <h2 class="section-title">Fale com {{business_name}}</h2>
+          <p class="section-description">Confirme horários, serviços e disponibilidade diretamente com o estabelecimento.</p>
+        </div>
+        <div class="contato-content">
+          <div class="contato-info">
+            <div class="info-item"><div class="info-icon" aria-hidden="true">📍</div><div class="info-text"><h3>Endereço</h3><p>{{address}}</p></div></div>
+            <div class="info-item"><div class="info-icon" aria-hidden="true">📞</div><div class="info-text"><h3>Telefone</h3><p>{{phone_display}}</p></div></div>
+            <div class="contact-actions">
+              <a href="{{whatsapp_url}}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Abrir WhatsApp</a>
+              <!-- SECTION:instagram:start --><a href="{{instagram_url}}" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Instagram</a><!-- SECTION:instagram:end -->
+              <!-- SECTION:current_site:start --><a href="{{website_url}}" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Site atual</a><!-- SECTION:current_site:end -->
+              <!-- SECTION:external_map:start --><a href="{{google_maps_url}}" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Ver localização</a><!-- SECTION:external_map:end -->
+            </div>
+          </div>
+          <iframe class="map-frame" src="{{map_embed_url}}" title="Mapa de {{business_name}}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section class="beneficios">
+      <div class="container">
+        <div class="beneficios-content">
+          <div class="beneficios-text">
+            <span class="section-label">Próximo passo</span>
+            <h2 class="section-title">Tire suas dúvidas diretamente pelo WhatsApp</h2>
+            <p class="sobre-description">Envie uma mensagem para confirmar o que você precisa antes de se deslocar.</p>
+            <a href="{{whatsapp_url}}" class="btn btn-primary btn-large" target="_blank" rel="noopener noreferrer">{{cta_text}}</a>
+          </div>
+          <div class="beneficios-image" aria-hidden="true"><div class="beneficios-image-placeholder"><span class="beneficios-emoji">🐶💙</span></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col"><div class="footer-logo"><span class="logo-icon" aria-hidden="true">🐾</span><span class="logo-text"><span class="logo-name">{{business_name}}</span><span class="logo-tagline">{{category}}</span></span></div><p class="footer-description">Informações e contato em um só lugar.</p></div>
+        <div class="footer-col"><h2 class="footer-title">Navegação</h2><ul class="footer-links"><li><a href="#sobre">Sobre</a></li><li><a href="#servicos">Serviços possíveis</a></li><li><a href="#contato">Contato</a></li></ul></div>
+        <div class="footer-col"><h2 class="footer-title">Localização</h2><ul class="footer-contact"><li>📍 {{address}}</li><li>📞 {{phone_display}}</li></ul></div>
+        <div class="footer-col"><h2 class="footer-title">Atendimento</h2><p class="footer-description">Confirme horários e disponibilidade pelo WhatsApp.</p></div>
+      </div>
+      <div class="footer-bottom"><p>&copy; {{current_year}} {{business_name}}.</p><p>Site criado por Briaspas Scale</p></div>
+    </div>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>

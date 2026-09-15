@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="briaspas-template" content="coach-consultor-01">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{meta_description}}">
+    <meta name="keywords" content="coach, consultor, alta performance, coaching executivo, life coaching, mentoria">
+    <title>{{page_title}}</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="nav-logo">
+                    <h2>{{business_name}}</h2>
+                    <span>Coach & Consultor</span>
+                </div>
+                <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#home" class="nav-link active">Início</a></li>
+                    <li><a href="#about" class="nav-link">Sobre</a></li>
+                    <li><a href="#services" class="nav-link">Serviços</a></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li><a href="#contact" class="nav-link nav-link-cta">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-background"></div>
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">{{headline}}</h1>
+                    <p class="hero-description">{{subheadline}}</p>
+                    <div class="hero-buttons">
+                        <a href="#contact" class="btn btn-primary">Agende uma Sessão</a>
+                        <a href="#about" class="btn btn-outline">Conheça Mais</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-number" data-target="500">0</div>
+                            <div class="stat-label">Clientes Atendidos</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" data-target="10">0</div>
+                            <div class="stat-label">Anos de Experiência</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" data-target="98">0</div>
+                            <div class="stat-label">% Satisfação</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="hero-image-wrapper">
+                        <img src="{{hero_image_url}}" alt="{{business_name}} - Coach e Consultor">
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="briaspas-stock-credit">{{stock_credit_html}}</div><a class="btn btn-primary briaspas-whatsapp" href="{{whatsapp_url}}" target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a></section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80" alt="Sobre {{business_name}}">
+                    <div class="about-image-overlay"></div>
+                </div>
+                <div class="about-text">
+                    <span class="section-subtitle">Sobre Mim</span>
+                    <h2 class="section-title">{{business_name}}</h2>
+                    <p class="about-description">{{about_text}}</p>
+                    <p class="about-description">
+                        Minha jornada começou após uma carreira executiva bem-sucedida em multinacionais,
+                        onde percebi o poder da mentoria e do desenvolvimento pessoal. Desde então, já
+                        ajudei mais de 500 profissionais e dezenas de empresas a alcançarem seus objetivos
+                        mais ambiciosos.
+                    </p>
+                    <div class="about-credentials">
+                        <div class="credential-item">
+                            <i class="fas fa-certificate"></i>
+                            <div>
+                                <h4>Certificações Internacionais</h4>
+                                <p>ICF, IBC e outras instituições renomadas</p>
+                            </div>
+                        </div>
+                        <div class="credential-item">
+                            <i class="fas fa-award"></i>
+                            <div>
+                                <h4>Reconhecimento Nacional</h4>
+                                <p>Prêmios e menções em eventos de coaching</p>
+                            </div>
+                        </div>
+                        <div class="credential-item">
+                            <i class="fas fa-globe"></i>
+                            <div>
+                                <h4>Experiência Internacional</h4>
+                                <p>Trabalho com clientes em 5 países</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#contact" class="btn btn-primary">Vamos Conversar</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">O Que Ofereço</span>
+                <h2 class="section-title">Serviços</h2>
+                <p class="section-description">
+                    Soluções personalizadas para transformar sua vida pessoal e profissional
+                </p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&q=80" alt="Coaching Executivo">
+                    </div>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h3 class="service-title">Coaching Executivo</h3>
+                        <p class="service-description">
+                            Desenvolvimento de líderes e executivos para maximizar performance
+                            e alcançar objetivos estratégicos da carreira.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="fas fa-check"></i> Planejamento de carreira</li>
+                            <li><i class="fas fa-check"></i> Desenvolvimento de liderança</li>
+                            <li><i class="fas fa-check"></i> Gestão de transições</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?w=400&q=80" alt="Coaching de Vida">
+                    </div>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3 class="service-title">Coaching de Vida</h3>
+                        <p class="service-description">
+                            Transformação pessoal profunda para equilibrar todas as áreas da
+                            vida e conquistar realização plena.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="fas fa-check"></i> Autoconhecimento</li>
+                            <li><i class="fas fa-check"></i> Equilíbrio vida-trabalho</li>
+                            <li><i class="fas fa-check"></i> Realização pessoal</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=80" alt="Mentoria de Negócios">
+                    </div>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h3 class="service-title">Mentoria de Negócios</h3>
+                        <p class="service-description">
+                            Orientação estratégica para empreendedores que desejam escalar
+                            seus negócios e superar desafios empresariais.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="fas fa-check"></i> Estratégia de crescimento</li>
+                            <li><i class="fas fa-check"></i> Gestão financeira</li>
+                            <li><i class="fas fa-check"></i> Expansão de mercado</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&q=80" alt="Liderança de Equipes">
+                    </div>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="service-title">Liderança de Equipes</h3>
+                        <p class="service-description">
+                            Desenvolvimento de competências de liderança para criar equipes
+                            de alto desempenho e cultura organizacional forte.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="fas fa-check"></i> Gestão de pessoas</li>
+                            <li><i class="fas fa-check"></i> Comunicação eficaz</li>
+                            <li><i class="fas fa-check"></i> Resolução de conflitos</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=400&q=80" alt="Consultoria Empresarial">
+                    </div>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="service-title">Consultoria Empresarial</h3>
+                        <p class="service-description">
+                            Análise profunda e soluções práticas para otimizar processos,
+                            aumentar produtividade e melhorar resultados.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="fas fa-check"></i> Diagnóstico organizacional</li>
+                            <li><i class="fas fa-check"></i> Otimização de processos</li>
+                            <li><i class="fas fa-check"></i> Planejamento estratégico</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=400&q=80" alt="Palestras e Workshops">
+                    </div>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-microphone"></i>
+                        </div>
+                        <h3 class="service-title">Palestras e Workshops</h3>
+                        <p class="service-description">
+                            Eventos inspiradores e educacionais que motivam, engajam e
+                            capacitam equipes e públicos diversos.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="fas fa-check"></i> Palestras motivacionais</li>
+                            <li><i class="fas fa-check"></i> Workshops práticos</li>
+                            <li><i class="fas fa-check"></i> Treinamentos in-company</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Highlights Section -->
+    
+
+    <!-- Benefits Section -->
+    
+
+    
+    
+
+    <!-- FAQ Section -->
+    
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">Vamos Conversar</span>
+                <h2 class="section-title">Entre em Contato</h2>
+                <p class="section-description">
+                    Agende sua sessão de diagnóstico gratuita e descubra como posso ajudá-lo
+                </p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3 class="contact-info-title">Informações de Contato</h3>
+                    <p class="contact-info-text">
+                        Estou à disposição para responder suas dúvidas e iniciar sua jornada
+                        de transformação. Entre em contato pelos canais abaixo:
+                    </p>
+                    <div class="contact-details">
+                        <div class="contact-detail-item">
+                            <div class="contact-detail-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="contact-detail-text">
+                                <h4>Telefone</h4>
+                                <p>{{phone_display}}</p>
+                            </div>
+                        </div>
+                        <div class="contact-detail-item">
+                            <div class="contact-detail-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-detail-text">
+                                <h4>Email</h4>
+                                <p>Atendimento pelo WhatsApp</p>
+                            </div>
+                        </div>
+                        <div class="contact-detail-item">
+                            <div class="contact-detail-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-detail-text">
+                                <h4>Endereço</h4>
+                                <p>Av. Paulista, 1000 - São Paulo, SP</p>
+                            </div>
+                        </div>
+                        <div class="contact-detail-item">
+                            <div class="contact-detail-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="contact-detail-text">
+                                <h4>Horário de Atendimento</h4>
+                                <p>Segunda a Sexta: 8h às 20h<br>Sábado: 9h às 14h</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-social">
+                        <h4>Redes Sociais</h4>
+                        <div class="social-links">
+                            <a href="#" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-link" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3 class="footer-title">{{business_name}}</h3>
+                    <p class="footer-text">
+                        Coach e Consultor de Alta Performance dedicado a transformar vidas
+                        e impulsionar negócios através de metodologias comprovadas.
+                    </p>
+                    <div class="footer-social">
+                        <a href="#" class="footer-social-link" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="footer-social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="footer-social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="footer-social-link" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-column-title">Links Rápidos</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Início</a></li>
+                        <li><a href="#about">Sobre</a></li>
+                        <li><a href="#services">Serviços</a></li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-column-title">Serviços</h4>
+                    <ul class="footer-links">
+                        <li><a href="#services">Coaching Executivo</a></li>
+                        <li><a href="#services">Coaching de Vida</a></li>
+                        <li><a href="#services">Mentoria de Negócios</a></li>
+                        <li><a href="#services">Liderança de Equipes</a></li>
+                        <li><a href="#services">Consultoria Empresarial</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-column-title">Contato</h4>
+                    <ul class="footer-contact">
+                        <li>
+                            <i class="fas fa-phone"></i>
+                            <span>{{phone_display}}</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            <span>Atendimento pelo WhatsApp</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Av. Paulista, 1000<br>São Paulo, SP</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 {{business_name}} - Coach & Consultor. Todos os direitos reservados.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Política de Privacidade</a>
+                    <a href="#">Termos de Uso</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" id="scrollTop" aria-label="Voltar ao topo">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>

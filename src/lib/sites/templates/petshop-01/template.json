@@ -1,0 +1,36 @@
+{
+  "id": "petshop-01",
+  "version": 1,
+  "name": "Petshop moderno",
+  "categories": [
+    "petshop",
+    "pet shop",
+    "veterinaria",
+    "clinica veterinaria",
+    "hospital veterinario",
+    "banho e tosa"
+  ],
+  "style": ["acolhedor", "colorido", "familiar"],
+  "requiredTokens": [
+    "business_name",
+    "category",
+    "whatsapp_number",
+    "whatsapp_message",
+    "whatsapp_url",
+    "address",
+    "headline",
+    "subheadline",
+    "about_text"
+  ],
+  "optionalSections": {
+    "social_proof": { "requires": "verifiedRating" },
+    "gallery": { "requires": "realPhotos" },
+    "instagram": { "requires": "instagram" },
+    "current_site": { "requires": "websiteUrl" },
+    "external_map": { "requires": "googleMapsUrl" }
+  },
+  "imageSlots": [
+    { "token": "hero_image", "fallback": "pexels" },
+    { "token": "about_image", "fallback": "pexels" }
+  ]
+}

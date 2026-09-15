@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="briaspas-template" content="loja-roupa-01">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{meta_description}}">
+    <meta name="keywords" content="moda feminina, roupas femininas, vestidos, blusas, boutique, moda, fashion">
+    <title>{{page_title}}</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="#" class="nav__logo">
+                <i class="fas fa-gem"></i>
+                {{business_name}}
+            </a>
+
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="#inicio" class="nav__link active-link">Início</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#sobre" class="nav__link">Sobre</a>
+                    </li>
+                    <li class="nav__item">
+                        
+                    </li>
+                    <li class="nav__item">
+                        <a href="#categorias" class="nav__link">Categorias</a>
+                    </li>
+                    <li class="nav__item">
+                        
+                    </li>
+                    <li class="nav__item">
+                        
+                    </li>
+                    <li class="nav__item">
+                        <a href="#contato" class="nav__link">Contato</a>
+                    </li>
+                </ul>
+                <div class="nav__close" id="nav-close">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+
+            <div class="nav__toggle" id="nav-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main -->
+    <main class="main">
+        <!-- Hero -->
+        <section class="hero" id="inicio">
+            <div class="hero__container container">
+                <div class="hero__content">
+                    <span class="hero__subtitle" data-aos="fade-up">Boutique de Moda Feminina</span>
+                    <h1 class="hero__title" data-aos="fade-up" data-aos-delay="100">{{headline}}</h1>
+                    <p class="hero__description" data-aos="fade-up" data-aos-delay="200">{{subheadline}}</p>
+                    <div class="hero__buttons" data-aos="fade-up" data-aos-delay="300">
+                        <a href="#categorias" class="btn btn--primary">
+                            <i class="fas fa-shopping-bag"></i>
+                            Ver Coleção
+                        </a>
+                        <a href="#contato" class="btn btn--outline">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Visite-nos
+                        </a>
+                    </div>
+                    <div class="hero__stats" data-aos="fade-up" data-aos-delay="400">
+                        <div class="hero__stat">
+                            <i class="fas fa-users"></i>
+                            <div class="hero__stat-content">
+                                <span class="hero__stat-number">5000+</span>
+                                <span class="hero__stat-text">Clientes</span>
+                            </div>
+                        </div>
+                        <div class="hero__stat">
+                            <i class="fas fa-star"></i>
+                            <div class="hero__stat-content">
+                                <span class="hero__stat-number">10+</span>
+                                <span class="hero__stat-text">Anos</span>
+                            </div>
+                        </div>
+                        <div class="hero__stat">
+                            <i class="fas fa-certificate"></i>
+                            <div class="hero__stat-content">
+                                <span class="hero__stat-number">100%</span>
+                                <span class="hero__stat-text">Autêntico</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero__image" data-aos="fade-left" data-aos-delay="200">
+                    <div class="hero__image-wrapper">
+                        <img src="{{hero_image_url}}" alt="{{business_name}} Fashion" class="hero__img">
+                        <div class="hero__image-decoration"></div>
+                    </div>
+                </div>
+            </div>
+        <div class="briaspas-stock-credit">{{stock_credit_html}}</div></section>
+
+        <!-- About -->
+        <section class="sobre section" id="sobre">
+            <div class="container">
+                <div class="sobre__container">
+                    <div class="sobre__image" data-aos="fade-right">
+                        <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=800&q=80" alt="Sobre a {{business_name}}" class="sobre__img">
+                        <div class="sobre__image-decoration"></div>
+                    </div>
+                    <div class="sobre__content" data-aos="fade-left">
+                        <span class="section__subtitle">Sobre Nós</span>
+                        <h2 class="section__title">{{business_name}} - Sua Boutique de Confiança</h2>
+                        <p class="sobre__description">{{about_text}}</p>
+                        <p class="sobre__description">
+                            Trabalhamos com marcas renomadas e coleções cuidadosamente selecionadas para atender mulheres que valorizam estilo e autenticidade. Cada peça em nossa boutique é escolhida pensando em você.
+                        </p>
+                        <div class="sobre__features">
+                            <div class="sobre__feature">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Peças exclusivas e autênticas</span>
+                            </div>
+                            <div class="sobre__feature">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Atendimento personalizado</span>
+                            </div>
+                            <div class="sobre__feature">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Qualidade garantida</span>
+                            </div>
+                            <div class="sobre__feature">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Política de troca facilitada</span>
+                            </div>
+                        </div>
+                        <a href="#contato" class="btn btn--primary">
+                            <i class="fas fa-phone"></i>
+                            Entre em Contato
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery -->
+        
+
+        <!-- Services/Categories -->
+        <section class="categorias section" id="categorias">
+            <div class="container">
+                <div class="section__header" data-aos="fade-up">
+                    <span class="section__subtitle">Nossas Categorias</span>
+                    <h2 class="section__title">Explore Nossa Coleção</h2>
+                    <p class="section__description">Encontre a peça perfeita para cada ocasião</p>
+                </div>
+                <div class="categorias__container">
+                    <div class="categoria__card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="categoria__image">
+                            <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&q=80" alt="Vestidos" class="categoria__img">
+                            <div class="categoria__overlay"></div>
+                        </div>
+                        <div class="categoria__content">
+                            <i class="fas fa-tshirt categoria__icon"></i>
+                            <h3 class="categoria__title">Vestidos</h3>
+                            <p class="categoria__description">Modelos elegantes para todas as ocasiões</p>
+                        </div>
+                    </div>
+                    <div class="categoria__card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="categoria__image">
+                            <img src="https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=400&q=80" alt="Blusas" class="categoria__img">
+                            <div class="categoria__overlay"></div>
+                        </div>
+                        <div class="categoria__content">
+                            <i class="fas fa-user-tie categoria__icon"></i>
+                            <h3 class="categoria__title">Blusas</h3>
+                            <p class="categoria__description">Estilo e conforto no seu dia a dia</p>
+                        </div>
+                    </div>
+                    <div class="categoria__card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="categoria__image">
+                            <img src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400&q=80" alt="Calças" class="categoria__img">
+                            <div class="categoria__overlay"></div>
+                        </div>
+                        <div class="categoria__content">
+                            <i class="fas fa-shoe-prints categoria__icon"></i>
+                            <h3 class="categoria__title">Calças</h3>
+                            <p class="categoria__description">Modelagens perfeitas para você</p>
+                        </div>
+                    </div>
+                    <div class="categoria__card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="categoria__image">
+                            <img src="https://images.unsplash.com/photo-1592301933927-35b597393c0a?w=400&q=80" alt="Saias" class="categoria__img">
+                            <div class="categoria__overlay"></div>
+                        </div>
+                        <div class="categoria__content">
+                            <i class="fas fa-female categoria__icon"></i>
+                            <h3 class="categoria__title">Saias</h3>
+                            <p class="categoria__description">Feminilidade e sofisticação</p>
+                        </div>
+                    </div>
+                    <div class="categoria__card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="categoria__image">
+                            <img src="https://images.unsplash.com/photo-1611923134239-b9be5816e23c?w=400&q=80" alt="Acessórios" class="categoria__img">
+                            <div class="categoria__overlay"></div>
+                        </div>
+                        <div class="categoria__content">
+                            <i class="fas fa-ring categoria__icon"></i>
+                            <h3 class="categoria__title">Acessórios</h3>
+                            <p class="categoria__description">Complete seu look com estilo</p>
+                        </div>
+                    </div>
+                    <div class="categoria__card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="categoria__image">
+                            <img src="https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=400&q=80" alt="Promoções" class="categoria__img">
+                            <div class="categoria__overlay"></div>
+                        </div>
+                        <div class="categoria__content">
+                            <i class="fas fa-tag categoria__icon"></i>
+                            <h3 class="categoria__title">Promoções</h3>
+                            <p class="categoria__description">Ofertas especiais imperdíveis</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Differentials -->
+        
+
+        <!-- Benefits -->
+        
+
+        
+        
+
+        <!-- FAQ -->
+        
+
+        <!-- Contact -->
+        <section class="contato section" id="contato">
+            <div class="container">
+                <div class="section__header" data-aos="fade-up">
+                    <span class="section__subtitle">Fale Conosco</span>
+                    <h2 class="section__title">Entre em Contato</h2>
+                    <p class="section__description">Visite nossa loja ou entre em contato pelos nossos canais</p>
+                </div>
+                <div class="contato__info-center">
+                    <div class="contato__info-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="contato__info-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <h3 class="contato__info-title">Telefone</h3>
+                        <p class="contato__info-text">{{phone_display}}</p>
+                        <a href="tel:{{whatsapp_number}}" class="contato__info-link">Ligar agora</a>
+                    </div>
+                    <div class="contato__info-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="contato__info-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <h3 class="contato__info-title">WhatsApp</h3>
+                        <p class="contato__info-text">{{phone_display}}</p>
+                        <a href="{{whatsapp_url}}" target="_blank" class="contato__info-link">Enviar mensagem</a>
+                    </div>
+                    <div class="contato__info-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="contato__info-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h3 class="contato__info-title">E-mail</h3>
+                        <p class="contato__info-text">Atendimento pelo WhatsApp</p>
+                        <a href="mailto:Atendimento pelo WhatsApp" class="contato__info-link">Enviar e-mail</a>
+                    </div>
+                    <div class="contato__info-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="contato__info-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h3 class="contato__info-title">Endereço</h3>
+                        <p class="contato__info-text">Rua das Flores, 123<br>Centro - São Paulo/SP<br>CEP: 01234-567</p>
+                        <a href="https://maps.google.com" target="_blank" class="contato__info-link">Ver no mapa</a>
+                    </div>
+                    <div class="contato__info-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="contato__info-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3 class="contato__info-title">Horário de Funcionamento</h3>
+                        <p class="contato__info-text">
+                            Segunda a Sexta: 9h às 19h<br>
+                            Sábado: 9h às 17h<br>
+                            Domingo: Fechado
+                        </p>
+                    </div>
+                    <div class="contato__info-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="contato__info-icon">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        <h3 class="contato__info-title">Redes Sociais</h3>
+                        <div class="contato__social">
+                            <a href="https://instagram.com" target="_blank" class="contato__social-link">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="https://facebook.com" target="_blank" class="contato__social-link">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="https://pinterest.com" target="_blank" class="contato__social-link">
+                                <i class="fab fa-pinterest-p"></i>
+                            </a>
+                            <a href="https://tiktok.com" target="_blank" class="contato__social-link">
+                                <i class="fab fa-tiktok"></i>
+                            </a>
+                        </div>
+                        <p class="contato__info-text">@{{business_name}}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__container">
+                <div class="footer__column">
+                    <a href="#" class="footer__logo">
+                        <i class="fas fa-gem"></i>
+                        {{business_name}}
+                    </a>
+                    <p class="footer__description">
+                        Sua boutique de moda feminina com peças exclusivas e atendimento VIP. Elegância e estilo em cada detalhe.
+                    </p>
+                    <div class="footer__social">
+                        <a href="https://instagram.com" target="_blank" class="footer__social-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://facebook.com" target="_blank" class="footer__social-link">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://pinterest.com" target="_blank" class="footer__social-link">
+                            <i class="fab fa-pinterest-p"></i>
+                        </a>
+                        <a href="https://tiktok.com" target="_blank" class="footer__social-link">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer__column">
+                    <h3 class="footer__title">Links Rápidos</h3>
+                    <ul class="footer__links">
+                        <li><a href="#inicio" class="footer__link"><i class="fas fa-chevron-right"></i> Início</a></li>
+                        <li><a href="#sobre" class="footer__link"><i class="fas fa-chevron-right"></i> Sobre</a></li>
+                        <li></li>
+                        <li><a href="#categorias" class="footer__link"><i class="fas fa-chevron-right"></i> Categorias</a></li>
+                    </ul>
+                </div>
+                <div class="footer__column">
+                    <h3 class="footer__title">Categorias</h3>
+                    <ul class="footer__links">
+                        <li><a href="#categorias" class="footer__link"><i class="fas fa-chevron-right"></i> Vestidos</a></li>
+                        <li><a href="#categorias" class="footer__link"><i class="fas fa-chevron-right"></i> Blusas</a></li>
+                        <li><a href="#categorias" class="footer__link"><i class="fas fa-chevron-right"></i> Calças</a></li>
+                        <li><a href="#categorias" class="footer__link"><i class="fas fa-chevron-right"></i> Acessórios</a></li>
+                    </ul>
+                </div>
+                <div class="footer__column">
+                    <h3 class="footer__title">Contato</h3>
+                    <ul class="footer__info">
+                        <li class="footer__info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Rua das Flores, 123<br>Centro - São Paulo/SP</span>
+                        </li>
+                        <li class="footer__info-item">
+                            <i class="fas fa-phone"></i>
+                            <span>{{phone_display}}</span>
+                        </li>
+                        <li class="footer__info-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>Atendimento pelo WhatsApp</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p class="footer__copy">
+                    &copy; 2024 {{business_name}}. Todos os direitos reservados.
+                </p>
+                <div class="footer__bottom-links">
+                    <a href="#" class="footer__bottom-link">Política de Privacidade</a>
+                    <a href="#" class="footer__bottom-link">Termos de Uso</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top -->
+    <button class="scroll-top" id="scroll-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>

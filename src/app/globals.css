@@ -1,0 +1,244 @@
+@import "tailwindcss";
+
+:root {
+  /* LeadSite-aligned tokens (live site soft-dark neu + brand) */
+  --background: #e6e7ec;
+  --foreground: #1d1d1f;
+  --brand: #0071e3;
+  --brand-hover: #005ec2;
+  --brand-3: #007aff;
+  --brand-tint: #ebf4ff;
+  --text: #1d1d1f;
+  --text-2: #3a3a3c;
+  --text-3: #636366;
+  --text-4: #8e8e93;
+  --text-5: #aeaeb2;
+
+  --neu-bg: #e6e7ec;
+  --neu-bg-well: #dee1e7;
+  --neu-bg-pop: #f3f4f8;
+  --neu-bg-pop: #f3f4f8;
+  --card: #ffffff;
+  --shadow-card: 0 8px 28px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+
+  /* Soft-dark shell — LeadSite --neu-bg (#2A2D35), not pure black */
+  --shell: #2a2d35;
+  --shell-raised: #31343e;
+  --shell-well: #212329;
+  --shell-edge: rgba(255, 255, 255, 0.07);
+  --shell-edge: rgba(255, 255, 255, 0.07);
+  --shell-text: #f5f5f7;
+  --shell-muted: rgba(235, 235, 245, 0.55);
+  --shell-soft: rgba(235, 235, 245, 0.72);
+  --shell-shadow-dark: #1b1d22;
+  --shell-shadow-light: rgba(255, 255, 255, 0.1);
+
+  --success: #1a7e3a;
+  --warning: #ff9500;
+  --danger: #ff3b30;
+  --radius-card: 24px;
+  --radius-ctl: 12px;
+  --radius-chip: 8px;
+
+  --funnel-total: #8e8e93;
+  --funnel-approached: #0071e3;
+  --funnel-scheduled: #34c759;
+  --funnel-followup: #ff9500;
+  --funnel-lost: #ff3b30;
+  --funnel-converted: #5856d6;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-neu: var(--neu-bg);
+  --color-shell: var(--shell);
+  --font-sans: var(--font-dm-sans), "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-dm-sans), "DM Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+.auth-noise, .auth-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+.app-card {
+  border-radius: var(--radius-card);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.app-card:hover {
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08), 0 2px 4px rgba(15, 23, 42, 0.04);
+}
+
+.app-canvas {
+  background:
+    radial-gradient(ellipse 80% 50% at 10% 0%, rgba(0, 113, 227, 0.07), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 90% 10%, rgba(88, 86, 214, 0.04), transparent 50%),
+    var(--neu-bg);
+}
+
+.app-sidebar {
+  background:
+    linear-gradient(180deg, #31343e 0%, #2a2d35 42%, #24272f 100%);
+  color: var(--shell-text);
+  box-shadow: inset -1px 0 0 var(--shell-edge);
+}
+
+.funnel-stage {
+  clip-path: polygon(6% 0, 100% 0, 94% 100%, 0 100%);
+}
+
+.funnel-stage-first {
+  clip-path: polygon(0 0, 100% 0, 94% 100%, 0 100%);
+}
+
+.funnel-stage-last {
+  clip-path: polygon(6% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes funnel-grow {
+  from {
+    transform: scaleY(0.35);
+    opacity: 0.4;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bar-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.motion-fade-up {
+  animation: fade-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.funnel-stage-anim {
+  transform-origin: bottom center;
+  animation: funnel-grow 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.bar-fill-anim {
+  transform-origin: left center;
+  animation: bar-fill 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .auth-noise, .auth-noise {
+    display: none;
+  }
+}
+
+/* Soft aurora orbs — inspired by 21st.dev Background Gradient Glow (meghtrix) */
+.hero-glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(64px);
+  will-change: transform, opacity;
+}
+
+.hero-glow-orb-a {
+  top: -8%;
+  left: 28%;
+  width: min(58vw, 640px);
+  height: min(58vw, 640px);
+  background: radial-gradient(circle, rgba(0, 113, 227, 0.44) 0%, transparent 68%);
+  animation: hero-orb-drift-a 18s ease-in-out infinite;
+}
+
+.hero-glow-orb-b {
+  right: -6%;
+  bottom: 8%;
+  width: min(48vw, 520px);
+  height: min(48vw, 520px);
+  background: radial-gradient(circle, rgba(0, 122, 255, 0.32) 0%, transparent 70%);
+  animation: hero-orb-drift-b 24s ease-in-out infinite;
+}
+
+.hero-glow-orb-c {
+  bottom: 18%;
+  left: -4%;
+  width: min(42vw, 440px);
+  height: min(42vw, 440px);
+  background: radial-gradient(circle, rgba(120, 170, 230, 0.34) 0%, transparent 72%);
+  animation: hero-orb-drift-c 21s ease-in-out infinite;
+}
+
+@keyframes hero-orb-drift-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate3d(4%, 6%, 0) scale(1.06);
+    opacity: 1;
+  }
+}
+
+@keyframes hero-orb-drift-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate3d(-5%, -4%, 0) scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes hero-orb-drift-c {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate3d(6%, -5%, 0) scale(1.05);
+    opacity: 0.95;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-fade-up,
+  .funnel-stage-anim,
+  .bar-fill-anim,
+  .app-card {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .hero-glow-orb {
+    animation: none !important;
+  }
+}

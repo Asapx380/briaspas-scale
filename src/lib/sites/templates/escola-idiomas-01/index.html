@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="briaspas-template" content="escola-idiomas-01">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{meta_description}}">
+    <title>{{page_title}}</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ========== HEADER ========== -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <!-- EDITÁVEL: Nome do negócio/logo -->
+                <a href="#inicio" class="logo">🌍 {{business_name}}</a>
+
+                <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#inicio">Início</a></li>
+                    <li><a href="#sobre">Sobre</a></li>
+                    <li></li>
+                    <li><a href="#servicos">Cursos</a></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ========== HERO ========== -->
+    <!-- Hero com imagem de fundo em tela cheia -->
+    <section class="hero" id="inicio">
+        <!-- Imagem de fundo do hero -->
+        <div class="hero-background">
+            <!-- EDITÁVEL: Troque a URL da imagem pela sua própria -->
+            <img src="{{hero_image_url}}" alt="Estudantes aprendendo idiomas" class="hero-bg-image">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">📚 Matrículas Abertas 2024</div>
+                <!-- EDITÁVEL: Título principal -->
+                <h1>{{headline}}</h1>
+                <!-- EDITÁVEL: Subtítulo -->
+                <p class="hero-subtitle">{{subheadline}}</p>
+                <div class="hero-buttons">
+                    <a href="#contato" class="btn btn-primary">Fazer Matrícula</a>
+                    <a href="#servicos" class="btn btn-secondary">Conhecer Cursos</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" data-target="1000">0</span><span>+</span>
+                        <span class="stat-label">Alunos formados</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" data-target="15">0</span><span>+</span>
+                        <span class="stat-label">Anos de experiência</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" data-target="98">0</span><span>%</span>
+                        <span class="stat-label">Taxa de aprovação</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <!-- Imagem circular em destaque -->
+                <div class="hero-image-container">
+                    <img src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=600&q=80" alt="Estudantes em sala de aula" class="hero-main-image">
+                    <div class="floating-badge">Aulas Dinâmicas</div>
+                </div>
+            </div>
+        </div>
+    <div class="briaspas-stock-credit">{{stock_credit_html}}</div><a class="btn btn-primary briaspas-whatsapp" href="{{whatsapp_url}}" target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a></section>
+
+    <!-- ========== SOBRE ========== -->
+    <!-- Seção sobre com imagem do estabelecimento -->
+    <section class="sobre" id="sobre">
+        <div class="container">
+            <div class="section-header">
+                <h2>Sobre a {{business_name}}</h2>
+                <p>{{about_text}}</p>
+            </div>
+            <div class="sobre-content">
+                <!-- Imagem da escola/professores -->
+                <div class="sobre-image">
+                    <!-- EDITÁVEL: Imagem do estabelecimento ou equipe -->
+                    <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80" alt="Professores e alunos na {{business_name}}">
+                </div>
+                <div class="sobre-info">
+                    <div class="sobre-text">
+                        <!-- EDITÁVEL: Texto sobre o negócio -->
+                        <p>Fundada em 2009, a <strong>{{business_name}}</strong> nasceu com a missão de tornar o aprendizado de idiomas acessível, eficiente e prazeroso. Com mais de 15 anos de experiência, desenvolvemos uma metodologia exclusiva que combina técnicas modernas de ensino com tecnologia educacional de ponta.</p>
+                        <p>Nossa equipe é formada por professores nativos e bilíngues altamente qualificados, comprometidos com o sucesso de cada aluno. Oferecemos cursos de inglês, espanhol, francês, alemão, italiano e mandarim, com turmas reduzidas que garantem atenção personalizada e resultados comprovados.</p>
+                        <p>Com mais de 1.000 alunos formados e uma taxa de aprovação de 98% em exames de proficiência internacionais, somos referência no ensino de idiomas na região.</p>
+                    </div>
+                    <div class="sobre-features">
+                    <div class="feature">
+                        <div class="feature-icon">🎓</div>
+                        <h3>Certificação Internacional</h3>
+                        <p>Preparamos você para exames como TOEFL, IELTS, DELE e mais</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">💻</div>
+                        <h3>Tecnologia Educacional</h3>
+                        <p>Plataforma online com exercícios interativos e aulas gravadas</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">🌟</div>
+                        <h3>Resultado Garantido</h3>
+                        <p>98% de aprovação em exames de proficiência</p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== GALERIA ========== -->
+    <!-- Galeria de fotos do ambiente e aulas -->
+    
+
+    <!-- ========== SERVIÇOS / CURSOS ========== -->
+    <!-- Cards de cursos com imagens reais -->
+    <section class="servicos" id="servicos">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nossos Cursos</h2>
+                <p>Escolha o idioma que você quer dominar</p>
+            </div>
+            <div class="servicos-grid">
+                <!-- EDITÁVEL: Cards de cursos com imagens -->
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <!-- EDITÁVEL: Imagem do curso -->
+                        <img src="https://images.unsplash.com/photo-1543109740-4bdb38fda756?w=400&q=80" alt="Curso de Inglês">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Inglês</h3>
+                        <p>Do básico ao avançado. Preparação para TOEFL, IELTS e Cambridge. Aulas focadas em conversação e business English.</p>
+                        <span class="preco">A partir de R$ 299/mês</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1551279880-032f4f8e5ae3?w=400&q=80" alt="Curso de Espanhol">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Espanhol</h3>
+                        <p>Aprenda o idioma mais falado nas Américas. Preparação para DELE e certificação internacional com professores nativos.</p>
+                        <span class="preco">A partir de R$ 279/mês</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&q=80" alt="Curso de Francês">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Francês</h3>
+                        <p>Domine a língua da cultura e do romance. Preparação para DELF, DALF e TCF com metodologia comunicativa.</p>
+                        <span class="preco">A partir de R$ 299/mês</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=400&q=80" alt="Curso de Alemão">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Alemão</h3>
+                        <p>Aprenda o idioma das oportunidades profissionais na Europa. Preparação para Goethe-Zertifikat e TestDaF.</p>
+                        <span class="preco">A partir de R$ 319/mês</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?w=400&q=80" alt="Curso de Italiano">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Italiano</h3>
+                        <p>Explore a língua da arte, gastronomia e história. Preparação para CILS e CELI com professores italianos.</p>
+                        <span class="preco">A partir de R$ 289/mês</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=400&q=80" alt="Curso de Mandarim">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Mandarim</h3>
+                        <p>Aprenda o idioma mais falado do mundo. Preparação para HSK com professores nativos e material exclusivo.</p>
+                        <span class="preco">A partir de R$ 349/mês</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== DIFERENCIAIS ========== -->
+    <!-- Seção de diferenciais -->
+    
+
+    <!-- ========== BENEFÍCIOS ========== -->
+    
+
+    
+    
+    
+
+    <!-- ========== FAQ ========== -->
+    
+
+    <!-- ========== CONTATO ========== -->
+    <section class="contato" id="contato">
+        <div class="container">
+            <div class="section-header">
+                <h2>Entre em Contato</h2>
+                <p>Faça sua matrícula ou agende sua aula experimental</p>
+            </div>
+            <div class="contato-content">
+                <div class="contato-info">
+                    <!-- EDITÁVEL: Informações de contato -->
+                    <div class="info-item">
+                        <div class="info-icon">📞</div>
+                        <div>
+                            <h4>Telefone</h4>
+                            <p>{{phone_display}}</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📱</div>
+                        <div>
+                            <h4>WhatsApp</h4>
+                            <p>{{phone_display}}</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📧</div>
+                        <div>
+                            <h4>E-mail</h4>
+                            <p>Atendimento pelo WhatsApp</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📍</div>
+                        <div>
+                            <h4>Endereço</h4>
+                            <!-- EDITÁVEL: Endereço -->
+                            <p>Av. Paulista, 1234 - Conj. 56<br>Bela Vista - São Paulo - SP<br>CEP: 01310-100</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">🕐</div>
+                        <div>
+                            <h4>Horário de Atendimento</h4>
+                            <!-- EDITÁVEL: Horário -->
+                            <p>Segunda a Sexta: 8h às 21h<br>Sábado: 8h às 17h<br>Domingo: Fechado</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== ÁREA RESERVADA PARA AGENTE DE IA ========== -->
+    <!-- Área reservada para agente de IA no futuro -->
+    <div id="ai-agent-container" class="ai-agent-area">
+        <!-- O widget do agente de IA será inserido aqui -->
+    </div>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <!-- EDITÁVEL: Nome do negócio -->
+                    <div class="footer-logo">🌍 {{business_name}}</div>
+                    <p>Transformando vidas através do ensino de idiomas desde 2009.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Instagram">📷</a>
+                        <a href="#" aria-label="Facebook">👍</a>
+                        <a href="#" aria-label="LinkedIn">💼</a>
+                        <a href="#" aria-label="YouTube">📺</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Cursos</h4>
+                    <a href="#servicos">Inglês</a>
+                    <a href="#servicos">Espanhol</a>
+                    <a href="#servicos">Francês</a>
+                    <a href="#servicos">Alemão</a>
+                    <a href="#servicos">Italiano</a>
+                    <a href="#servicos">Mandarim</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Institucional</h4>
+                    <a href="#sobre">Sobre Nós</a>
+                    
+                    
+                    
+                    <a href="#contato">Contato</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Contato</h4>
+                    <p>📞 {{phone_display}}</p>
+                    <p>📱 {{phone_display}}</p>
+                    <p>📧 Atendimento pelo WhatsApp</p>
+                    <p>📍 Av. Paulista, 1234 - São Paulo/SP</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <!-- EDITÁVEL: Copyright -->
+                <p>&copy; 2024 {{business_name}} - Escola de Idiomas. Todos os direitos reservados.</p>
+                <p><a href="#privacidade">Política de Privacidade</a> | <a href="#termos">Termos de Uso</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Política de Privacidade (texto simples no rodapé) -->
+    <section class="privacidade" id="privacidade">
+        <div class="container">
+            <h3>Política de Privacidade</h3>
+            <p>A {{business_name}} respeita sua privacidade. Os dados coletados são utilizados apenas para fins educacionais e comunicação com alunos. Não compartilhamos informações pessoais com terceiros sem consentimento prévio. Para mais informações, entre em contato conosco.</p>
+        </div>
+    </section>
+
+    <!-- Botão de voltar ao topo -->
+    <button class="scroll-top" id="scrollTop" aria-label="Voltar ao topo">
+        ↑
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>

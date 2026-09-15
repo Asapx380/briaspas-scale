@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="briaspas-template" content="infoprodutor-01">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{meta_description}}">
+    <title>{{page_title}}</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-rocket"></i>
+                    <span>{{business_name}}</span>
+                </div>
+                <nav class="nav" id="nav">
+                    <ul class="nav-list">
+                        <li><a href="#inicio" class="nav-link">Início</a></li>
+                        <li><a href="#sobre" class="nav-link">Sobre</a></li>
+                        <li></li>
+                        <li><a href="#servicos" class="nav-link">Serviços</a></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li><a href="#contato" class="nav-link">Contato</a></li>
+                    </ul>
+                </nav>
+                <button class="mobile-toggle" id="mobileToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <div class="hero-background"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">{{headline}}</h1>
+                    <p class="hero-subtitle">{{subheadline}}</p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">10.000+</div>
+                            <div class="stat-label">Alunos Treinados</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">Cursos Lançados</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">R$ 5M+</div>
+                            <div class="stat-label">em Faturamento</div>
+                        </div>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="#servicos" class="btn btn-primary">Conheça Nossos Serviços</a>
+                        <a href="#contato" class="btn btn-outline">Entre em Contato</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="hero-image-circle">
+                        <img src="{{hero_image_url}}" alt="{{business_name}}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="briaspas-stock-credit">{{stock_credit_html}}</div><a class="btn btn-primary briaspas-whatsapp" href="{{whatsapp_url}}" target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a></section>
+
+    <!-- About Section -->
+    <section class="about" id="sobre">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80" alt="Sobre {{business_name}}">
+                    <div class="about-image-overlay"></div>
+                </div>
+                <div class="about-text">
+                    <h2 class="section-title">Quem é {{business_name}}?</h2>
+                    <p class="about-description">{{about_text}}</p>
+                    <p class="about-description">
+                        Especialista em marketing digital, funis de vendas e estratégias de lançamento, Lucas desenvolveu um método único que combina técnicas comprovadas com inovação constante, garantindo resultados consistentes para seus mentorados.
+                    </p>
+                    <div class="about-highlights">
+                        <div class="highlight-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>8+ anos de experiência no mercado digital</span>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Especialista em lançamentos e funis de vendas</span>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Método próprio testado e aprovado</span>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Resultados comprovados por milhares de alunos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    
+
+    <!-- Services Section -->
+    <section class="services" id="servicos">
+        <div class="container">
+            <h2 class="section-title text-center">Nossos Serviços e Produtos</h2>
+            <p class="section-subtitle text-center">Escolha a melhor opção para acelerar seu negócio digital</p>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&q=80" alt="Curso Completo">
+                    </div>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3 class="service-title">Curso Completo</h3>
+                        <p class="service-description">
+                            Aprenda do zero ao avançado como criar, lançar e escalar seu infoproduto com aulas práticas e passo a passo detalhado.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="fas fa-check"></i> 100+ aulas gravadas</li>
+                            <li><i class="fas fa-check"></i> Materiais complementares</li>
+                            <li><i class="fas fa-check"></i> Acesso vitalício</li>
+                        </ul>
+                        <a href="#contato" class="btn btn-primary btn-block">Saiba Mais</a>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?w=400&q=80" alt="Mentoria Individual">
+                    </div>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h3 class="service-title">Mentoria Individual</h3>
+                        <p class="service-description">
+                            Acompanhamento personalizado e exclusivo para acelerar seus resultados com estratégias customizadas para seu negócio.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="fas fa-check"></i> Atendimento 1 a 1</li>
+                            <li><i class="fas fa-check"></i> Estratégia personalizada</li>
+                            <li><i class="fas fa-check"></i> Suporte direto</li>
+                        </ul>
+                        <a href="#contato" class="btn btn-primary btn-block">Saiba Mais</a>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1552581234-26160f608093?w=400&q=80" alt="Mentoria em Grupo">
+                    </div>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="service-title">Mentoria em Grupo</h3>
+                        <p class="service-description">
+                            Participe de uma turma exclusiva com encontros semanais, networking e troca de experiências com outros empreendedores.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="fas fa-check"></i> Encontros semanais ao vivo</li>
+                            <li><i class="fas fa-check"></i> Grupo exclusivo</li>
+                            <li><i class="fas fa-check"></i> Networking qualificado</li>
+                        </ul>
+                        <a href="#contato" class="btn btn-primary btn-block">Saiba Mais</a>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=400&q=80" alt="Consultoria">
+                    </div>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="service-title">Consultoria</h3>
+                        <p class="service-description">
+                            Análise completa do seu negócio com diagnóstico profissional e plano de ação para maximizar seus resultados.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="fas fa-check"></i> Análise detalhada</li>
+                            <li><i class="fas fa-check"></i> Plano de ação</li>
+                            <li><i class="fas fa-check"></i> Acompanhamento 30 dias</li>
+                        </ul>
+                        <a href="#contato" class="btn btn-primary btn-block">Saiba Mais</a>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=400&q=80" alt="Palestras">
+                    </div>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-microphone"></i>
+                        </div>
+                        <h3 class="service-title">Palestras</h3>
+                        <p class="service-description">
+                            Palestras motivacionais e educativas sobre empreendedorismo digital, vendas online e criação de infoprodutos.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="fas fa-check"></i> Presencial ou online</li>
+                            <li><i class="fas fa-check"></i> Conteúdo customizado</li>
+                            <li><i class="fas fa-check"></i> Material de apoio</li>
+                        </ul>
+                        <a href="#contato" class="btn btn-primary btn-block">Saiba Mais</a>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&q=80" alt="Comunidade VIP">
+                    </div>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <h3 class="service-title">Comunidade VIP</h3>
+                        <p class="service-description">
+                            Acesso exclusivo à comunidade de empreendedores de alto nível com conteúdos semanais, eventos e networking premium.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="fas fa-check"></i> Conteúdos exclusivos</li>
+                            <li><i class="fas fa-check"></i> Eventos mensais</li>
+                            <li><i class="fas fa-check"></i> Networking premium</li>
+                        </ul>
+                        <a href="#contato" class="btn btn-primary btn-block">Saiba Mais</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Highlights Section -->
+    
+
+    <!-- Benefits Section -->
+    
+
+    
+    
+
+    <!-- FAQ Section -->
+    
+
+    <!-- Contact Section -->
+    <section class="contact" id="contato">
+        <div class="container">
+            <h2 class="section-title text-center">Entre em Contato</h2>
+            <p class="section-subtitle text-center">Estamos aqui para ajudar você a dar o próximo passo</p>
+
+            <div class="contact-content">
+                <div class="contact-info-grid">
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h3 class="contact-info-title">Email</h3>
+                        <p class="contact-info-text">Atendimento pelo WhatsApp</p>
+                        <p class="contact-info-text">Atendimento pelo WhatsApp</p>
+                    </div>
+
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <h3 class="contact-info-title">Telefone</h3>
+                        <p class="contact-info-text">{{phone_display}}</p>
+                        <p class="contact-info-text">Segunda a Sexta: 9h - 18h</p>
+                    </div>
+
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                        <h3 class="contact-info-title">Instagram</h3>
+                        <p class="contact-info-text">@lucasferreiraoficial</p>
+                        <a href="https://instagram.com/lucasferreiraoficial" target="_blank" class="contact-info-link">Seguir agora</a>
+                    </div>
+
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon">
+                            <i class="fab fa-youtube"></i>
+                        </div>
+                        <h3 class="contact-info-title">YouTube</h3>
+                        <p class="contact-info-text">{{business_name}}</p>
+                        <a href="https://youtube.com/@lucasferreira" target="_blank" class="contact-info-link">Inscrever-se</a>
+                    </div>
+
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <h3 class="contact-info-title">Telegram</h3>
+                        <p class="contact-info-text">Canal Oficial</p>
+                        <a href="https://t.me/lucasferreiraoficial" target="_blank" class="contact-info-link">Participar</a>
+                    </div>
+
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon">
+                            <i class="fab fa-linkedin"></i>
+                        </div>
+                        <h3 class="contact-info-title">LinkedIn</h3>
+                        <p class="contact-info-text">{{business_name}}</p>
+                        <a href="https://linkedin.com/in/lucasferreira" target="_blank" class="contact-info-link">Conectar</a>
+                    </div>
+                </div>
+
+                <div class="contact-cta">
+                    <h3 class="contact-cta-title">Pronto para Transformar Seu Negócio?</h3>
+                    <p class="contact-cta-text">Entre em contato conosco através de qualquer um dos canais acima e nossa equipe terá prazer em atendê-lo!</p>
+                    <div class="contact-cta-buttons">
+                        <a href="mailto:Atendimento pelo WhatsApp" class="btn btn-primary">Enviar Email</a>
+                        <a href="tel:{{whatsapp_number}}" class="btn btn-outline">Ligar Agora</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3 class="footer-title">
+                        <i class="fas fa-rocket"></i>
+                        {{business_name}}
+                    </h3>
+                    <p class="footer-description">
+                        Transformando conhecimento em negócios digitais de sucesso desde 2016. Mais de 10.000 alunos treinados e R$ 5 milhões em faturamento gerado.
+                    </p>
+                    <div class="footer-social">
+                        <a href="https://instagram.com" target="_blank" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://youtube.com" target="_blank" class="social-link">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="https://telegram.com" target="_blank" class="social-link">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                        <a href="https://linkedin.com" target="_blank" class="social-link">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h4 class="footer-column-title">Links Rápidos</h4>
+                    <ul class="footer-links">
+                        <li><a href="#inicio">Início</a></li>
+                        <li><a href="#sobre">Sobre</a></li>
+                        <li><a href="#servicos">Serviços</a></li>
+                        <li></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4 class="footer-column-title">Serviços</h4>
+                    <ul class="footer-links">
+                        <li><a href="#servicos">Cursos Online</a></li>
+                        <li><a href="#servicos">Mentoria Individual</a></li>
+                        <li><a href="#servicos">Mentoria em Grupo</a></li>
+                        <li><a href="#servicos">Consultoria</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4 class="footer-column-title">Contato</h4>
+                    <ul class="footer-contact">
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            <span>Atendimento pelo WhatsApp</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-phone"></i>
+                            <span>{{phone_display}}</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-clock"></i>
+                            <span>Seg - Sex: 9h às 18h</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p class="footer-copyright">
+                    &copy; 2024 {{business_name}} - Infoprodutor & Mentor Digital. Todos os direitos reservados.
+                </p>
+                <div class="footer-bottom-links">
+                    <a href="#">Política de Privacidade</a>
+                    <a href="#">Termos de Uso</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>

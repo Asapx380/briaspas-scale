@@ -1,0 +1,34 @@
+{
+  "id": "escola-idiomas-01",
+  "version": 1,
+  "name": "Escola de idiomas",
+  "categories": [
+    "escola de idiomas",
+    "curso de idiomas",
+    "inglês",
+    "idiomas"
+  ],
+  "style": [
+    "jovem",
+    "educacional",
+    "vibrante"
+  ],
+  "requiredTokens": [
+    "business_name",
+    "category",
+    "whatsapp_number",
+    "whatsapp_message",
+    "address",
+    "headline",
+    "subheadline",
+    "about_text"
+  ],
+  "optionalSections": {},
+  "imageSlots": [
+    {
+      "token": "hero_image_url",
+      "fallback": "pexels"
+    }
+  ],
+  "tokenizationFamily": "inline-links"
+}

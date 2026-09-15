@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="briaspas-template" content="oficina-mecanica-01">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{page_title}}</title>
+    <meta name="description" content="{{meta_description}}">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-car"></i>
+                    <span>{{business_name}}</span>
+                </div>
+                <nav class="nav" id="nav">
+                    <ul class="nav-list">
+                        <li><a href="#home" class="nav-link">Início</a></li>
+                        <li><a href="#about" class="nav-link">Sobre</a></li>
+                        <li><a href="#services" class="nav-link">Serviços</a></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li><a href="#contact" class="nav-link">Contato</a></li>
+                    </ul>
+                </nav>
+                <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-bg"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">{{headline}}</h1>
+                    <p class="hero-subtitle">{{subheadline}}</p>
+                    <div class="hero-buttons">
+                        <a href="#contact" class="btn btn-primary">
+                            <i class="fas fa-phone"></i>
+                            Entre em Contato
+                        </a>
+                        <a href="#services" class="btn btn-secondary">
+                            <i class="fas fa-wrench"></i>
+                            Nossos Serviços
+                        </a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-car"></i>
+                            <div class="stat-content">
+                                <span class="stat-number">10.000+</span>
+                                <span class="stat-label">Carros Atendidos</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <div class="stat-content">
+                                <span class="stat-number">20+</span>
+                                <span class="stat-label">Anos de Experiência</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <div class="stat-content">
+                                <span class="stat-number">100%</span>
+                                <span class="stat-label">Garantia</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="hero-circle">
+                        <img src="{{hero_image_url}}" alt="Mecânico profissional">
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="briaspas-stock-credit">{{stock_credit_html}}</div><a class="btn btn-primary briaspas-whatsapp" href="{{whatsapp_url}}" target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a></section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1625047509168-a7026f36de04?w=800&q=80" alt="Equipe {{business_name}}">
+                    <div class="about-badge">
+                        <i class="fas fa-award"></i>
+                        <span>20 Anos</span>
+                    </div>
+                </div>
+                <div class="about-text">
+                    <span class="section-subtitle">Quem Somos</span>
+                    <h2 class="section-title">A Melhor Oficina para seu Veículo</h2>
+                    <p class="about-description">{{about_text}}</p>
+                    <p class="about-description">
+                        Contamos com uma equipe de profissionais altamente qualificados e certificados, equipamentos de última geração e utilizamos apenas peças originais ou de primeira linha, garantindo a segurança e durabilidade dos reparos.
+                    </p>
+                    <div class="about-features">
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Equipe Técnica Certificada</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Equipamentos Modernos</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Peças Originais</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Atendimento Personalizado</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">O Que Fazemos</span>
+                <h2 class="section-title">Nossos Serviços</h2>
+                <p class="section-description">
+                    Soluções completas para manutenção e reparos do seu veículo
+                </p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=400&q=80" alt="Revisão Completa">
+                    </div>
+                    <div class="service-content">
+                        <i class="fas fa-clipboard-check"></i>
+                        <h3>Revisão Completa</h3>
+                        <p>Inspeção detalhada de todos os sistemas do veículo para garantir segurança e desempenho.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&q=80" alt="Sistema de Freios">
+                    </div>
+                    <div class="service-content">
+                        <i class="fas fa-stopwatch"></i>
+                        <h3>Sistema de Freios</h3>
+                        <p>Manutenção e troca de pastilhas, discos e sistema completo de frenagem.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&q=80" alt="Reparo de Motor">
+                    </div>
+                    <div class="service-content">
+                        <i class="fas fa-cog"></i>
+                        <h3>Reparo de Motor</h3>
+                        <p>Diagnóstico e reparo de motores com equipamentos de última geração.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&q=80" alt="Suspensão">
+                    </div>
+                    <div class="service-content">
+                        <i class="fas fa-car-side"></i>
+                        <h3>Suspensão</h3>
+                        <p>Alinhamento, balanceamento e troca de componentes da suspensão.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400&q=80" alt="Elétrica Automotiva">
+                    </div>
+                    <div class="service-content">
+                        <i class="fas fa-bolt"></i>
+                        <h3>Elétrica Automotiva</h3>
+                        <p>Diagnóstico e reparo do sistema elétrico e eletrônico do veículo.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&q=80" alt="Ar Condicionado">
+                    </div>
+                    <div class="service-content">
+                        <i class="fas fa-snowflake"></i>
+                        <h3>Ar Condicionado</h3>
+                        <p>Manutenção, carga de gás e reparo do sistema de climatização.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Highlights Section -->
+    
+
+    <!-- Benefits Section -->
+    
+
+    
+    
+
+    <!-- FAQ Section -->
+    
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">Fale Conosco</span>
+                <h2 class="section-title">Entre em Contato</h2>
+                <p class="section-description">
+                    Estamos prontos para atender você
+                </p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info-grid">
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <h3>Telefone</h3>
+                        <p>{{phone_display}}</p>
+                        <p>{{phone_display}}</p>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h3>E-mail</h3>
+                        <p>Atendimento pelo WhatsApp</p>
+                        <p>Atendimento pelo WhatsApp</p>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h3>Endereço</h3>
+                        <p>Av. Principal, 1234</p>
+                        <p>Centro - São Paulo/SP</p>
+                        <p>CEP: 01234-567</p>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3>Horário de Funcionamento</h3>
+                        <p>Segunda a Sexta: 8h às 18h</p>
+                        <p>Sábado: 8h às 13h</p>
+                        <p>Domingo: Fechado</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <i class="fas fa-car"></i>
+                        <span>{{business_name}}</span>
+                    </div>
+                    <p class="footer-description">
+                        Oficina mecânica especializada com mais de 20 anos de experiência, oferecendo serviços de qualidade com garantia e atendimento personalizado.
+                    </p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Links Rápidos</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Início</a></li>
+                        <li><a href="#about">Sobre</a></li>
+                        <li><a href="#services">Serviços</a></li>
+                        <li></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Serviços</h4>
+                    <ul class="footer-links">
+                        <li><a href="#services">Revisão Completa</a></li>
+                        <li><a href="#services">Sistema de Freios</a></li>
+                        <li><a href="#services">Reparo de Motor</a></li>
+                        <li><a href="#services">Suspensão</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Contato</h4>
+                    <ul class="footer-contact">
+                        <li>
+                            <i class="fas fa-phone"></i>
+                            <span>{{phone_display}}</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            <span>Atendimento pelo WhatsApp</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Av. Principal, 1234 - São Paulo/SP</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 {{business_name}}. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>

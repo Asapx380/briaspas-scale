@@ -1,0 +1,34 @@
+{
+  "id": "clinica-estetica-01",
+  "version": 1,
+  "name": "Clínica estética elegante",
+  "categories": [
+    "clínica estética",
+    "estética",
+    "harmonização facial",
+    "spa"
+  ],
+  "style": [
+    "elegante",
+    "leve",
+    "sofisticado"
+  ],
+  "requiredTokens": [
+    "business_name",
+    "category",
+    "whatsapp_number",
+    "whatsapp_message",
+    "address",
+    "headline",
+    "subheadline",
+    "about_text"
+  ],
+  "optionalSections": {},
+  "imageSlots": [
+    {
+      "token": "hero_image_url",
+      "fallback": "pexels"
+    }
+  ],
+  "tokenizationFamily": "inline-links"
+}

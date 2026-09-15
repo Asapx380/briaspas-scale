@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="briaspas-template" content="academia-01">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{meta_description}}">
+    <title>{{page_title}}</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ========== HEADER ========== -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <!-- EDITÁVEL: Nome da academia -->
+                <a href="#inicio" class="logo">💪 {{business_name}}</a>
+                <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
+                    <span></span><span></span><span></span>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#inicio">Início</a></li>
+                    <li><a href="#sobre">Sobre</a></li>
+                    <li><a href="#servicos">Modalidades</a></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ========== HERO ========== -->
+    <!-- EDITÁVEL: Imagem de fundo do hero - troque a URL da imagem conforme necessário -->
+    <section class="hero" id="inicio">
+        <div class="hero-background">
+            <!-- EDITÁVEL: Imagem principal do hero -->
+            <img src="{{hero_image_url}}" alt="Academia moderna com equipamentos" class="hero-bg-image">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">🔥 Primeira semana GRÁTIS</div>
+                <h1>{{headline}}</h1>
+                <p class="hero-subtitle">{{subheadline}}</p>
+                <div class="hero-buttons">
+                    <a href="#contato" class="btn btn-primary">Agendar Aula Experimental</a>
+                    <a href="{{whatsapp_url}}" class="btn btn-secondary" target="_blank">Falar no WhatsApp</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">+5.000</span>
+                        <span class="stat-label">Alunos ativos</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">15+</span>
+                        <span class="stat-label">Modalidades</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">24h</span>
+                        <span class="stat-label">Funcionamento</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="briaspas-stock-credit">{{stock_credit_html}}</div></section>
+
+    <!-- ========== SOBRE ========== -->
+    <section class="sobre" id="sobre">
+        <div class="container">
+            <div class="section-header">
+                <h2>Sobre a {{business_name}}</h2>
+                <p>{{about_text}}</p>
+            </div>
+            <div class="sobre-content">
+                <div class="sobre-image">
+                    <!-- EDITÁVEL: Imagem da seção sobre -->
+                    <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&q=80" alt="Área de musculação da academia" class="sobre-img">
+                </div>
+                <div class="sobre-text-content">
+                    <div class="sobre-text">
+                        <p>Desde 2010, a <strong>{{business_name}}</strong> é referência em treino de qualidade na região. Com mais de 2.000m² de área, equipamentos importados e uma equipe de profissionais apaixonados, oferecemos tudo que você precisa para alcançar seus objetivos.</p>
+                        <p>Aqui você encontra um ambiente acolhedor, motivador e inclusivo. Seja você iniciante ou atleta avançado, temos o treino ideal para você. Nossa missão é transformar vidas através do exercício físico.</p>
+                    </div>
+                    <div class="sobre-features">
+                        <div class="feature">
+                            <div class="feature-icon">🎯</div>
+                            <h3>Equipamentos Modernos</h3>
+                            <p>Aparelhos de última geração das melhores marcas</p>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">👨‍🏫</div>
+                            <h3>Profissionais Qualificados</h3>
+                            <p>Personal trainers com certificação internacional</p>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">🌙</div>
+                            <h3>24 Horas por Dia</h3>
+                            <p>Treine no horário que melhor se encaixa na sua rotina</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== SERVIÇOS / MODALIDADES ========== -->
+    <section class="servicos" id="servicos">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nossas Modalidades</h2>
+                <p>Encontre o treino perfeito para você</p>
+            </div>
+            <div class="servicos-grid">
+                <!-- EDITÁVEL: Cards de serviços com imagens -->
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c149a?w=400&q=80" alt="Musculação">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Musculação</h3>
+                        <p>Área completa com equipamentos para todos os grupos musculares. Treino personalizado pelo app.</p>
+                        <span class="preco">Incluso no plano</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=80" alt="Personal Trainer">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Personal Trainer</h3>
+                        <p>Acompanhamento individual para resultados acelerados. Treino 100% personalizado.</p>
+                        <span class="preco">A partir de R$ 150/aula</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1520877880798-5ee004e3f11e?w=400&q=80" alt="Spinning">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Spinning</h3>
+                        <p>Aulas intensas de ciclismo indoor. Queime até 800 calorias por aula!</p>
+                        <span class="preco">Incluso no plano</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=400&q=80" alt="Luta e Funcional">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Luta e Funcional</h3>
+                        <p>Muay Thai, Boxe, Jiu-Jitsu e CrossFit. Aulas que desafiam seus limites.</p>
+                        <span class="preco">A partir de R$ 80/mês</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&q=80" alt="Yoga e Pilates">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Yoga e Pilates</h3>
+                        <p>Equilíbrio entre corpo e mente. Flexibilidade, postura e bem-estar.</p>
+                        <span class="preco">Incluso no plano</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?w=400&q=80" alt="Aulas de Dança">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Aulas de Dança</h3>
+                        <p>Zumba, Ritmos e FitDance. Divirta-se enquanto emagrece!</p>
+                        <span class="preco">Incluso no plano</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1538805060514-97d9cc17730c?w=400&q=80" alt="Área Cardio">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Área Cardio</h3>
+                        <p>Esteiras, bicicletas e elípticos com TV e conexão para seu smartphone.</p>
+                        <span class="preco">Incluso no plano</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=400&q=80" alt="Avaliação Física">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Avaliação Física</h3>
+                        <p>Bioimpedância, teste de força e flexibilidade. Acompanhe sua evolução.</p>
+                        <span class="preco">Incluso no plano</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== DESTAQUES ========== -->
+    
+
+    <!-- ========== GALERIA ========== -->
+    
+
+    <!-- ========== BENEFÍCIOS ========== -->
+    
+
+    
+    
+
+    <!-- ========== FAQ ========== -->
+    
+
+    <!-- ========== CONTATO ========== -->
+    <section class="contato" id="contato">
+        <div class="container">
+            <div class="section-header">
+                <h2>Venha Conhecer!</h2>
+                <p>Agende sua aula experimental gratuita</p>
+            </div>
+            <div class="contato-content">
+                <div class="contato-info">
+                    <div class="info-item">
+                        <div class="info-icon">📞</div>
+                        <div><h4>Telefone</h4><p>{{phone_display}}</p></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📱</div>
+                        <div>
+                            <h4>WhatsApp</h4>
+                            <p>{{phone_display}}</p>
+                            <a href="{{whatsapp_url}}" class="btn btn-whatsapp" target="_blank">Agendar Aula Grátis</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📍</div>
+                        <div><h4>Endereço</h4><p>Av. Fitness, 1000 - Centro<br>São Paulo - SP, 01234-567</p></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">🕐</div>
+                        <div><h4>Funcionamento</h4><p>Área de treino: 24 horas<br>Recepção: 6h às 22h</p></div>
+                    </div>
+                </div>
+                <div class="contato-mapa">
+                    <div class="mapa-placeholder">
+                        <div class="mapa-pin">📍</div>
+                        <p>{{business_name}}</p>
+                        <span>Clique para ver no Google Maps</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Área reservada para agente de IA no futuro -->
+    <div id="ai-agent-container" class="ai-agent-area"></div>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">💪 {{business_name}}</div>
+                <p>Transformando vidas através do exercício desde 2010.</p>
+                <div class="footer-links">
+                    <a href="#inicio">Início</a>
+                    <a href="#sobre">Sobre</a>
+                    <a href="#servicos">Modalidades</a>
+                    <a href="#contato">Contato</a>
+                </div>
+                <div class="footer-social">
+                    <a href="#">📷</a><a href="#">👍</a><a href="#">📱</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 {{business_name}}. Todos os direitos reservados.</p>
+                <p>CREF: 012345-G/SP</p>
+                <p><a href="#privacidade">Política de Privacidade</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <section class="privacidade" id="privacidade">
+        <div class="container">
+            <h3>Política de Privacidade</h3>
+            <p>A {{business_name}} respeita sua privacidade. Os dados coletados são utilizados apenas para gestão de alunos e comunicação. Não compartilhamos informações com terceiros sem consentimento.</p>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

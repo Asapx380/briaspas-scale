@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="briaspas-template" content="imobiliaria-01">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{meta_description}}">
+    <meta name="keywords" content="imóveis, compra, venda, aluguel, imobiliária, corretor">
+
+    <!-- TÍTULO DA PÁGINA - Editável -->
+    <title>{{page_title}}</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ============================================ -->
+    <!-- HEADER / NAVEGAÇÃO -->
+    <!-- ============================================ -->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <!-- LOGO - Editável -->
+            <a href="#home" class="nav__logo">
+                <span class="logo-emoji">🏠</span>
+                <span class="logo-text">{{business_name}}</span>
+            </a>
+
+            <!-- MENU DE NAVEGAÇÃO - Editável: adicione ou remova itens conforme necessário -->
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="#home" class="nav__link active-link">Início</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#sobre" class="nav__link">Sobre</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#servicos" class="nav__link">Serviços</a>
+                    </li>
+                    <li class="nav__item">
+                        
+                    </li>
+                    <li class="nav__item">
+                        
+                    </li>
+                    <li class="nav__item">
+                        <a href="#contato" class="nav__link">Contato</a>
+                    </li>
+                </ul>
+
+                <!-- Botão fechar menu mobile -->
+                <div class="nav__close" id="nav-close">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Botão toggle menu mobile -->
+            <div class="nav__toggle" id="nav-toggle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ============================================ -->
+    <!-- SEÇÃO HERO / BANNER PRINCIPAL -->
+    <!-- ============================================ -->
+    <section class="hero" id="home">
+        <div class="hero__container container">
+            <div class="hero__content">
+                <!-- TÍTULO PRINCIPAL - Editável -->
+                <h1 class="hero__title">{{headline}}</h1>
+
+                <!-- SUBTÍTULO - Editável -->
+                <p class="hero__description">{{subheadline}}</p>
+
+                <!-- BOTÕES DE AÇÃO - Editável: modifique textos e links -->
+                <div class="hero__buttons">
+                    
+                    <a href="#contato" class="btn btn-secondary">Fale Conosco</a>
+                </div>
+
+                <!-- ESTATÍSTICAS - Editável: altere números e textos -->
+                <div class="hero__stats">
+                    <div class="stat-item">
+                        <h3 class="stat-number">500+</h3>
+                        <p class="stat-label">Imóveis Vendidos</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 class="stat-number">15+</h3>
+                        <p class="stat-label">Anos de Experiência</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 class="stat-number">98%</h3>
+                        <p class="stat-label">Clientes Satisfeitos</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero__image">
+                <!-- IMAGEM DO HERO - Editável: substitua o background no CSS ou adicione tag img aqui -->
+                <div class="hero__image-bg">
+                    <img src="{{hero_image_url}}" alt="Imóvel de Luxo">
+                </div>
+            </div>
+        </div>
+    <div class="briaspas-stock-credit">{{stock_credit_html}}</div><a class="btn btn-primary briaspas-whatsapp" href="{{whatsapp_url}}" target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a></section>
+
+    <!-- ============================================ -->
+    <!-- SEÇÃO SOBRE -->
+    <!-- ============================================ -->
+    <section class="sobre section" id="sobre">
+        <div class="container">
+            <!-- TÍTULO DA SEÇÃO - Editável -->
+            <div class="section__header">
+                <span class="section__subtitle">Conheça a</span>
+                <h2 class="section__title">{{business_name}}</h2>
+            </div>
+
+            <div class="sobre__container">
+                <div class="sobre__image">
+                    <!-- IMAGEM SOBRE - Editável: adicione imagem real aqui -->
+                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80" alt="Escritório {{business_name}}">
+                </div>
+
+                <div class="sobre__content">
+                    <!-- TEXTO SOBRE - Editável: personalize o conteúdo -->
+                    <h3 class="sobre__subtitle">Excelência em Negócios Imobiliários</h3>
+                    <p class="sobre__text">{{about_text}}</p>
+                    <p class="sobre__text">
+                        Nossa equipe de corretores especializados está preparada para atender suas necessidades com profissionalismo, transparência e dedicação total. Trabalhamos com um portfólio exclusivo de imóveis cuidadosamente selecionados.
+                    </p>
+
+                    <!-- LISTA DE DIFERENCIAIS - Editável -->
+                    <ul class="sobre__list">
+                        <li class="sobre__list-item">
+                            <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Equipe altamente qualificada
+                        </li>
+                        <li class="sobre__list-item">
+                            <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Portfólio exclusivo de imóveis premium
+                        </li>
+                        <li class="sobre__list-item">
+                            <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Atendimento personalizado e transparente
+                        </li>
+                        <li class="sobre__list-item">
+                            <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Assessoria completa do início ao fim
+                        </li>
+                    </ul>
+
+                    <a href="#contato" class="btn btn-primary">Fale com Especialista</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- GALERIA DE IMÓVEIS -->
+    <!-- ============================================ -->
+    
+
+    <!-- ============================================ -->
+    <!-- SEÇÃO SERVIÇOS -->
+    <!-- ============================================ -->
+    <section class="servicos section" id="servicos">
+        <div class="container">
+            <!-- TÍTULO DA SEÇÃO - Editável -->
+            <div class="section__header">
+                <span class="section__subtitle">O que fazemos</span>
+                <h2 class="section__title">Nossos Serviços</h2>
+                <p class="section__description">Soluções completas para todas as suas necessidades imobiliárias</p>
+            </div>
+
+            <!-- GRID DE SERVIÇOS - Editável: adicione, remova ou modifique serviços -->
+            <div class="servicos__grid">
+                <!-- Serviço 1 - Editável -->
+                <div class="servico-card">
+                    <div class="servico-card__image">
+                        <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80" alt="Compra de Imóveis">
+                    </div>
+                    <div class="servico-card__icon">🏘️</div>
+                    <h3 class="servico-card__title">Compra de Imóveis</h3>
+                    <p class="servico-card__description">
+                        Encontramos o imóvel perfeito para você com as melhores condições do mercado.
+                    </p>
+                </div>
+
+                <!-- Serviço 2 - Editável -->
+                <div class="servico-card">
+                    <div class="servico-card__image">
+                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&q=80" alt="Venda de Imóveis">
+                    </div>
+                    <div class="servico-card__icon">💰</div>
+                    <h3 class="servico-card__title">Venda de Imóveis</h3>
+                    <p class="servico-card__description">
+                        Vendemos seu imóvel rapidamente pelo melhor preço com nossa estratégia comprovada.
+                    </p>
+                </div>
+
+                <!-- Serviço 3 - Editável -->
+                <div class="servico-card">
+                    <div class="servico-card__image">
+                        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&q=80" alt="Aluguel">
+                    </div>
+                    <div class="servico-card__icon">🔑</div>
+                    <h3 class="servico-card__title">Aluguel</h3>
+                    <p class="servico-card__description">
+                        Locação e administração de imóveis com total segurança e praticidade.
+                    </p>
+                </div>
+
+                <!-- Serviço 4 - Editável -->
+                <div class="servico-card">
+                    <div class="servico-card__image">
+                        <img src="https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?w=400&q=80" alt="Avaliação">
+                    </div>
+                    <div class="servico-card__icon">📊</div>
+                    <h3 class="servico-card__title">Avaliação</h3>
+                    <p class="servico-card__description">
+                        Avaliação precisa e detalhada do valor de mercado do seu imóvel.
+                    </p>
+                </div>
+
+                <!-- Serviço 5 - Editável -->
+                <div class="servico-card">
+                    <div class="servico-card__image">
+                        <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80" alt="Financiamento">
+                    </div>
+                    <div class="servico-card__icon">🏦</div>
+                    <h3 class="servico-card__title">Financiamento</h3>
+                    <p class="servico-card__description">
+                        Assessoria completa para aprovação do seu financiamento imobiliário.
+                    </p>
+                </div>
+
+                <!-- Serviço 6 - Editável -->
+                <div class="servico-card">
+                    <div class="servico-card__image">
+                        <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&q=80" alt="Assessoria Jurídica">
+                    </div>
+                    <div class="servico-card__icon">⚖️</div>
+                    <h3 class="servico-card__title">Assessoria Jurídica</h3>
+                    <p class="servico-card__description">
+                        Suporte jurídico especializado para garantir segurança em todas as transações.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SEÇÃO DESTAQUES (IMÓVEIS EM DESTAQUE) -->
+    <!-- ============================================ -->
+    
+
+    <!-- ============================================ -->
+    <!-- SEÇÃO BENEFÍCIOS -->
+    <!-- ============================================ -->
+    
+
+    <!-- ============================================ -->
+    
+    <!-- ============================================ -->
+    
+
+    <!-- ============================================ -->
+    <!-- SEÇÃO FAQ (PERGUNTAS FREQUENTES) -->
+    <!-- ============================================ -->
+    
+
+    <!-- ============================================ -->
+    <!-- SEÇÃO CONTATO -->
+    <!-- ============================================ -->
+    <section class="contato section" id="contato">
+        <div class="container">
+            <!-- TÍTULO DA SEÇÃO - Editável -->
+            <div class="section__header">
+                <span class="section__subtitle">Entre em contato</span>
+                <h2 class="section__title">Fale Conosco</h2>
+                <p class="section__description">Estamos prontos para atender você e realizar seus sonhos</p>
+            </div>
+
+            <div class="contato__container">
+                <!-- INFORMAÇÕES DE CONTATO - Editável -->
+                <div class="contato__info">
+                    <h3 class="contato__info-title">Nossos Canais</h3>
+                    <p class="contato__info-description">
+                        Entre em contato através de qualquer um dos nossos canais. Estamos prontos para atender você!
+                    </p>
+
+                    <!-- LISTA DE CONTATOS - Editável: adicione ou modifique informações -->
+                    <div class="contato__details">
+                        <!-- Telefone - Editável -->
+                        <div class="contato__detail-item">
+                            <div class="detail-icon">📞</div>
+                            <div class="detail-content">
+                                <h4>Telefone</h4>
+                                <p>{{phone_display}}</p>
+                                <p>{{phone_display}}</p>
+                            </div>
+                        </div>
+
+                        <!-- Email - Editável -->
+                        <div class="contato__detail-item">
+                            <div class="detail-icon">📧</div>
+                            <div class="detail-content">
+                                <h4>E-mail</h4>
+                                <p>Atendimento pelo WhatsApp</p>
+                                <p>Atendimento pelo WhatsApp</p>
+                            </div>
+                        </div>
+
+                        <!-- Endereço - Editável -->
+                        <div class="contato__detail-item">
+                            <div class="detail-icon">📍</div>
+                            <div class="detail-content">
+                                <h4>Endereço</h4>
+                                <p>Av. Paulista, 1000 - Sala 501</p>
+                                <p>Bela Vista, São Paulo - SP</p>
+                            </div>
+                        </div>
+
+                        <!-- Horário - Editável -->
+                        <div class="contato__detail-item">
+                            <div class="detail-icon">🕐</div>
+                            <div class="detail-content">
+                                <h4>Horário de Atendimento</h4>
+                                <p>Segunda a Sexta: 9h às 18h</p>
+                                <p>Sábado: 9h às 13h</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Redes Sociais - Editável -->
+                    <div class="contato__social">
+                        <h4>Redes Sociais</h4>
+                        <div class="social-links">
+                            <a href="#" class="social-link" aria-label="Facebook">📘</a>
+                            <a href="#" class="social-link" aria-label="Instagram">📷</a>
+                            <a href="#" class="social-link" aria-label="LinkedIn">💼</a>
+                            <a href="#" class="social-link" aria-label="YouTube">🎥</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- FOOTER -->
+    <!-- ============================================ -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__container">
+                <!-- Coluna 1 - Sobre - Editável -->
+                <div class="footer__column">
+                    <a href="#home" class="footer__logo">
+                        <span class="logo-emoji">🏠</span>
+                        <span class="logo-text">{{business_name}}</span>
+                    </a>
+                    <p class="footer__description">
+                        Sua imobiliária de confiança há mais de 15 anos. Realizando sonhos e fazendo os melhores negócios imobiliários.
+                    </p>
+                    <div class="footer__social">
+                        <a href="#" class="footer__social-link" aria-label="Facebook">📘</a>
+                        <a href="#" class="footer__social-link" aria-label="Instagram">📷</a>
+                        <a href="#" class="footer__social-link" aria-label="LinkedIn">💼</a>
+                        <a href="#" class="footer__social-link" aria-label="YouTube">🎥</a>
+                    </div>
+                </div>
+
+                <!-- Coluna 2 - Links Rápidos - Editável -->
+                <div class="footer__column">
+                    <h3 class="footer__title">Links Rápidos</h3>
+                    <ul class="footer__list">
+                        <li><a href="#sobre" class="footer__link">Sobre Nós</a></li>
+                        <li><a href="#servicos" class="footer__link">Serviços</a></li>
+                        <li></li>
+                        <li></li>
+                        <li><a href="#contato" class="footer__link">Contato</a></li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 3 - Serviços - Editável -->
+                <div class="footer__column">
+                    <h3 class="footer__title">Serviços</h3>
+                    <ul class="footer__list">
+                        <li><a href="#servicos" class="footer__link">Compra de Imóveis</a></li>
+                        <li><a href="#servicos" class="footer__link">Venda de Imóveis</a></li>
+                        <li><a href="#servicos" class="footer__link">Aluguel</a></li>
+                        <li><a href="#servicos" class="footer__link">Avaliação</a></li>
+                        <li><a href="#servicos" class="footer__link">Financiamento</a></li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 4 - Contato - Editável -->
+                <div class="footer__column">
+                    <h3 class="footer__title">Contato</h3>
+                    <ul class="footer__contact">
+                        <li>
+                            <span class="contact-icon">📞</span>
+                            <span>{{phone_display}}</span>
+                        </li>
+                        <li>
+                            <span class="contact-icon">📧</span>
+                            <span>Atendimento pelo WhatsApp</span>
+                        </li>
+                        <li>
+                            <span class="contact-icon">📍</span>
+                            <span>Av. Paulista, 1000 - Sala 501<br>São Paulo - SP</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Copyright - Editável -->
+            <div class="footer__bottom">
+                <p class="footer__copy">
+                    &copy; 2024 {{business_name}}. Todos os direitos reservados.
+                </p>
+                <div class="footer__legal">
+                    <a href="#" class="footer__legal-link">Política de Privacidade</a>
+                    <span class="separator">|</span>
+                    <a href="#" class="footer__legal-link">Termos de Uso</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================ -->
+    <!-- BOTÃO SCROLL TO TOP -->
+    <!-- ============================================ -->
+    <button class="scroll-top" id="scroll-top" aria-label="Voltar ao topo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

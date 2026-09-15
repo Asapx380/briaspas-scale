@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="briaspas-template" content="consultorio-odontologico-01">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{meta_description}}">
+    <title>{{page_title}}</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- =====================================================
+         HEADER - Navegação principal
+         EDITÁVEL: Altere o nome da clínica no logo
+         ===================================================== -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <!-- EDITÁVEL: Nome do negócio/logo -->
+                <a href="#inicio" class="logo">🦷 {{business_name}}</a>
+
+                <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#inicio">Início</a></li>
+                    <li><a href="#sobre">Sobre</a></li>
+                    <li><a href="#servicos">Tratamentos</a></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- =====================================================
+         HERO - Seção principal do topo
+         EDITÁVEL: Título, subtítulo e estatísticas
+         ===================================================== -->
+    <section class="hero" id="inicio">
+        <!-- Imagem de fundo com overlay para criar profundidade -->
+        <div class="hero-background">
+            <img src="{{hero_image_url}}" alt="Consultório odontológico moderno" class="hero-bg-image">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">✨ Referência em odontologia moderna</div>
+                <!-- EDITÁVEL: Título principal -->
+                <h1>{{headline}}</h1>
+                <!-- EDITÁVEL: Subtítulo -->
+                <p class="hero-subtitle">{{subheadline}}</p>
+                <div class="hero-buttons">
+                    <a href="#contato" class="btn btn-primary">Agendar Avaliação</a>
+                    <!-- EDITÁVEL: Link do WhatsApp -->
+                    <a href="{{whatsapp_url}}" class="btn btn-secondary" target="_blank">Falar no WhatsApp</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">+15.000</span>
+                        <span class="stat-label">Pacientes atendidos</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">15+</span>
+                        <span class="stat-label">Anos de experiência</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">5★</span>
+                        <span class="stat-label">Avaliação Google</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <!-- Imagem real do dentista substituindo o placeholder -->
+                <div class="hero-image-container">
+                    <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600&q=80" alt="Dentista sorrindo" class="hero-main-image">
+                    <div class="floating-badge">Avaliação gratuita</div>
+                </div>
+            </div>
+        </div>
+    <div class="briaspas-stock-credit">{{stock_credit_html}}</div></section>
+
+    <!-- =====================================================
+         SOBRE - História e diferenciais da clínica
+         EDITÁVEL: Textos sobre a empresa
+         ===================================================== -->
+    <section class="sobre" id="sobre">
+        <div class="container">
+            <div class="section-header">
+                <h2>Sobre a {{business_name}}</h2>
+                <p>{{about_text}}</p>
+            </div>
+            <div class="sobre-content">
+                <!-- Imagem da equipe odontológica -->
+                <div class="sobre-image">
+                    <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=600&q=80" alt="Equipe odontológica">
+                </div>
+                <div class="sobre-info">
+                    <div class="sobre-text">
+                        <!-- EDITÁVEL: Texto sobre o negócio -->
+                        <p>Desde 2009, a <strong>{{business_name}}</strong> é referência em tratamentos odontológicos na região. Fundada pelo Dr. Ricardo Mendes, nossa clínica nasceu com a missão de democratizar o acesso à odontologia de qualidade, combinando tecnologia de ponta com um atendimento humanizado.</p>
+                        <p>Nossa equipe é formada por especialistas em diversas áreas da odontologia, prontos para cuidar da sua saúde bucal de forma completa. Investimos constantemente em equipamentos modernos e nas melhores técnicas do mercado para proporcionar tratamentos mais rápidos, confortáveis e eficientes.</p>
+                    </div>
+                    <div class="sobre-features">
+                        <div class="feature">
+                            <div class="feature-icon">🔬</div>
+                            <h3>Tecnologia Digital</h3>
+                            <p>Raio-X digital, scanner 3D e planejamento computadorizado</p>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">👨‍⚕️</div>
+                            <h3>Equipe Especializada</h3>
+                            <p>Profissionais com especializações e atualizações constantes</p>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">💚</div>
+                            <h3>Ambiente Acolhedor</h3>
+                            <p>Estrutura confortável para você se sentir em casa</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         GALERIA - Fotos do consultório e tratamentos
+         ===================================================== -->
+    
+
+    <!-- =====================================================
+         SERVIÇOS - Tratamentos oferecidos
+         EDITÁVEL: Cards de serviços/tratamentos
+         ===================================================== -->
+    <section class="servicos" id="servicos">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nossos Tratamentos</h2>
+                <p>Soluções completas para todas as necessidades odontológicas</p>
+            </div>
+            <div class="servicos-grid">
+                <!-- EDITÁVEL: Cards de serviços/produtos -->
+                <!-- Card com imagem de limpeza dental -->
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=400&q=80" alt="Limpeza e Prevenção">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Limpeza e Prevenção</h3>
+                        <p>Profilaxia completa, aplicação de flúor e orientações para manter sua saúde bucal em dia.</p>
+                        <span class="preco">A partir de R$ 150,00</span>
+                    </div>
+                </div>
+                <!-- Card com imagem de clareamento -->
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1598256989800-fe5f95da9787?w=400&q=80" alt="Clareamento Dental">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Clareamento Dental</h3>
+                        <p>Dentes mais brancos em poucas sessões. Clareamento a laser ou caseiro com acompanhamento profissional.</p>
+                        <span class="preco">A partir de R$ 600,00</span>
+                    </div>
+                </div>
+                <!-- Card com imagem de implantes -->
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=400&q=80" alt="Implantes Dentários">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Implantes Dentários</h3>
+                        <p>Reposição de dentes perdidos com implantes de titânio de alta qualidade. Resultado natural e duradouro.</p>
+                        <span class="preco">A partir de R$ 2.500,00</span>
+                    </div>
+                </div>
+                <!-- Card com imagem de ortodontia -->
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400&q=80" alt="Ortodontia">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Ortodontia</h3>
+                        <p>Aparelhos fixos, removíveis e alinhadores invisíveis para um sorriso alinhado e harmonioso.</p>
+                        <span class="preco">A partir de R$ 150/mês</span>
+                    </div>
+                </div>
+                <!-- Cards adicionais mantidos sem imagens para variedade -->
+                <div class="servico-card">
+                    <div class="servico-content">
+                        <div class="servico-icon">💎</div>
+                        <h3>Lentes de Contato Dental</h3>
+                        <p>Facetas ultrafinas para transformar seu sorriso. Correção de cor, forma e tamanho dos dentes.</p>
+                        <span class="preco">A partir de R$ 1.200/dente</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-content">
+                        <div class="servico-icon">🩺</div>
+                        <h3>Tratamento de Canal</h3>
+                        <p>Endodontia moderna e indolor. Salvamos seu dente natural com técnicas minimamente invasivas.</p>
+                        <span class="preco">A partir de R$ 450,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-content">
+                        <div class="servico-icon">👶</div>
+                        <h3>Odontopediatria</h3>
+                        <p>Atendimento especializado para crianças em ambiente lúdico e acolhedor. Cuidando dos sorrisos desde cedo.</p>
+                        <span class="preco">Consulte valores</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-content">
+                        <div class="servico-icon">🦴</div>
+                        <h3>Próteses Dentárias</h3>
+                        <p>Próteses fixas e removíveis de alta qualidade. Devolva sua mastigação e seu sorriso.</p>
+                        <span class="preco">A partir de R$ 800,00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         DESTAQUES - Resultados e casos de sucesso
+         EDITÁVEL: Cards de destaques
+         ===================================================== -->
+    
+
+    <!-- =====================================================
+         BENEFÍCIOS - Vantagens de escolher a clínica
+         ===================================================== -->
+    
+
+    
+    
+
+    <!-- =====================================================
+         FAQ - Perguntas frequentes (acordeão)
+         EDITÁVEL: Perguntas e respostas
+         ===================================================== -->
+    
+
+    <!-- =====================================================
+         CONTATO - Informações de contato
+         EDITÁVEL: Telefone, endereço, horário
+         ===================================================== -->
+    <section class="contato" id="contato">
+        <div class="container">
+            <div class="section-header">
+                <h2>Agende sua Avaliação Gratuita</h2>
+                <p>Dê o primeiro passo para transformar seu sorriso</p>
+            </div>
+            <div class="contato-content">
+                <div class="contato-info">
+                    <!-- EDITÁVEL: Informações de contato -->
+                    <div class="info-item">
+                        <div class="info-icon">📞</div>
+                        <div>
+                            <h4>Telefone</h4>
+                            <p>{{phone_display}}</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📱</div>
+                        <div>
+                            <h4>WhatsApp</h4>
+                            <p>{{phone_display}}</p>
+                            <a href="{{whatsapp_url}}" class="btn btn-whatsapp" target="_blank">Agendar pelo WhatsApp</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📍</div>
+                        <div>
+                            <h4>Endereço</h4>
+                            <!-- EDITÁVEL: Endereço -->
+                            <p>Rua dos Dentistas, 500 - Centro<br>São Paulo - SP, 01234-567</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">🕐</div>
+                        <div>
+                            <h4>Horário de Funcionamento</h4>
+                            <!-- EDITÁVEL: Horário -->
+                            <p>Seg a Sex: 8h às 19h<br>Sábado: 8h às 13h</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contato-mapa">
+                    <!-- Bloco simulando mapa -->
+                    <div class="mapa-placeholder">
+                        <div class="mapa-pin">📍</div>
+                        <p>{{business_name}}</p>
+                        <span>Clique para ver no Google Maps</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         ÁREA RESERVADA PARA AGENTE DE IA
+         Esta seção está preparada para receber o widget de IA
+         ===================================================== -->
+    <!-- Área reservada para agente de IA no futuro -->
+    <div id="ai-agent-container" class="ai-agent-area">
+        <!-- O widget do agente de IA será inserido aqui -->
+    </div>
+
+    <!-- =====================================================
+         FOOTER - Rodapé
+         EDITÁVEL: Nome, copyright e links
+         ===================================================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <!-- EDITÁVEL: Nome do negócio -->
+                <div class="footer-logo">🦷 {{business_name}}</div>
+                <p>Transformando sorrisos com excelência há mais de 15 anos.</p>
+                <div class="footer-links">
+                    <a href="#inicio">Início</a>
+                    <a href="#sobre">Sobre</a>
+                    <a href="#servicos">Tratamentos</a>
+                    <a href="#contato">Contato</a>
+                </div>
+                <div class="footer-social">
+                    <a href="#" aria-label="Instagram">📷</a>
+                    <a href="#" aria-label="Facebook">👍</a>
+                    <a href="#" aria-label="WhatsApp">📱</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <!-- EDITÁVEL: Copyright -->
+                <p>&copy; 2024 {{business_name}}. Todos os direitos reservados.</p>
+                <p>CRO-SP: 12345 | Responsável Técnico: Dr. Ricardo Mendes - CRO-SP: 54321</p>
+                <p><a href="#privacidade">Política de Privacidade</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Política de Privacidade -->
+    <section class="privacidade" id="privacidade">
+        <div class="container">
+            <h3>Política de Privacidade</h3>
+            <p>A {{business_name}} respeita sua privacidade. Os dados coletados são utilizados apenas para agendamentos, prontuários e comunicação com pacientes, conforme exigências do CFO. Não compartilhamos informações pessoais com terceiros sem consentimento.</p>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

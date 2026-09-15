@@ -1,0 +1,34 @@
+{
+  "id": "salao-beleza-01",
+  "version": 1,
+  "name": "Salão de beleza sofisticado",
+  "categories": [
+    "salão de beleza",
+    "cabeleireiro",
+    "barbearia",
+    "manicure"
+  ],
+  "style": [
+    "sofisticado",
+    "editorial",
+    "acolhedor"
+  ],
+  "requiredTokens": [
+    "business_name",
+    "category",
+    "whatsapp_number",
+    "whatsapp_message",
+    "address",
+    "headline",
+    "subheadline",
+    "about_text"
+  ],
+  "optionalSections": {},
+  "imageSlots": [
+    {
+      "token": "hero_image_url",
+      "fallback": "pexels"
+    }
+  ],
+  "tokenizationFamily": "inline-links"
+}

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="briaspas-template" content="contabilidade-01">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- EDITÁVEL: Título da página (aparece na aba do navegador) -->
+    <title>{{page_title}}</title>
+
+    <!-- EDITÁVEL: Descrição para SEO -->
+    <meta name="description" content="{{meta_description}}">
+
+    <!-- EDITÁVEL: Palavras-chave para SEO -->
+    <meta name="keywords" content="contabilidade, abertura de empresa, folha de pagamento, impostos, declaração IR, consultoria fiscal">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ========================================
+         HEADER / NAVEGAÇÃO
+         EDITÁVEL: Logo, nome da empresa, links do menu
+    ======================================== -->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <!-- EDITÁVEL: Logo e nome da empresa -->
+            <a href="#" class="nav__logo">
+                <span class="nav__logo-icon">📊</span>
+                <span class="nav__logo-text">{{business_name}}</span>
+            </a>
+
+            <!-- Menu de navegação -->
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <!-- EDITÁVEL: Itens do menu - adicione ou remova conforme necessário -->
+                    <li class="nav__item">
+                        <a href="#home" class="nav__link active-link">Início</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#about" class="nav__link">Sobre</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#services" class="nav__link">Serviços</a>
+                    </li>
+                    <li class="nav__item">
+                        
+                    </li>
+                    <li class="nav__item">
+                        
+                    </li>
+                    <li class="nav__item">
+                        
+                    </li>
+                    <li class="nav__item">
+                        <a href="#contact" class="nav__link">Contato</a>
+                    </li>
+                </ul>
+
+                <!-- Botão de fechar menu mobile -->
+                <div class="nav__close" id="nav-close">
+                    <i class="close-icon">✕</i>
+                </div>
+            </div>
+
+            <!-- Botão toggle menu mobile -->
+            <div class="nav__toggle" id="nav-toggle">
+                <i class="toggle-icon">☰</i>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ========================================
+         SEÇÃO HERO (PRINCIPAL)
+         EDITÁVEL: Título, subtítulo, texto do botão
+    ======================================== -->
+    <section class="hero section" id="home">
+        <div class="hero__container container">
+            <div class="hero__content">
+                <!-- EDITÁVEL: Título principal -->
+                <h1 class="hero__title">{{headline}}</h1>
+
+                <!-- EDITÁVEL: Subtítulo/descrição -->
+                <p class="hero__description">{{subheadline}}</p>
+
+                <!-- EDITÁVEL: Botões de chamada para ação -->
+                <div class="hero__buttons">
+                    <a href="#contact" class="btn btn-primary">
+                        Solicitar Orçamento
+                    </a>
+                    <a href="#services" class="btn btn-secondary">
+                        Nossos Serviços
+                    </a>
+                </div>
+
+                <!-- EDITÁVEL: Estatísticas/números -->
+                <div class="hero__stats">
+                    <div class="stat">
+                        <h3 class="stat__number">15+</h3>
+                        <p class="stat__text">Anos de Experiência</p>
+                    </div>
+                    <div class="stat">
+                        <h3 class="stat__number">500+</h3>
+                        <p class="stat__text">Empresas Atendidas</p>
+                    </div>
+                    <div class="stat">
+                        <h3 class="stat__number">98%</h3>
+                        <p class="stat__text">Satisfação</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EDITÁVEL: Imagem ilustrativa (pode substituir por uma imagem real) -->
+            <div class="hero__image">
+                <div class="hero__image-circle">
+                    <img src="{{hero_image_url}}" alt="Contabilidade Profissional">
+                </div>
+            </div>
+        </div>
+    <div class="briaspas-stock-credit">{{stock_credit_html}}</div><a class="btn btn-primary briaspas-whatsapp" href="{{whatsapp_url}}" target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a></section>
+
+    <!-- ========================================
+         SEÇÃO SOBRE NÓS
+         EDITÁVEL: Texto sobre a empresa, missão, valores
+    ======================================== -->
+    <section class="about section" id="about">
+        <div class="container">
+            <!-- EDITÁVEL: Título da seção -->
+            <div class="section__header">
+                <span class="section__subtitle">Quem Somos</span>
+                <h2 class="section__title">Sobre a {{business_name}} Contabilidade</h2>
+            </div>
+
+            <div class="about__container">
+                <!-- EDITÁVEL: Imagem sobre (pode substituir por imagem real) -->
+                <div class="about__image">
+                    <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80" alt="Escritório de Contabilidade">
+                </div>
+
+                <div class="about__content">
+                    <!-- EDITÁVEL: Texto sobre a empresa -->
+                    <p class="about__description">{{about_text}}</p>
+
+                    <p class="about__description">
+                        Com mais de 15 anos de experiência no mercado, nossa equipe de
+                        profissionais qualificados está pronta para atender todas as
+                        necessidades contábeis, fiscais e tributárias do seu negócio.
+                    </p>
+
+                    <!-- EDITÁVEL: Diferenciais -->
+                    <div class="about__features">
+                        <div class="feature">
+                            <span class="feature__icon">✓</span>
+                            <div class="feature__content">
+                                <h3 class="feature__title">Equipe Especializada</h3>
+                                <p class="feature__text">Profissionais certificados e em constante atualização</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <span class="feature__icon">✓</span>
+                            <div class="feature__content">
+                                <h3 class="feature__title">Atendimento Personalizado</h3>
+                                <p class="feature__text">Soluções adequadas à realidade do seu negócio</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <span class="feature__icon">✓</span>
+                            <div class="feature__content">
+                                <h3 class="feature__title">Tecnologia Avançada</h3>
+                                <p class="feature__text">Sistemas modernos para maior eficiência</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EDITÁVEL: Botão de ação -->
+                    <a href="#contact" class="btn btn-primary">Fale Conosco</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         GALERIA DE IMAGENS
+         EDITÁVEL: Galeria de fotos do escritório
+    ======================================== -->
+    
+
+    <!-- ========================================
+         SEÇÃO SERVIÇOS
+         EDITÁVEL: Lista de serviços oferecidos
+    ======================================== -->
+    <section class="services section" id="services">
+        <div class="container">
+            <!-- EDITÁVEL: Título da seção -->
+            <div class="section__header">
+                <span class="section__subtitle">O que Fazemos</span>
+                <h2 class="section__title">Nossos Serviços</h2>
+                <p class="section__description">
+                    Oferecemos uma gama completa de serviços contábeis para
+                    atender todas as necessidades da sua empresa
+                </p>
+            </div>
+
+            <!-- EDITÁVEL: Cards de serviços - adicione ou remova conforme necessário -->
+            <div class="services__container">
+
+                <!-- Serviço 1 -->
+                <div class="service__card">
+                    <div class="service__image">
+                        <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&q=80" alt="Abertura de Empresa">
+                    </div>
+                    <div class="service__icon">🏢</div>
+                    <h3 class="service__title">Abertura de Empresa</h3>
+                    <p class="service__description">
+                        Assessoria completa para abertura de empresas, desde a escolha
+                        do tipo societário até o registro nos órgãos competentes.
+                    </p>
+                    <ul class="service__list">
+                        <li>Registro na Junta Comercial</li>
+                        <li>Obtenção de CNPJ</li>
+                        <li>Alvarás e Licenças</li>
+                        <li>Enquadramento tributário</li>
+                    </ul>
+                </div>
+
+                <!-- Serviço 2 -->
+                <div class="service__card">
+                    <div class="service__image">
+                        <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80" alt="Contabilidade Mensal">
+                    </div>
+                    <div class="service__icon">📈</div>
+                    <h3 class="service__title">Contabilidade Mensal</h3>
+                    <p class="service__description">
+                        Gestão contábil completa e organizada, garantindo conformidade
+                        e informações precisas para tomada de decisão.
+                    </p>
+                    <ul class="service__list">
+                        <li>Escrituração contábil</li>
+                        <li>Balanços e balancetes</li>
+                        <li>Demonstrações financeiras</li>
+                        <li>Relatórios gerenciais</li>
+                    </ul>
+                </div>
+
+                <!-- Serviço 3 -->
+                <div class="service__card">
+                    <div class="service__image">
+                        <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?w=400&q=80" alt="Folha de Pagamento">
+                    </div>
+                    <div class="service__icon">👥</div>
+                    <h3 class="service__title">Folha de Pagamento</h3>
+                    <p class="service__description">
+                        Processamento completo da folha de pagamento e gestão de
+                        obrigações trabalhistas e previdenciárias.
+                    </p>
+                    <ul class="service__list">
+                        <li>Cálculo de salários e encargos</li>
+                        <li>Férias e 13º salário</li>
+                        <li>Admissão e rescisão</li>
+                        <li>eSocial e FGTS</li>
+                    </ul>
+                </div>
+
+                <!-- Serviço 4 -->
+                <div class="service__card">
+                    <div class="service__image">
+                        <img src="https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=400&q=80" alt="Gestão de Impostos">
+                    </div>
+                    <div class="service__icon">💰</div>
+                    <h3 class="service__title">Gestão de Impostos</h3>
+                    <p class="service__description">
+                        Planejamento e apuração de impostos com foco na redução
+                        legal da carga tributária da sua empresa.
+                    </p>
+                    <ul class="service__list">
+                        <li>Apuração de tributos</li>
+                        <li>Planejamento tributário</li>
+                        <li>Recuperação de créditos</li>
+                        <li>Obrigações acessórias</li>
+                    </ul>
+                </div>
+
+                <!-- Serviço 5 -->
+                <div class="service__card">
+                    <div class="service__image">
+                        <img src="https://images.unsplash.com/photo-1586486855514-8c633cc6fd38?w=400&q=80" alt="Declaração IR">
+                    </div>
+                    <div class="service__icon">📋</div>
+                    <h3 class="service__title">Declaração IR</h3>
+                    <p class="service__description">
+                        Elaboração e envio da declaração de imposto de renda para
+                        pessoas físicas e jurídicas com total segurança.
+                    </p>
+                    <ul class="service__list">
+                        <li>IRPF (Pessoa Física)</li>
+                        <li>IRPJ (Pessoa Jurídica)</li>
+                        <li>Análise de deduções</li>
+                        <li>Retificações</li>
+                    </ul>
+                </div>
+
+                <!-- Serviço 6 -->
+                <div class="service__card">
+                    <div class="service__image">
+                        <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=400&q=80" alt="Consultoria Fiscal">
+                    </div>
+                    <div class="service__icon">💡</div>
+                    <h3 class="service__title">Consultoria Fiscal</h3>
+                    <p class="service__description">
+                        Orientação especializada em questões fiscais e tributárias
+                        para otimização e conformidade legal.
+                    </p>
+                    <ul class="service__list">
+                        <li>Análise fiscal</li>
+                        <li>Planejamento estratégico</li>
+                        <li>Adequação à legislação</li>
+                        <li>Suporte em fiscalizações</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SEÇÃO DESTAQUES/DIFERENCIAIS
+         EDITÁVEL: Principais diferenciais da empresa
+    ======================================== -->
+    
+
+    <!-- ========================================
+         SEÇÃO BENEFÍCIOS
+         EDITÁVEL: Benefícios de contratar os serviços
+    ======================================== -->
+    
+
+    
+    
+
+    <!-- ========================================
+         SEÇÃO FAQ (PERGUNTAS FREQUENTES)
+         EDITÁVEL: Perguntas e respostas comuns
+    ======================================== -->
+    
+
+    <!-- ========================================
+         SEÇÃO CONTATO
+         EDITÁVEL: Informações de contato e formulário
+    ======================================== -->
+    <section class="contact section" id="contact">
+        <div class="container">
+            <!-- EDITÁVEL: Título da seção -->
+            <div class="section__header">
+                <span class="section__subtitle">Fale Conosco</span>
+                <h2 class="section__title">Entre em Contato</h2>
+                <p class="section__description">
+                    Estamos prontos para atender você e esclarecer todas as suas dúvidas
+                </p>
+            </div>
+
+            <div class="contact__container">
+
+                <!-- EDITÁVEL: Informações de contato -->
+                <div class="contact__info">
+                    <h3 class="contact__info-title">Informações de Contato</h3>
+
+                    <div class="contact__item">
+                        <div class="contact__item-icon">📱</div>
+                        <div class="contact__item-content">
+                            <h4 class="contact__item-title">Telefone/WhatsApp</h4>
+                            <p class="contact__item-text">{{phone_display}}</p>
+                        </div>
+                    </div>
+
+                    <div class="contact__item">
+                        <div class="contact__item-icon">✉️</div>
+                        <div class="contact__item-content">
+                            <h4 class="contact__item-title">E-mail</h4>
+                            <p class="contact__item-text">Atendimento pelo WhatsApp</p>
+                        </div>
+                    </div>
+
+                    <div class="contact__item">
+                        <div class="contact__item-icon">📍</div>
+                        <div class="contact__item-content">
+                            <h4 class="contact__item-title">Endereço</h4>
+                            <p class="contact__item-text">
+                                Av. Paulista, 1000 - Sala 501<br>
+                                São Paulo - SP, 01310-100
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="contact__item">
+                        <div class="contact__item-icon">🕐</div>
+                        <div class="contact__item-content">
+                            <h4 class="contact__item-title">Horário de Atendimento</h4>
+                            <p class="contact__item-text">
+                                Segunda a Sexta: 8h às 18h<br>
+                                Sábado: 8h às 12h
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         FOOTER (RODAPÉ)
+         EDITÁVEL: Informações do rodapé
+    ======================================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__container">
+
+                <!-- EDITÁVEL: Informações da empresa -->
+                <div class="footer__content">
+                    <div class="footer__logo">
+                        <span class="footer__logo-icon">📊</span>
+                        <span class="footer__logo-text">{{business_name}}</span>
+                    </div>
+                    <p class="footer__description">
+                        Soluções contábeis completas para o sucesso do seu negócio.
+                        Profissionalismo, confiança e atendimento personalizado.
+                    </p>
+                </div>
+
+                <!-- EDITÁVEL: Links rápidos -->
+                <div class="footer__content">
+                    <h3 class="footer__title">Links Rápidos</h3>
+                    <ul class="footer__links">
+                        <li><a href="#home" class="footer__link">Início</a></li>
+                        <li><a href="#about" class="footer__link">Sobre</a></li>
+                        <li><a href="#services" class="footer__link">Serviços</a></li>
+                        <li><a href="#contact" class="footer__link">Contato</a></li>
+                    </ul>
+                </div>
+
+                <!-- EDITÁVEL: Serviços -->
+                <div class="footer__content">
+                    <h3 class="footer__title">Serviços</h3>
+                    <ul class="footer__links">
+                        <li><a href="#services" class="footer__link">Abertura de Empresa</a></li>
+                        <li><a href="#services" class="footer__link">Contabilidade Mensal</a></li>
+                        <li><a href="#services" class="footer__link">Folha de Pagamento</a></li>
+                        <li><a href="#services" class="footer__link">Consultoria Fiscal</a></li>
+                    </ul>
+                </div>
+
+                <!-- EDITÁVEL: Contato -->
+                <div class="footer__content">
+                    <h3 class="footer__title">Contato</h3>
+                    <ul class="footer__links">
+                        <li class="footer__info">📱 {{phone_display}}</li>
+                        <li class="footer__info">✉️ Atendimento pelo WhatsApp</li>
+                        <li class="footer__info">📍 Av. Paulista, 1000 - São Paulo/SP</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- EDITÁVEL: Direitos autorais -->
+            <div class="footer__bottom">
+                <p class="footer__copyright">
+                    &copy; 2024 {{business_name}} Contabilidade. Todos os direitos reservados.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========================================
+         BOTÃO VOLTAR AO TOPO
+    ======================================== -->
+    <a href="#" class="scroll-top" id="scroll-top">
+        <span class="scroll-top__icon">↑</span>
+    </a>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

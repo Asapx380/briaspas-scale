@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="briaspas-template" content="clinica-estetica-01">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{meta_description}}">
+    <title>{{page_title}}</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ========== HEADER ========== -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <!-- EDITÁVEL: Nome do negócio/logo -->
+                <a href="#inicio" class="logo">✨ {{business_name}}</a>
+
+                <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#inicio">Início</a></li>
+                    <li><a href="#sobre">Sobre</a></li>
+                    <li><a href="#servicos">Tratamentos</a></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ========== HERO ========== -->
+    <!-- Hero com imagem de fundo em tela cheia -->
+    <section class="hero" id="inicio">
+        <!-- Imagem de fundo do hero -->
+        <div class="hero-background">
+            <!-- EDITÁVEL: Troque a URL da imagem pela sua própria -->
+            <img src="{{hero_image_url}}" alt="Tratamento estético facial" class="hero-bg-image">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">💎 Referência em estética avançada</div>
+                <!-- EDITÁVEL: Título principal -->
+                <h1>{{headline}}</h1>
+                <!-- EDITÁVEL: Subtítulo -->
+                <p class="hero-subtitle">{{subheadline}}</p>
+                <div class="hero-buttons">
+                    <a href="#contato" class="btn btn-primary">Agendar Avaliação Gratuita</a>
+                    <!-- EDITÁVEL: Link do WhatsApp -->
+                    <a href="{{whatsapp_url}}" class="btn btn-secondary" target="_blank">Falar no WhatsApp</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">+8.000</span>
+                        <span class="stat-label">Clientes satisfeitas</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">12+</span>
+                        <span class="stat-label">Anos de experiência</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">98%</span>
+                        <span class="stat-label">Taxa de satisfação</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <!-- Imagem circular em destaque -->
+                <div class="hero-image-container">
+                    <img src="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=600&q=80" alt="Profissional realizando tratamento facial" class="hero-main-image">
+                    <div class="floating-badge">Avaliação gratuita</div>
+                </div>
+            </div>
+        </div>
+    <div class="briaspas-stock-credit">{{stock_credit_html}}</div></section>
+
+    <!-- ========== SOBRE ========== -->
+    <!-- Seção sobre com imagem da clínica -->
+    <section class="sobre" id="sobre">
+        <div class="container">
+            <div class="section-header">
+                <h2>Sobre a {{business_name}}</h2>
+                <p>{{about_text}}</p>
+            </div>
+            <div class="sobre-content">
+                <!-- Imagem da clínica/profissional -->
+                <div class="sobre-image">
+                    <!-- EDITÁVEL: Imagem do estabelecimento ou equipe -->
+                    <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&q=80" alt="Ambiente da clínica de estética">
+                </div>
+                <div class="sobre-info">
+                    <div class="sobre-text">
+                        <!-- EDITÁVEL: Texto sobre o negócio -->
+                        <p>Fundada em 2012, a <strong>{{business_name}}</strong> nasceu do compromisso de oferecer tratamentos estéticos de alta qualidade com atendimento humanizado e personalizado. Nossa fundadora, especialista em dermatofuncional, reuniu uma equipe de profissionais qualificados para transformar a autoestima de milhares de clientes.</p>
+                        <p>Contamos com equipamentos de última geração e protocolos desenvolvidos especialmente para cada tipo de pele e necessidade. Acreditamos que beleza é bem-estar, e trabalhamos para que você se sinta bem consigo mesma todos os dias.</p>
+                    </div>
+                    <div class="sobre-features">
+                    <div class="feature">
+                        <div class="feature-icon">🔬</div>
+                        <h3>Tecnologia Avançada</h3>
+                        <p>Equipamentos importados de última geração</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">👩‍⚕️</div>
+                        <h3>Equipe Especializada</h3>
+                        <p>Profissionais com formação em estética avançada</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">💜</div>
+                        <h3>Atendimento Humanizado</h3>
+                        <p>Protocolos personalizados para cada cliente</p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== GALERIA ========== -->
+    <!-- Galeria de fotos do ambiente e tratamentos -->
+    
+
+    <!-- ========== SERVIÇOS / TRATAMENTOS ========== -->
+    <section class="servicos" id="servicos">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nossos Tratamentos</h2>
+                <p>Soluções completas para rosto, corpo e bem-estar</p>
+            </div>
+            <div class="servicos-grid">
+                <!-- EDITÁVEL: Cards de serviços/produtos com imagens -->
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&q=80" alt="Limpeza de pele">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Limpeza de Pele Profunda</h3>
+                        <p>Limpeza profissional com extração, peeling e máscara revitalizante. Pele renovada e luminosa.</p>
+                        <span class="preco">A partir de R$ 150,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&q=80" alt="Aplicação de toxina botulínica">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Toxina Botulínica</h3>
+                        <p>Tratamento para rugas e linhas de expressão com resultados naturais. Procedimento rápido e seguro.</p>
+                        <span class="preco">A partir de R$ 890,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400&q=80" alt="Preenchimento facial">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Preenchimento Facial</h3>
+                        <p>Ácido hialurônico para correção de sulcos, aumento labial e harmonização facial completa.</p>
+                        <span class="preco">A partir de R$ 1.200,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=400&q=80" alt="Tratamento corporal">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Tratamentos Corporais</h3>
+                        <p>Radiofrequência, criolipólise e drenagem linfática para modelagem corporal e redução de medidas.</p>
+                        <span class="preco">A partir de R$ 180,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=400&q=80" alt="Microagulhamento facial">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Microagulhamento</h3>
+                        <p>Estimula a produção de colágeno para tratar cicatrizes, rugas e melasma. Resultados progressivos.</p>
+                        <span class="preco">A partir de R$ 350,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&q=80" alt="Peeling químico">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Peeling Químico</h3>
+                        <p>Renovação celular para manchas, acne e rejuvenescimento. Diversos tipos para cada necessidade.</p>
+                        <span class="preco">A partir de R$ 250,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1577511426430-9c5f7b06e0a6?w=400&q=80" alt="Tratamento com laser">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Laser e LED</h3>
+                        <p>Tratamentos com luz para rejuvenescimento, remoção de manchas e estímulo de colágeno.</p>
+                        <span class="preco">A partir de R$ 280,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400&q=80" alt="Produtos de skincare">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Skincare Personalizado</h3>
+                        <p>Protocolo de cuidados diários elaborado especialmente para seu tipo de pele.</p>
+                        <span class="preco">Consulte valores</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== DESTAQUES / RESULTADOS ========== -->
+    
+
+    <!-- ========== BENEFÍCIOS ========== -->
+    
+
+    
+    
+
+    <!-- ========== FAQ ========== -->
+    
+
+    <!-- ========== CONTATO ========== -->
+    <section class="contato" id="contato">
+        <div class="container">
+            <div class="section-header">
+                <h2>Agende sua Avaliação</h2>
+                <p>Entre em contato e dê o primeiro passo para sua transformação</p>
+            </div>
+            <div class="contato-content">
+                <div class="contato-info">
+                    <!-- EDITÁVEL: Informações de contato -->
+                    <div class="info-item">
+                        <div class="info-icon">📞</div>
+                        <div>
+                            <h4>Telefone</h4>
+                            <p>{{phone_display}}</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📱</div>
+                        <div>
+                            <h4>WhatsApp</h4>
+                            <p>{{phone_display}}</p>
+                            <a href="{{whatsapp_url}}" class="btn btn-whatsapp" target="_blank">Agendar pelo WhatsApp</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📍</div>
+                        <div>
+                            <h4>Endereço</h4>
+                            <!-- EDITÁVEL: Endereço -->
+                            <p>Av. Paulista, 1000 - Sala 501<br>Bela Vista, São Paulo - SP, 01310-100</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">🕐</div>
+                        <div>
+                            <h4>Horário de Funcionamento</h4>
+                            <!-- EDITÁVEL: Horário -->
+                            <p>Seg a Sex: 9h às 20h<br>Sábado: 9h às 17h</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contato-mapa">
+                    <!-- Bloco simulando mapa -->
+                    <div class="mapa-placeholder">
+                        <div class="mapa-pin">📍</div>
+                        <p>{{business_name}}</p>
+                        <span>Clique para ver no Google Maps</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== ÁREA RESERVADA PARA AGENTE DE IA ========== -->
+    <!-- Área reservada para agente de IA no futuro -->
+    <div id="ai-agent-container" class="ai-agent-area">
+        <!-- O widget do agente de IA será inserido aqui -->
+    </div>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <!-- EDITÁVEL: Nome do negócio -->
+                <div class="footer-logo">✨ {{business_name}}</div>
+                <p>Realçando sua beleza natural há mais de 12 anos.</p>
+                <div class="footer-links">
+                    <a href="#inicio">Início</a>
+                    <a href="#sobre">Sobre</a>
+                    <a href="#servicos">Tratamentos</a>
+                    <a href="#contato">Contato</a>
+                </div>
+                <div class="footer-social">
+                    <a href="#" aria-label="Instagram">📷</a>
+                    <a href="#" aria-label="Facebook">👍</a>
+                    <a href="#" aria-label="WhatsApp">📱</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <!-- EDITÁVEL: Copyright -->
+                <p>&copy; 2024 {{business_name}}. Todos os direitos reservados.</p>
+                <p><a href="#privacidade">Política de Privacidade</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Política de Privacidade (texto simples no rodapé) -->
+    <section class="privacidade" id="privacidade">
+        <div class="container">
+            <h3>Política de Privacidade</h3>
+            <p>A {{business_name}} respeita sua privacidade. Os dados coletados são utilizados apenas para agendamentos e comunicação com clientes. Não compartilhamos informações pessoais com terceiros sem consentimento. Fotos de resultados são utilizadas apenas com autorização expressa do cliente.</p>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

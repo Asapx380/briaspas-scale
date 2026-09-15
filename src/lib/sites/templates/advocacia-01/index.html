@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="briaspas-template" content="advocacia-01">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- EDITÁVEL: Título da página que aparece na aba do navegador -->
+    <title>{{page_title}}</title>
+
+    <!-- EDITÁVEL: Descrição para SEO e redes sociais -->
+    <meta name="description" content="{{meta_description}}">
+
+    <!-- EDITÁVEL: Palavras-chave para SEO -->
+    <meta name="keywords" content="advogado, advocacia, direito civil, direito trabalhista, direito empresarial, direito previdenciário, direito de família, direito do consumidor">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ============================================ -->
+    <!-- HEADER / NAVEGAÇÃO -->
+    <!-- EDITÁVEL: Menu de navegação principal -->
+    <!-- ============================================ -->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <!-- EDITÁVEL: Logo e nome do escritório -->
+            <a href="#home" class="nav__logo">
+                <span class="logo-emoji">⚖️</span>
+                <span class="logo-text">{{business_name}}</span>
+            </a>
+
+            <!-- Menu de navegação -->
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <!-- EDITÁVEL: Itens do menu - adicione ou remova conforme necessário -->
+                    <li class="nav__item">
+                        <a href="#home" class="nav__link active-link">Início</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#sobre" class="nav__link">Sobre</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#servicos" class="nav__link">Áreas de Atuação</a>
+                    </li>
+                    <li class="nav__item">
+                        
+                    </li>
+                    <li class="nav__item">
+                        
+                    </li>
+                    <li class="nav__item">
+                        
+                    </li>
+                    <li class="nav__item">
+                        <a href="#contato" class="nav__link nav__cta">Contato</a>
+                    </li>
+                </ul>
+
+                <!-- Botão fechar menu mobile -->
+                <div class="nav__close" id="nav-close">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+
+            <!-- Botão toggle menu mobile -->
+            <div class="nav__toggle" id="nav-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ============================================ -->
+    <!-- SEÇÃO HERO -->
+    <!-- EDITÁVEL: Primeira seção com chamada principal -->
+    <!-- ============================================ -->
+    <section class="hero section" id="home">
+        <div class="hero__overlay"></div>
+        <div class="hero__container container">
+            <div class="hero__content">
+                <!-- EDITÁVEL: Título principal da página -->
+                <h1 class="hero__title">{{headline}}</h1>
+
+                <!-- EDITÁVEL: Subtítulo/descrição -->
+                <p class="hero__description">{{subheadline}}</p>
+
+                <!-- EDITÁVEL: Botões de ação -->
+                <div class="hero__buttons">
+                    <a href="#contato" class="button button__primary">
+                        Agende sua Consulta
+                    </a>
+                    <a href="#servicos" class="button button__secondary">
+                        Nossas Áreas de Atuação
+                    </a>
+                </div>
+
+                <!-- EDITÁVEL: Estatísticas/números -->
+                <div class="hero__stats">
+                    <div class="stat__item">
+                        <h3 class="stat__number">20+</h3>
+                        <p class="stat__text">Anos de Experiência</p>
+                    </div>
+                    <div class="stat__item">
+                        <h3 class="stat__number">5000+</h3>
+                        <p class="stat__text">Casos Resolvidos</p>
+                    </div>
+                    <div class="stat__item">
+                        <h3 class="stat__number">98%</h3>
+                        <p class="stat__text">Taxa de Sucesso</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EDITÁVEL: Imagem ilustrativa -->
+            <div class="hero__image">
+                <div class="hero__image-circle">
+                    <img src="{{hero_image_url}}" alt="Advogado Profissional">
+                </div>
+            </div>
+        </div>
+    <div class="briaspas-stock-credit">{{stock_credit_html}}</div><a class="btn btn-primary briaspas-whatsapp" href="{{whatsapp_url}}" target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a></section>
+
+    <!-- ============================================ -->
+    <!-- SEÇÃO SOBRE -->
+    <!-- EDITÁVEL: Informações sobre o escritório -->
+    <!-- ============================================ -->
+    <section class="sobre section" id="sobre">
+        <div class="container">
+            <!-- EDITÁVEL: Título da seção -->
+            <div class="section__header">
+                <h2 class="section__title">Sobre o Escritório</h2>
+                <p class="section__subtitle">{{about_text}}</p>
+            </div>
+
+            <div class="sobre__container">
+                <div class="sobre__content">
+                    <!-- EDITÁVEL: Texto sobre o escritório -->
+                    <p class="sobre__text">
+                        Fundado em 2003, o escritório <strong>{{business_name}}</strong> nasceu com o propósito de oferecer serviços jurídicos de excelência, aliando conhecimento técnico, experiência prática e atendimento humanizado.
+                    </p>
+
+                    <p class="sobre__text">
+                        Nossa equipe é formada por advogados especializados nas mais diversas áreas do Direito, prontos para atender desde casos individuais até grandes demandas corporativas. Atuamos com ética, transparência e dedicação total aos interesses de nossos clientes.
+                    </p>
+
+                    <p class="sobre__text">
+                        Acreditamos que cada caso é único e merece atenção personalizada. Por isso, desenvolvemos estratégias jurídicas sob medida, sempre buscando as melhores soluções e resultados efetivos.
+                    </p>
+
+                    <!-- EDITÁVEL: Diferenciais do escritório -->
+                    <div class="sobre__features">
+                        <div class="feature__item">
+                            <div class="feature__icon">✓</div>
+                            <div class="feature__content">
+                                <h4>Equipe Especializada</h4>
+                                <p>Advogados com expertise em diversas áreas do Direito</p>
+                            </div>
+                        </div>
+
+                        <div class="feature__item">
+                            <div class="feature__icon">✓</div>
+                            <div class="feature__content">
+                                <h4>Atendimento Personalizado</h4>
+                                <p>Cada cliente recebe atenção exclusiva e dedicada</p>
+                            </div>
+                        </div>
+
+                        <div class="feature__item">
+                            <div class="feature__icon">✓</div>
+                            <div class="feature__content">
+                                <h4>Tecnologia Jurídica</h4>
+                                <p>Ferramentas modernas para maior eficiência</p>
+                            </div>
+                        </div>
+
+                        <div class="feature__item">
+                            <div class="feature__icon">✓</div>
+                            <div class="feature__content">
+                                <h4>Ética e Transparência</h4>
+                                <p>Conduta profissional irrepreensível em todas as atuações</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EDITÁVEL: Imagem da equipe -->
+                <div class="sobre__image">
+                    <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&q=80" alt="Equipe Jurídica">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SEÇÃO GALERIA -->
+    <!-- EDITÁVEL: Galeria de imagens do escritório -->
+    <!-- ============================================ -->
+    
+
+    <!-- ============================================ -->
+    <!-- SEÇÃO SERVIÇOS / ÁREAS DE ATUAÇÃO -->
+    <!-- EDITÁVEL: Principais serviços oferecidos -->
+    <!-- ============================================ -->
+    <section class="servicos section" id="servicos">
+        <div class="container">
+            <!-- EDITÁVEL: Título da seção -->
+            <div class="section__header">
+                <h2 class="section__title">Áreas de Atuação</h2>
+                <p class="section__subtitle">Soluções Jurídicas Completas para Você e Sua Empresa</p>
+            </div>
+
+            <!-- EDITÁVEL: Cards de serviços - adicione ou remova conforme necessário -->
+            <div class="servicos__container">
+                <!-- Serviço 1 -->
+                <div class="servico__card" data-aos="fade-up">
+                    <div class="servico__image">
+                        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80" alt="Direito Civil">
+                    </div>
+                    <h3 class="servico__title">Direito Civil</h3>
+                    <p class="servico__description">
+                        Contratos, indenizações, responsabilidade civil, questões imobiliárias e sucessões. Proteção completa dos seus direitos patrimoniais.
+                    </p>
+                    <ul class="servico__list">
+                        <li>Contratos e Negociações</li>
+                        <li>Indenizações e Danos</li>
+                        <li>Direito Imobiliário</li>
+                        <li>Inventários e Sucessões</li>
+                    </ul>
+                </div>
+
+                <!-- Serviço 2 -->
+                <div class="servico__card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="servico__image">
+                        <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&q=80" alt="Direito Trabalhista">
+                    </div>
+                    <h3 class="servico__title">Direito Trabalhista</h3>
+                    <p class="servico__description">
+                        Defesa de direitos trabalhistas, ações judiciais, rescisões contratuais e assessoria para empregados e empregadores.
+                    </p>
+                    <ul class="servico__list">
+                        <li>Ações Trabalhistas</li>
+                        <li>Rescisões e Verbas</li>
+                        <li>Assédio Moral/Sexual</li>
+                        <li>Consultoria CLT</li>
+                    </ul>
+                </div>
+
+                <!-- Serviço 3 -->
+                <div class="servico__card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="servico__image">
+                        <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=400&q=80" alt="Direito Empresarial">
+                    </div>
+                    <h3 class="servico__title">Direito Empresarial</h3>
+                    <p class="servico__description">
+                        Consultoria jurídica completa para empresas, contratos comerciais, recuperação judicial e planejamento societário.
+                    </p>
+                    <ul class="servico__list">
+                        <li>Constituição de Empresas</li>
+                        <li>Contratos Comerciais</li>
+                        <li>Recuperação Judicial</li>
+                        <li>Compliance Empresarial</li>
+                    </ul>
+                </div>
+
+                <!-- Serviço 4 -->
+                <div class="servico__card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="servico__image">
+                        <img src="https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?w=400&q=80" alt="Direito de Família">
+                    </div>
+                    <h3 class="servico__title">Direito de Família</h3>
+                    <p class="servico__description">
+                        Divórcios, guarda de filhos, pensão alimentícia, partilha de bens e adoção com sensibilidade e profissionalismo.
+                    </p>
+                    <ul class="servico__list">
+                        <li>Divórcios e Separações</li>
+                        <li>Guarda e Pensão</li>
+                        <li>Partilha de Bens</li>
+                        <li>Adoção e Tutela</li>
+                    </ul>
+                </div>
+
+                <!-- Serviço 5 -->
+                <div class="servico__card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="servico__image">
+                        <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80" alt="Direito Imobiliário">
+                    </div>
+                    <h3 class="servico__title">Direito Imobiliário</h3>
+                    <p class="servico__description">
+                        Compra, venda, locação, usucapião e regularização de imóveis com total segurança jurídica.
+                    </p>
+                    <ul class="servico__list">
+                        <li>Contratos de Compra e Venda</li>
+                        <li>Locações e Despejo</li>
+                        <li>Usucapião</li>
+                        <li>Regularização de Imóveis</li>
+                    </ul>
+                </div>
+
+                <!-- Serviço 6 -->
+                <div class="servico__card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="servico__image">
+                        <img src="https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=400&q=80" alt="Direito Criminal">
+                    </div>
+                    <h3 class="servico__title">Direito Criminal</h3>
+                    <p class="servico__description">
+                        Defesa criminal, habeas corpus, recursos e acompanhamento em inquéritos policiais.
+                    </p>
+                    <ul class="servico__list">
+                        <li>Defesa Criminal</li>
+                        <li>Habeas Corpus</li>
+                        <li>Recursos Criminais</li>
+                        <li>Inquéritos Policiais</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- EDITÁVEL: Chamada para ação -->
+            <div class="servicos__cta">
+                <p>Não encontrou a área que procura?</p>
+                <a href="#contato" class="button button__primary">Entre em Contato</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SEÇÃO DESTAQUES / CASOS DE SUCESSO -->
+    <!-- EDITÁVEL: Principais conquistas e diferenciais -->
+    <!-- ============================================ -->
+    
+
+    <!-- ============================================ -->
+    <!-- SEÇÃO BENEFÍCIOS -->
+    <!-- EDITÁVEL: Por que escolher este escritório -->
+    <!-- ============================================ -->
+    
+
+    <!-- ============================================ -->
+    
+    <!-- EDITÁVEL: Avaliações de clientes -->
+    <!-- ============================================ -->
+    
+
+    <!-- ============================================ -->
+    <!-- SEÇÃO FAQ -->
+    <!-- EDITÁVEL: Perguntas frequentes -->
+    <!-- ============================================ -->
+    
+
+    <!-- ============================================ -->
+    <!-- SEÇÃO CONTATO -->
+    <!-- EDITÁVEL: Formulário e informações de contato -->
+    <!-- ============================================ -->
+    <section class="contato section" id="contato">
+        <div class="container">
+            <!-- EDITÁVEL: Título da seção -->
+            <div class="section__header">
+                <h2 class="section__title">Entre em Contato</h2>
+                <p class="section__subtitle">Agende Sua Consulta e Proteja Seus Direitos</p>
+            </div>
+
+            <div class="contato__container">
+                <!-- EDITÁVEL: Informações de contato -->
+                <div class="contato__info">
+                    <h3 class="contato__info-title">Fale Conosco</h3>
+                    <p class="contato__info-text">
+                        Estamos prontos para atendê-lo e oferecer as melhores soluções jurídicas. Entre em contato pelos canais abaixo ou preencha o formulário.
+                    </p>
+
+                    <!-- EDITÁVEL: Dados de contato - atualize com informações reais -->
+                    <div class="contato__details">
+                        <div class="contato__detail">
+                            <div class="contato__detail-icon">📱</div>
+                            <div class="contato__detail-content">
+                                <h4>WhatsApp</h4>
+                                <p>{{phone_display}}</p>
+                            </div>
+                        </div>
+
+                        <div class="contato__detail">
+                            <div class="contato__detail-icon">📞</div>
+                            <div class="contato__detail-content">
+                                <h4>Telefone</h4>
+                                <p>{{phone_display}}</p>
+                            </div>
+                        </div>
+
+                        <div class="contato__detail">
+                            <div class="contato__detail-icon">📧</div>
+                            <div class="contato__detail-content">
+                                <h4>E-mail</h4>
+                                <p>Atendimento pelo WhatsApp</p>
+                            </div>
+                        </div>
+
+                        <div class="contato__detail">
+                            <div class="contato__detail-icon">📍</div>
+                            <div class="contato__detail-content">
+                                <h4>Endereço</h4>
+                                <p>Av. Paulista, 1000 - Conj. 501<br>São Paulo - SP, 01310-100</p>
+                            </div>
+                        </div>
+
+                        <div class="contato__detail">
+                            <div class="contato__detail-icon">🕐</div>
+                            <div class="contato__detail-content">
+                                <h4>Horário de Atendimento</h4>
+                                <p>Segunda a Sexta: 9h às 18h<br>Sábado: 9h às 13h</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- FOOTER -->
+    <!-- EDITÁVEL: Rodapé com informações adicionais -->
+    <!-- ============================================ -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__container">
+                <!-- EDITÁVEL: Coluna 1 - Sobre -->
+                <div class="footer__column">
+                    <div class="footer__logo">
+                        <span class="logo-emoji">⚖️</span>
+                        <span class="logo-text">{{business_name}}</span>
+                    </div>
+                    <p class="footer__description">
+                        Escritório de advocacia comprometido com a excelência jurídica e a defesa dos seus direitos há mais de 20 anos.
+                    </p>
+                    <!-- EDITÁVEL: Redes sociais - adicione os links reais -->
+                    <div class="footer__social">
+                        <a href="#" class="footer__social-link" aria-label="Facebook">📘</a>
+                        <a href="#" class="footer__social-link" aria-label="Instagram">📷</a>
+                        <a href="#" class="footer__social-link" aria-label="LinkedIn">💼</a>
+                        <a href="#" class="footer__social-link" aria-label="YouTube">📺</a>
+                    </div>
+                </div>
+
+                <!-- EDITÁVEL: Coluna 2 - Links rápidos -->
+                <div class="footer__column">
+                    <h4 class="footer__title">Links Rápidos</h4>
+                    <ul class="footer__links">
+                        <li><a href="#home" class="footer__link">Início</a></li>
+                        <li><a href="#sobre" class="footer__link">Sobre Nós</a></li>
+                        <li><a href="#servicos" class="footer__link">Áreas de Atuação</a></li>
+                        <li></li>
+                        <li></li>
+                        <li><a href="#contato" class="footer__link">Contato</a></li>
+                    </ul>
+                </div>
+
+                <!-- EDITÁVEL: Coluna 3 - Áreas de atuação -->
+                <div class="footer__column">
+                    <h4 class="footer__title">Áreas de Atuação</h4>
+                    <ul class="footer__links">
+                        <li><a href="#servicos" class="footer__link">Direito Civil</a></li>
+                        <li><a href="#servicos" class="footer__link">Direito Trabalhista</a></li>
+                        <li><a href="#servicos" class="footer__link">Direito Empresarial</a></li>
+                        <li><a href="#servicos" class="footer__link">Direito Previdenciário</a></li>
+                        <li><a href="#servicos" class="footer__link">Direito de Família</a></li>
+                        <li><a href="#servicos" class="footer__link">Direito do Consumidor</a></li>
+                    </ul>
+                </div>
+
+                <!-- EDITÁVEL: Coluna 4 - Contato -->
+                <div class="footer__column">
+                    <h4 class="footer__title">Contato</h4>
+                    <ul class="footer__contact">
+                        <li>
+                            <strong>WhatsApp:</strong><br>
+                            {{phone_display}}
+                        </li>
+                        <li>
+                            <strong>E-mail:</strong><br>
+                            Atendimento pelo WhatsApp
+                        </li>
+                        <li>
+                            <strong>Endereço:</strong><br>
+                            Av. Paulista, 1000 - Conj. 501<br>
+                            São Paulo - SP
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- EDITÁVEL: Copyright -->
+            <div class="footer__bottom">
+                <p class="footer__copy">
+                    &copy; 2024 {{business_name}}. Todos os direitos reservados.
+                </p>
+                <div class="footer__legal">
+                    <a href="#" class="footer__legal-link">Política de Privacidade</a>
+                    <span>|</span>
+                    <a href="#" class="footer__legal-link">Termos de Uso</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================ -->
+    <!-- BOTÃO SCROLL TO TOP -->
+    <!-- Botão para voltar ao topo da página -->
+    <!-- ============================================ -->
+    <button class="scroll-top" id="scroll-top" aria-label="Voltar ao topo">
+        ↑
+    </button>
+
+    <!-- Font Awesome para ícones (opcional - pode substituir por emojis) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Link para o arquivo JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="briaspas-template" content="salao-beleza-01">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{meta_description}}">
+    <title>{{page_title}}</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ========== HEADER ========== -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <!-- EDITÁVEL: Nome do negócio/logo -->
+                <a href="#inicio" class="logo">✂️ {{business_name}}</a>
+
+                <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#inicio">Início</a></li>
+                    <li><a href="#sobre">Sobre</a></li>
+                    <li><a href="#servicos">Serviços</a></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ========== HERO ========== -->
+    <!-- Hero com imagem de fundo em tela cheia -->
+    <section class="hero" id="inicio">
+        <!-- Imagem de fundo do hero -->
+        <div class="hero-background">
+            <!-- EDITÁVEL: Troque a URL da imagem pela sua própria -->
+            <img src="{{hero_image_url}}" alt="Salão de beleza moderno" class="hero-bg-image">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">💎 Excelência em beleza</div>
+                <!-- EDITÁVEL: Título principal -->
+                <h1>{{headline}}</h1>
+                <!-- EDITÁVEL: Subtítulo -->
+                <p class="hero-subtitle">{{subheadline}}</p>
+                <div class="hero-buttons">
+                    <a href="#contato" class="btn btn-primary">Agendar Horário</a>
+                    <!-- EDITÁVEL: Link do WhatsApp -->
+                    <a href="{{whatsapp_url}}" class="btn btn-secondary" target="_blank">Falar no WhatsApp</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">+15.000</span>
+                        <span class="stat-label">Clientes atendidos</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">8+</span>
+                        <span class="stat-label">Anos de experiência</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">4.8★</span>
+                        <span class="stat-label">Avaliação média</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <!-- Imagem circular em destaque -->
+                <div class="hero-image-container">
+                    <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80" alt="Cabeleireiro profissional trabalhando" class="hero-main-image">
+                    <div class="floating-badge">Agende agora</div>
+                </div>
+            </div>
+        </div>
+    <div class="briaspas-stock-credit">{{stock_credit_html}}</div></section>
+
+    <!-- ========== SOBRE ========== -->
+    <!-- Seção sobre com imagem do salão -->
+    <section class="sobre" id="sobre">
+        <div class="container">
+            <div class="section-header">
+                <h2>Sobre o {{business_name}}</h2>
+                <p>{{about_text}}</p>
+            </div>
+            <div class="sobre-content">
+                <!-- Imagem da equipe/salão -->
+                <div class="sobre-image">
+                    <!-- EDITÁVEL: Imagem do estabelecimento ou equipe -->
+                    <img src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=600&q=80" alt="Equipe do {{business_name}}">
+                </div>
+                <div class="sobre-info">
+                    <div class="sobre-text">
+                        <!-- EDITÁVEL: Texto sobre o negócio -->
+                        <p>Fundado em 2016, o <strong>{{business_name}}</strong> nasceu da paixão por transformar a autoestima das pessoas através da beleza e do cuidado. Nossa equipe de profissionais altamente qualificados está em constante atualização com as últimas tendências nacionais e internacionais.</p>
+                        <p>Oferecemos uma experiência completa em beleza, desde cortes clássicos e modernos até colorações sofisticadas, tratamentos capilares de ponta, serviços de barbearia premium, manicure, pedicure, maquiagem profissional e penteados para todas as ocasiões. Tudo isso em um ambiente elegante, confortável e acolhedor.</p>
+                    </div>
+                    <div class="sobre-features">
+                        <div class="feature">
+                            <div class="feature-icon">👨‍🎨</div>
+                            <h3>Profissionais Especializados</h3>
+                            <p>Equipe com certificações internacionais e formação contínua</p>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">✨</div>
+                            <h3>Produtos Premium</h3>
+                            <p>Utilizamos apenas marcas profissionais de alta qualidade</p>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">🏆</div>
+                            <h3>Ambiente Sofisticado</h3>
+                            <p>Espaço moderno, confortável e climatizado para seu bem-estar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== GALERIA ========== -->
+    <!-- Galeria de fotos do ambiente e serviços -->
+    
+
+    <!-- ========== SERVIÇOS ========== -->
+    <section class="servicos" id="servicos">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nossos Serviços</h2>
+                <p>Soluções completas de beleza para você se sentir incrível</p>
+            </div>
+            <div class="servicos-grid">
+                <!-- EDITÁVEL: Cards de serviços/produtos -->
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1559599101-f09722fb4948?w=400&q=80" alt="Corte de cabelo profissional">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Cortes de Cabelo</h3>
+                        <p>Cortes modernos e clássicos para todos os estilos. Consulta personalizada para encontrar o corte ideal para você.</p>
+                        <span class="preco">A partir de R$ 80,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80" alt="Coloração e luzes">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Coloração & Luzes</h3>
+                        <p>Coloração completa, mechas, ombré hair, balayage e técnicas exclusivas com produtos de alta performance.</p>
+                        <span class="preco">A partir de R$ 180,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=400&q=80" alt="Tratamentos capilares">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Tratamentos Capilares</h3>
+                        <p>Reconstrução, hidratação profunda, botox capilar, cauterização e cronograma capilar personalizado.</p>
+                        <span class="preco">A partir de R$ 120,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80" alt="Manicure e pedicure">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Manicure & Pedicure</h3>
+                        <p>Esmaltação, unhas em gel, alongamento, nail art, spa para mãos e pés com produtos de qualidade.</p>
+                        <span class="preco">A partir de R$ 35,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400&q=80" alt="Maquiagem profissional">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Maquiagem Profissional</h3>
+                        <p>Maquiagem para eventos, casamentos, festas, ensaios fotográficos e dia a dia com produtos profissionais.</p>
+                        <span class="preco">A partir de R$ 150,00</span>
+                    </div>
+                </div>
+                <div class="servico-card">
+                    <div class="servico-image">
+                        <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&q=80" alt="Depilação profissional">
+                    </div>
+                    <div class="servico-content">
+                        <h3>Depilação</h3>
+                        <p>Depilação com cera quente, a laser ou linha, respeitando sua pele e proporcionando resultados duradouros.</p>
+                        <span class="preco">A partir de R$ 40,00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== DESTAQUES ========== -->
+    <!-- Seção de destaques com imagens de resultados -->
+    
+
+    <!-- ========== BENEFÍCIOS ========== -->
+    
+
+    
+    
+
+    <!-- ========== FAQ ========== -->
+    
+
+    <!-- ========== CONTATO ========== -->
+    <section class="contato" id="contato">
+        <div class="container">
+            <div class="section-header">
+                <h2>Entre em Contato</h2>
+                <p>Agende seu horário e venha nos visitar</p>
+            </div>
+            <div class="contato-content">
+                <div class="contato-info">
+                    <!-- EDITÁVEL: Informações de contato -->
+                    <div class="info-item">
+                        <div class="info-icon">📞</div>
+                        <div>
+                            <h4>Telefone</h4>
+                            <p>{{phone_display}}</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📱</div>
+                        <div>
+                            <h4>WhatsApp</h4>
+                            <p>{{phone_display}}</p>
+                            <a href="{{whatsapp_url}}" class="btn btn-whatsapp" target="_blank">Agendar pelo WhatsApp</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📍</div>
+                        <div>
+                            <h4>Endereço</h4>
+                            <!-- EDITÁVEL: Endereço -->
+                            <p>Rua das Flores, 456 - Jardim Paulista<br>São Paulo - SP, 01455-000</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">🕐</div>
+                        <div>
+                            <h4>Horário de Funcionamento</h4>
+                            <!-- EDITÁVEL: Horário -->
+                            <p>Segunda a Sexta: 9h às 20h<br>Sábado: 9h às 18h<br>Domingo: Fechado</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contato-mapa">
+                    <!-- Bloco simulando mapa -->
+                    <div class="mapa-placeholder">
+                        <div class="mapa-pin">📍</div>
+                        <p>{{business_name}}</p>
+                        <span>Clique para ver no Google Maps</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== ÁREA RESERVADA PARA AGENTE DE IA ========== -->
+    <!-- Área reservada para agente de IA no futuro -->
+    <div id="ai-agent-container" class="ai-agent-area">
+        <!-- O widget do agente de IA será inserido aqui -->
+    </div>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <!-- EDITÁVEL: Nome do negócio -->
+                <div class="footer-logo">✂️ {{business_name}}</div>
+                <p>Transformando beleza em arte desde 2016.</p>
+                <div class="footer-links">
+                    <a href="#inicio">Início</a>
+                    <a href="#sobre">Sobre</a>
+                    <a href="#servicos">Serviços</a>
+                    <a href="#contato">Contato</a>
+                </div>
+                <div class="footer-social">
+                    <a href="#" aria-label="Instagram">📷</a>
+                    <a href="#" aria-label="Facebook">👍</a>
+                    <a href="#" aria-label="WhatsApp">📱</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <!-- EDITÁVEL: Copyright -->
+                <p>&copy; 2024 {{business_name}}. Todos os direitos reservados.</p>
+                <p><a href="#privacidade">Política de Privacidade</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Política de Privacidade (texto simples no rodapé) -->
+    <section class="privacidade" id="privacidade">
+        <div class="container">
+            <h3>Política de Privacidade</h3>
+            <p>O {{business_name}} respeita sua privacidade. Os dados coletados são utilizados apenas para agendamentos e comunicação com clientes. Não compartilhamos informações pessoais com terceiros sem consentimento. Fotos de transformações são utilizadas apenas com autorização expressa do cliente.</p>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
