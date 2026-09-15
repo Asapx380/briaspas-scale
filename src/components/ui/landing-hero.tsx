@@ -7,14 +7,8 @@ import KineticGrid from "@/components/ui/kinetic-grid";
 
 export default function LandingHero() {
   return (
-    <section className="relative flex min-h-[100dvh] w-full items-center justify-center overflow-hidden px-5 py-24 text-[var(--text)] sm:px-8">
-      {/* Background only — fills the viewport behind the copy */}
+    <section className="relative flex min-h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-white px-5 py-24 text-[var(--text)] sm:px-8">
       <KineticGrid />
-      {/* Soft center veil so text stays readable without hiding the grid */}
-      <div
-        className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_70%_55%_at_50%_45%,rgba(238,242,247,0.72)_0%,rgba(238,242,247,0.25)_55%,transparent_80%)]"
-        aria-hidden
-      />
 
       <header className="absolute top-0 left-1/2 z-20 flex h-20 w-full max-w-7xl -translate-x-1/2 items-center justify-between gap-5 px-5 sm:px-8">
         <Link href="/" className="flex items-center gap-3" aria-label="Briaspas Scale">
@@ -44,10 +38,10 @@ export default function LandingHero() {
         </div>
       </header>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center text-center">
+      <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center text-center">
         <p className="text-sm font-medium tracking-wide text-[var(--brand)]">Briaspas Scale</p>
 
-        <h1 className="mt-4 max-w-3xl text-4xl leading-[1.08] font-bold tracking-[-0.03em] text-balance sm:text-5xl lg:text-6xl">
+        <h1 className="mt-5 text-4xl leading-[1.08] font-bold tracking-[-0.03em] text-balance sm:text-5xl lg:text-[3.5rem]">
           Prospecção local com site demo e CRM no mesmo fluxo.
         </h1>
 
@@ -66,7 +60,7 @@ export default function LandingHero() {
           </Link>
           <Link
             href="#recursos"
-            className="inline-flex items-center gap-2 rounded-xl border border-black/8 bg-white/85 px-6 py-3.5 text-sm font-semibold text-[var(--text)] transition-colors hover:bg-white"
+            className="inline-flex items-center gap-2 rounded-xl border border-black/10 bg-white px-6 py-3.5 text-sm font-semibold text-[var(--text)] transition-colors hover:bg-[#f7f8fa]"
           >
             Ver o fluxo
           </Link>
