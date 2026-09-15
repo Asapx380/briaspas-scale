@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "security:secrets": "node scripts/check-client-secrets.mjs",
+    "hooks:install": "node scripts/install-git-hooks.mjs",
     "check": "npm run lint && npm run typecheck && npm run test && npm run security:secrets"
   },
   "dependencies": {
