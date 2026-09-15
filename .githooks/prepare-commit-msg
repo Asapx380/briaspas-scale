@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Remove trailers Cursor injetados antes do commit (Cloud Agent / IDE).
+set -euo pipefail
+
+msg_file="${1:-}"
+if [[ -z "$msg_file" || ! -f "$msg_file" ]]; then
+  exit 0
+fi
+
+tmp="$(mktemp)"
+# shellcheck disable=SC2016
+awk '
+  BEGIN { skip=0 }
+  /^[[:space:]]*Co-authored-by:[[:space:]].*[Cc]ursor/ { next }
+  /cursoragent@cursor\.com/ { next }
+  { print }
+' "$msg_file" >"$tmp"
+mv "$tmp" "$msg_file"
+exit 0

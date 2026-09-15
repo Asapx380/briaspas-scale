@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Bloqueia trailers que atribuem contribuição ao Cursor no GitHub.
+set -euo pipefail
+
+msg_file="${1:-}"
+if [[ -z "$msg_file" || ! -f "$msg_file" ]]; then
+  exit 0
+fi
+
+if grep -Eiq '^[[:space:]]*Co-authored-by:[[:space:]].*[Cc]ursor' "$msg_file" \
+  || grep -Eiq 'cursoragent@cursor\.com' "$msg_file"; then
+  echo "commit-msg: remova Co-authored-by do Cursor / cursoragent@cursor.com da mensagem." >&2
+  echo "Este repositório só registra contribuições do autor humano." >&2
+  exit 1
+fi
+
+exit 0

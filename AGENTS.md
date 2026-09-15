@@ -16,3 +16,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Use `rtk` nos comandos compatíveis para reduzir saída (`git`, testes, lint, typecheck e buscas). Em falhas ambíguas, recupere a saída original.
 - Use esforço baixo ou médio em execução direta já decidida. Reserve esforço alto para arquitetura nova, depuração difícil ou código desconhecido.
 - Antes de tarefa grande, apresente um plano curto e aguarde confirmação. Para tarefa pequena e clara, execute diretamente.
+
+## Atribuição Git (obrigatório)
+
+- Nunca adicione `Co-authored-by: Cursor`, `cursoragent@cursor.com` nem qualquer trailer/assinatura de AI na mensagem de commit.
+- Author e committer devem ser só o humano do repo (Wesley / Asapx380).
+- Hooks em `.githooks` removem/bloqueiam esses trailers; rode `npm run hooks:install` após clonar.
