@@ -12,8 +12,7 @@ export default async function IntegrationsPage() {
   const vercelConfigured = Boolean(process.env.VERCEL_TOKEN && process.env.VERCEL_PROJECT_ID);
 
   return <main className="mx-auto w-full max-w-5xl px-5 py-8 sm:px-8 sm:py-10">
-    <p className="text-sm font-medium text-[var(--brand)]">Configurações</p>
-    <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Integrações</h1>
+    <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Integrações</h1>
     <div className="mt-10 grid gap-6 lg:grid-cols-2">
       <section className="app-card p-6"><h2 className="text-xl font-semibold">Domínio personalizado</h2><p className="mt-2 text-sm leading-6 text-[var(--text-3)]">Conecte um domínio à página publicada. O SSL é emitido automaticamente pela Vercel após a validação do DNS.</p>
         {!vercelConfigured && <p className="mt-4 rounded-lg bg-amber-400/10 p-3 text-xs text-amber-800">Credenciais da Vercel ainda não configuradas.</p>}
