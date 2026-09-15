@@ -13,24 +13,22 @@ type Ripple = {
 };
 type Rgba = { r: number; g: number; b: number; a: number };
 
-const CELL = 56;
-const INFLUENCE = 250;
-const MAX_WARP = 22;
-const DOT_GAP = 28;
-const LERP = 0.08;
-const NODE_IDLE = 1.5;
-const NODE_HOT = 3.2;
+const CELL = 48;
+const INFLUENCE = 280;
+const MAX_WARP = 28;
+const LERP = 0.1;
+const NODE_IDLE = 1.8;
+const NODE_HOT = 3.6;
 
-/** Soft light ground + brand blue `#0071e3`. */
+/** Light ground + brand blue lines `#0071e3` — idle must stay readable. */
 const THEME = {
   bg: "#eef2f7",
-  lineIdle: { r: 0, g: 113, b: 227, a: 0.1 } satisfies Rgba,
-  lineHot: { r: 0, g: 113, b: 227, a: 0.85 } satisfies Rgba,
-  nodeIdle: { r: 0, g: 113, b: 227, a: 0.18 } satisfies Rgba,
+  lineIdle: { r: 0, g: 113, b: 227, a: 0.32 } satisfies Rgba,
+  lineHot: { r: 0, g: 113, b: 227, a: 0.95 } satisfies Rgba,
+  nodeIdle: { r: 0, g: 113, b: 227, a: 0.4 } satisfies Rgba,
   nodeHot: { r: 0, g: 113, b: 227, a: 1 } satisfies Rgba,
   glow: "0,113,227",
   ripple: "0,113,227",
-  dots: "rgba(0,113,227,0.06)",
 };
 
 function lerp(a: number, b: number, t: number) {
@@ -70,7 +68,7 @@ function warpPoint(
     const band = 55;
     const diff = rdist - r.radius;
     if (Math.abs(diff) < band) {
-      const strength = (1 - Math.abs(diff) / band) * r.opacity * 16 * pin;
+      const strength = (1 - Math.abs(diff) / band) * r.opacity * 18 * pin;
       const angle = Math.atan2(rdy, rdx);
       const sign = diff < 0 ? -1 : 1;
       ox += Math.cos(angle) * strength * sign * -1;
@@ -107,20 +105,11 @@ function paintFrame(
   ctx.fillStyle = THEME.bg;
   ctx.fillRect(0, 0, W, H);
 
-  ctx.fillStyle = THEME.dots;
-  for (let x = DOT_GAP / 2; x < W; x += DOT_GAP) {
-    for (let y = DOT_GAP / 2; y < H; y += DOT_GAP) {
-      ctx.beginPath();
-      ctx.arc(x, y, 0.7, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-
   for (let i = ripples.length - 1; i >= 0; i -= 1) {
     const r = ripples[i];
     const age = (now - r.born) / 1000;
-    r.radius = Math.max(0, age * 380);
-    r.opacity = Math.max(0, 1 - age * 1.15);
+    r.radius = Math.max(0, age * 400);
+    r.opacity = Math.max(0, 1 - age * 1.1);
     if (r.opacity <= 0) ripples.splice(i, 1);
   }
 
@@ -158,11 +147,11 @@ function paintFrame(
     ctx.moveTo(a.x, a.y);
     ctx.lineTo(b.x, b.y);
     ctx.strokeStyle = mixRgba(THEME.lineIdle, THEME.lineHot, t);
-    ctx.lineWidth = lerp(0.7, 1.45, t);
+    ctx.lineWidth = lerp(1, 2, t);
     ctx.stroke();
   };
 
-  ctx.lineCap = "butt";
+  ctx.lineCap = "round";
   for (let row = 0; row < rows; row += 1) {
     for (let col = 0; col < cols - 1; col += 1) {
       strokeSeg(pts[row][col], pts[row][col + 1], prox[row][col], prox[row][col + 1]);
@@ -181,10 +170,10 @@ function paintFrame(
       const t = pr * pr * (3 - 2 * pr);
       const radius = lerp(NODE_IDLE, NODE_HOT, t);
 
-      if (t > 0.3) {
-        const glowR = radius + lerp(0, 6, (t - 0.3) / 0.7);
-        const grd = ctx.createRadialGradient(p.x, p.y, radius * 0.5, p.x, p.y, glowR);
-        grd.addColorStop(0, `rgba(${THEME.glow},${(t * 0.22).toFixed(3)})`);
+      if (t > 0.25) {
+        const glowR = radius + lerp(0, 8, (t - 0.25) / 0.75);
+        const grd = ctx.createRadialGradient(p.x, p.y, radius * 0.4, p.x, p.y, glowR);
+        grd.addColorStop(0, `rgba(${THEME.glow},${(t * 0.35).toFixed(3)})`);
         grd.addColorStop(1, `rgba(${THEME.glow},0)`);
         ctx.beginPath();
         ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2);
@@ -202,12 +191,13 @@ function paintFrame(
   for (const r of ripples) {
     ctx.beginPath();
     ctx.arc(r.x, r.y, Math.max(0, r.radius), 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(${THEME.ripple},${(r.opacity * 0.22).toFixed(3)})`;
-    ctx.lineWidth = 1.4;
+    ctx.strokeStyle = `rgba(${THEME.ripple},${(r.opacity * 0.4).toFixed(3)})`;
+    ctx.lineWidth = 2;
     ctx.stroke();
   }
 }
 
+/** Full-bleed interactive grid background. Children sit on top, centered by parent. */
 export default function KineticGrid({
   children,
   className,
@@ -230,8 +220,8 @@ export default function KineticGrid({
 
     const resize = () => {
       const parent = canvas.parentElement;
-      const w = parent?.clientWidth || window.innerWidth;
-      const h = parent?.clientHeight || window.innerHeight;
+      const w = Math.max(parent?.clientWidth || 0, window.innerWidth);
+      const h = Math.max(parent?.clientHeight || 0, window.innerHeight);
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.floor(w * dpr);
       canvas.height = Math.floor(h * dpr);
@@ -242,9 +232,7 @@ export default function KineticGrid({
 
       if (reduced) {
         const ctx = canvas.getContext("2d");
-        if (ctx) {
-          paintFrame(ctx, w, h, mouseRef.current, ripplesRef.current, performance.now());
-        }
+        if (ctx) paintFrame(ctx, w, h, mouseRef.current, ripplesRef.current, performance.now());
       }
     };
 
@@ -288,31 +276,26 @@ export default function KineticGrid({
 
     window.addEventListener("mousemove", onMove);
     window.addEventListener("click", onClick);
-    canvas.parentElement?.addEventListener("mouseleave", onLeave);
+    window.addEventListener("mouseleave", onLeave);
     rafRef.current = requestAnimationFrame(tick);
 
     return () => {
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("click", onClick);
-      canvas.parentElement?.removeEventListener("mouseleave", onLeave);
+      window.removeEventListener("mouseleave", onLeave);
       cancelAnimationFrame(rafRef.current);
     };
   }, []);
 
   return (
-    <div
-      className={cn(
-        "relative isolate min-h-full w-full overflow-hidden bg-[#eef2f7]",
-        className,
-      )}
-    >
+    <div className={cn("absolute inset-0 overflow-hidden bg-[#eef2f7]", className)}>
       <canvas
         ref={canvasRef}
-        className="pointer-events-none absolute inset-0 z-0 h-full w-full"
+        className="pointer-events-none absolute inset-0 h-full w-full"
         aria-hidden
       />
-      {children ? <div className="relative z-10 h-full w-full">{children}</div> : null}
+      {children}
     </div>
   );
 }
