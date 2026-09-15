@@ -3,59 +3,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ChartLineUp } from "@phosphor-icons/react";
-
-/**
- * Soft aurora / gradient-glow hero ambience.
- * Visual idea adapted from 21st.dev "Background Gradient Glow" (meghtrix) —
- * soft radial washes that slowly drift — recolored to Briaspas `#0071E3`
- * for a premium B2B look (no neon, no particle overload).
- */
-function SoftGradientGlowBackground() {
-  return (
-    <div className="hero-glow pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-      <div className="absolute inset-0 bg-[#f4f7fb]" />
-
-      {/* Soft brand mesh — static base */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: `
-            radial-gradient(ellipse 80% 55% at 55% 18%, rgba(0, 113, 227, 0.28), transparent 62%),
-            radial-gradient(ellipse 55% 45% at 12% 78%, rgba(0, 122, 255, 0.18), transparent 60%),
-            radial-gradient(ellipse 50% 40% at 88% 62%, rgba(90, 140, 220, 0.16), transparent 58%),
-            linear-gradient(180deg, #eef4fb 0%, #e6ebf2 55%, #e2e5ec 100%)
-          `,
-        }}
-      />
-
-      {/* Gentle floating orbs — very low motion */}
-      <div className="hero-glow-orb hero-glow-orb-a" />
-      <div className="hero-glow-orb hero-glow-orb-b" />
-      <div className="hero-glow-orb hero-glow-orb-c" />
-
-      {/* Faint refined grid (barely visible) */}
-      <div
-        className="absolute inset-0 opacity-[0.35]"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, rgba(0, 113, 227, 0.035) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(0, 113, 227, 0.035) 1px, transparent 1px)
-          `,
-          backgroundSize: "72px 72px",
-          maskImage: "radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 75%)",
-        }}
-      />
-
-      {/* Readability veil under copy */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(244,247,251,0.15)_0%,rgba(244,247,251,0.35)_45%,rgba(230,231,236,0.88)_100%)]" />
-    </div>
-  );
-}
+import KineticGrid from "@/components/ui/kinetic-grid";
 
 export default function SonicWaveformHero() {
   return (
     <section className="relative flex min-h-[100dvh] w-full items-center justify-center overflow-hidden px-5 py-24 text-[var(--text)] sm:px-8">
-      <SoftGradientGlowBackground />
+      <KineticGrid className="pointer-events-none absolute inset-0" />
+      {/* Soft veil so hero copy stays readable over the interactive grid */}
+      <div
+        className="pointer-events-none absolute inset-0 z-[1] bg-[linear-gradient(to_bottom,rgba(238,242,247,0.2)_0%,rgba(238,242,247,0.45)_48%,rgba(230,231,236,0.9)_100%)]"
+        aria-hidden
+      />
 
       <header className="absolute top-0 left-1/2 z-20 flex h-20 w-full max-w-7xl -translate-x-1/2 items-center justify-between gap-5 px-5 sm:px-8">
         <Link href="/" className="flex items-center gap-3" aria-label="Briaspas Scale">
