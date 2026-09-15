@@ -40,8 +40,7 @@ export default async function OperationsPage() {
 
   return (
     <main className="mx-auto w-full max-w-7xl px-5 py-8 sm:px-8 sm:py-10">
-      <p className="text-sm font-medium text-[var(--brand)]">Saúde da plataforma</p>
-      <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Operação e custos</h1>
+      <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Operação e custos</h1>
       <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-3)] sm:text-base">
         Métricas para detectar falhas, acompanhar consumo de IA e decidir qual fonte entrega mais valor.
       </p>

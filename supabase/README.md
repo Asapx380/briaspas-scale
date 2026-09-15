@@ -1,23 +1,26 @@
 # Banco de dados do Briaspas Scale
 
-As alterações do banco ficam em `supabase/migrations`. Cada arquivo representa uma mudança ordenada e imutável no PostgreSQL.
+As alterações do banco ficam em `supabase/migrations`. Cada arquivo é uma mudança ordenada e imutável no PostgreSQL. Aplique na ordem do nome do arquivo.
 
-## Primeira migration
+## Migrations atuais
 
-`202609070001_initial_crm_schema.sql` cria:
+| Arquivo | Função |
+| --- | --- |
+| `202609070001_initial_crm_schema.sql` | Perfis, workspaces, membros, leads, triggers e RLS base |
+| `202609070002_lead_import_fields.sql` | Campos de importação, origem e proteção contra duplicados |
+| `202609070003_lead_enrichment_fields.sql` | E-mail, redes e coordenadas das fontes automáticas |
+| `202609070004_complete_lead_site_fields.sql` | Follow-up, fotos, slug, visitas e publicação do site + função pública segura |
+| `202609090001_platform_hardening_and_product.sql` | Endurecimento e tabelas de produto |
+| `202609090002_site_briefs_and_uploaded_sites.sql` | Briefs e sites enviados/upload |
+| `202609090003_private_site_preview.sql` | Preview privado do site |
 
-- `profiles`: dados públicos internos do usuário autenticado.
-- `workspaces`: a conta ou equipe que possui os dados.
-- `workspace_members`: liga usuários aos workspaces e define o papel.
-- `leads`: empresas e oportunidades comerciais.
-- Triggers para criar perfil e workspace ao cadastrar um usuário novo.
-- Políticas RLS para impedir acesso entre workspaces.
+Rollback da migration de produto: `202609090001_platform_hardening_and_product.rollback.sql`. Use só em banco de desenvolvimento.
 
-## Aplicar no projeto remoto inicial
+## Aplicar no projeto remoto
 
-Enquanto o Supabase CLI ainda não estiver configurado, abra o SQL Editor do projeto de desenvolvimento, copie todo o conteúdo da primeira migration e execute uma única vez.
+Enquanto o Supabase CLI não estiver linkado, abra o SQL Editor do projeto de desenvolvimento e execute **uma migration por vez**, na ordem acima.
 
-Depois, adotaremos o fluxo reproduzível da CLI:
+Fluxo preferido depois:
 
 ```bash
 npx supabase login
@@ -26,18 +29,4 @@ npx supabase db push --dry-run
 npx supabase db push
 ```
 
-Nunca edite uma migration depois de aplicá-la. Crie uma nova migration para qualquer alteração futura.
-
-## Migration da importação de leads
-
-`202609070002_lead_import_fields.sql` adiciona ao CRM os campos de site, link do mapa, avaliação, quantidade de avaliações, origem e identificador da origem. Ela também cria a proteção contra importações duplicadas.
-
-Se a primeira migration já foi executada, copie apenas o conteúdo da segunda migration para o SQL Editor e execute uma vez.
-
-`202609070003_lead_enrichment_fields.sql` adiciona e-mail, redes sociais e coordenadas retornadas pelas fontes automáticas.
-
-`202609070004_complete_lead_site_fields.sql` completa o modelo com prazo de follow-up, fotos, slug, contador de visitas e os campos de geração/publicação do site. Também cria a função pública segura usada por `/empresa/[slug]`: ela entrega somente sites publicados e não expõe os dados privados do CRM.
-
-## Rollback
-
-O arquivo em `supabase/rollback` existe apenas para desfazer o esquema em um banco de desenvolvimento vazio. Ele apaga tabelas e dados. Não deve ser executado em produção.
+Nunca edite uma migration já aplicada. Crie um arquivo novo para qualquer alteração.

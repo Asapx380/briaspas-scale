@@ -10,7 +10,6 @@ import {
   Circle,
   Kanban,
   PlusCircle,
-  Sparkle,
   WarningCircle,
 } from "@phosphor-icons/react";
 import { motion, useReducedMotion } from "motion/react";
@@ -184,7 +183,7 @@ export function EmptyDashboard({ period }: EmptyDashboardProps) {
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
     >
       <div className="grid size-14 shrink-0 place-items-center rounded-2xl bg-[var(--brand-tint)] text-[var(--brand)]">
-        <Sparkle size={28} weight="fill" />
+        <Buildings size={28} weight="duotone" />
       </div>
       <div className="min-w-0 flex-1">
         <h2 className="text-lg font-semibold tracking-tight">Seu funil ainda está vazio</h2>
@@ -195,14 +194,14 @@ export function EmptyDashboard({ period }: EmptyDashboardProps) {
         <div className="mt-5 flex flex-wrap gap-3">
           <Link
             href="/app/leads"
-            className="inline-flex items-center gap-2 rounded-full bg-[var(--brand)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_28px_rgba(0,113,227,0.28)] transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-xl bg-[var(--brand)] px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
           >
             Adicionar leads
             <ArrowRight size={16} weight="bold" />
           </Link>
           <Link
             href="/app/crm"
-            className="inline-flex items-center gap-2 rounded-full border border-black/8 bg-white px-5 py-2.5 text-sm font-semibold text-[var(--text)] transition-colors hover:bg-[var(--neu-bg-pop)]"
+            className="inline-flex items-center gap-2 rounded-xl border border-black/8 bg-white px-5 py-2.5 text-sm font-semibold text-[var(--text)] transition-colors hover:bg-[var(--neu-bg-pop)]"
           >
             Abrir CRM
           </Link>
@@ -592,7 +591,7 @@ export function RecommendationsCard({ items }: RecommendationsCardProps) {
                   className="mt-0.5 shrink-0 text-[var(--warning)]"
                 />
               ) : (
-                <Sparkle size={18} weight="fill" className="mt-0.5 shrink-0 text-[var(--brand)]" />
+                <ChartLineUp size={18} weight="fill" className="mt-0.5 shrink-0 text-[var(--brand)]" />
               )}
               <div className="min-w-0 flex-1">
                 <p className="text-sm leading-6 text-[var(--text-2)]">{item.text}</p>

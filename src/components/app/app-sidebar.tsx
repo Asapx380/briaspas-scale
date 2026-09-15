@@ -6,10 +6,8 @@ import { usePathname } from "next/navigation";
 import {
   Buildings,
   ChartLineUp,
-  CurrencyDollar,
   GearSix,
   Kanban,
-  Layout,
   ListChecks,
   PlusCircle,
   UsersThree,
@@ -22,7 +20,6 @@ type NavItem = {
   label: string;
   icon: typeof ChartLineUp;
   match?: "exact" | "prefix";
-  badge?: string;
 };
 
 const NAV_ITEMS: NavItem[] = [
@@ -38,12 +35,9 @@ const NAV_ITEMS: NavItem[] = [
     icon: GearSix,
     match: "prefix",
   },
-  { href: "#", label: "Cobrar clientes", icon: CurrencyDollar, badge: "EM BREVE" },
-  { href: "#", label: "Templates", icon: Layout, badge: "EM BREVE" },
 ];
 
 function isActive(pathname: string, item: NavItem) {
-  if (item.href === "#") return false;
   if (item.match === "exact") return pathname === item.href;
   return pathname === item.href || pathname.startsWith(`${item.href}/`);
 }
@@ -99,39 +93,17 @@ export function AppSidebar({ email, open, onClose }: AppSidebarProps) {
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const active = isActive(pathname, item);
-            const disabled = Boolean(item.badge);
 
-            const className = `flex w-full items-center gap-3 rounded-full px-3.5 py-2.5 text-[13px] font-medium transition-all duration-150 ${
+            const className = `flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-[13px] font-medium transition-colors duration-150 ${
               active
-                ? "bg-[var(--brand)] text-white shadow-[0_8px_20px_rgba(0,113,227,0.32)]"
-                : disabled
-                  ? "cursor-default text-[var(--shell-muted)]/70"
-                  : "text-[var(--shell-muted)] hover:bg-white/[0.06] hover:text-[var(--shell-text)]"
+                ? "bg-[var(--brand)] text-white"
+                : "text-[var(--shell-muted)] hover:bg-white/[0.06] hover:text-[var(--shell-text)]"
             }`;
-
-            const content = (
-              <>
-                <Icon size={18} weight={active ? "fill" : "regular"} className="shrink-0" />
-                <span className="flex-1 truncate text-left">{item.label}</span>
-                {item.badge && (
-                  <span className="rounded-md bg-[#ff9f0a]/18 px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-[#ffd60a]">
-                    {item.badge}
-                  </span>
-                )}
-              </>
-            );
-
-            if (disabled) {
-              return (
-                <span key={item.label} className={className} aria-disabled="true">
-                  {content}
-                </span>
-              );
-            }
 
             return (
               <Link key={item.href} href={item.href} className={className} onClick={onClose}>
-                {content}
+                <Icon size={18} weight={active ? "fill" : "regular"} className="shrink-0" />
+                <span className="flex-1 truncate text-left">{item.label}</span>
               </Link>
             );
           })}
@@ -141,16 +113,10 @@ export function AppSidebar({ email, open, onClose }: AppSidebarProps) {
           <Link
             href="/app/configuracoes/integracoes"
             onClick={onClose}
-            className="flex w-full items-center justify-center rounded-full bg-[var(--brand)] px-4 py-2.5 text-[13px] font-semibold text-white shadow-[0_8px_24px_rgba(0,113,227,0.32)] transition-opacity hover:opacity-90"
+            className="flex w-full items-center justify-center rounded-xl border border-white/10 bg-[var(--shell-raised)] px-4 py-2.5 text-[13px] font-semibold text-[var(--shell-text)] transition-colors hover:bg-white/[0.08]"
           >
-            Ver planos
+            Integrações
           </Link>
-
-          <div className="flex items-center justify-between gap-2 px-1 text-[11px] text-[var(--shell-muted)]">
-            <span className="font-medium text-[var(--shell-soft)]">Português</span>
-            <span aria-hidden="true">|</span>
-            <span>Em breve</span>
-          </div>
 
           <div className="flex items-center gap-3 rounded-2xl bg-[var(--shell-well)] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
             <div className="grid size-8 place-items-center rounded-full bg-[var(--brand)] text-xs font-bold text-white">

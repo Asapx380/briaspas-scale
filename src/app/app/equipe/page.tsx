@@ -29,8 +29,7 @@ export default async function TeamPage() {
 
   return (
     <main className="mx-auto w-full max-w-7xl px-5 py-8 sm:px-8 sm:py-10">
-      <p className="text-sm font-medium text-[var(--brand)]">Equipe comercial</p>
-      <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Distribuição e resultado</h1>
+      <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Equipe</h1>
       <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-3)] sm:text-base">
         Acompanhe carteira, vendas fechadas e valor por responsável.
       </p>

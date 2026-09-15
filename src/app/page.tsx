@@ -1,40 +1,43 @@
 import Link from "next/link";
-import SonicWaveformHero from "@/components/ui/sonic-waveform";
+import LandingHero from "@/components/ui/landing-hero";
 
 const features = [
   {
     title: "Empresas reais",
-    description: "Organize sua prospecção, importe empresas e acompanhe oportunidades em um só fluxo.",
+    description:
+      "Busque por nicho e cidade (Google Places ou Foursquare), importe CSV ou cadastre manualmente.",
   },
   {
     title: "Site por lead",
-    description: "Gere uma apresentação personalizada para cada oportunidade em poucos cliques.",
+    description:
+      "Gere ou envie uma página de demonstração e acompanhe visitas antes da abordagem.",
   },
   {
-    title: "Interesse visível",
-    description: "Veja visitas recentes e escolha quem abordar primeiro.",
+    title: "CRM e entrega",
+    description:
+      "Mova o lead no funil, distribua para a equipe e abra projeto quando fechar a venda.",
   },
 ];
 
 const steps = [
   { title: "Busque", text: "Encontre empresas por nicho e cidade." },
-  { title: "Apresente", text: "Envie um site sob medida para o lead." },
+  { title: "Apresente", text: "Envie a página demo e acompanhe visitas." },
   { title: "Feche", text: "Priorize quem engajou e avance no CRM." },
 ];
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-[var(--neu-bg)] text-[var(--text)]">
-      <SonicWaveformHero />
+      <LandingHero />
 
       <section id="recursos" className="mx-auto w-full max-w-7xl px-5 py-24 sm:px-8 lg:py-28">
         <div className="max-w-2xl">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-5xl">
-            Da busca ao fechamento, sem perder o contexto.
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            Da busca ao fechamento, no mesmo workspace.
           </h2>
           <p className="mt-5 max-w-xl text-base leading-7 text-[var(--text-3)]">
-            O Briaspas Scale reúne prospecção, apresentação e acompanhamento
-            comercial no mesmo lugar.
+            Prospecção, apresentação e acompanhamento comercial sem trocar de
+            ferramenta a cada etapa.
           </p>
         </div>
 
@@ -64,18 +67,20 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="mt-16 flex flex-wrap items-center justify-between gap-6 rounded-[28px] bg-[var(--brand)] px-8 py-10 text-white shadow-[0_16px_40px_rgba(0,113,227,0.28)]">
+        <div className="mt-16 flex flex-wrap items-center justify-between gap-6 rounded-[24px] bg-[var(--brand)] px-8 py-10 text-white">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Pronto para prospectar?</h2>
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              Comece pelo seu próximo nicho
+            </h2>
             <p className="mt-2 text-sm text-white/80 sm:text-base">
-              Crie sua conta e comece a organizar leads em minutos.
+              Crie a conta, importe leads e publique a primeira demo.
             </p>
           </div>
           <Link
             href="/cadastro"
-            className="inline-flex rounded-full bg-white px-6 py-3 text-sm font-semibold text-[var(--brand)] transition-opacity hover:opacity-90"
+            className="inline-flex rounded-xl bg-white px-6 py-3 text-sm font-semibold text-[var(--brand)] transition-opacity hover:opacity-90"
           >
-            Começar grátis
+            Criar conta
           </Link>
         </div>
       </section>

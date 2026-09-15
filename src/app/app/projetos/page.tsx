@@ -25,10 +25,9 @@ export default async function ProjectsPage() {
 
   return (
     <main className="mx-auto w-full max-w-7xl px-5 py-8 sm:px-8 sm:py-10">
-      <p className="text-sm font-medium text-[var(--brand)]">Entrega</p>
-      <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Projetos e tarefas</h1>
+      <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Projetos e tarefas</h1>
       <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-3)] sm:text-base">
-        Transforme uma venda fechada em escopo, prazo e atividades acompanháveis.
+        Organize escopo, prazo e atividades depois que a venda fecha.
       </p>
 
       {error && (
