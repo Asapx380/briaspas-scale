@@ -2,9 +2,10 @@
 
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
-import { ChatCircleDots, Phone } from "@phosphor-icons/react";
+import { ChatCircleDots } from "@phosphor-icons/react/dist/csr/ChatCircleDots";
+import { Phone } from "@phosphor-icons/react/dist/csr/Phone";
 import { useRouter } from "next/navigation";
-import type { CSSProperties, KeyboardEvent, MouseEvent } from "react";
+import { memo, type CSSProperties, type KeyboardEvent, type MouseEvent } from "react";
 import { leadScore, leadTier, tierLabel, toBrazilianWhatsAppNumber } from "@/lib/crm/pipeline";
 import type { CrmLead } from "@/lib/crm/types";
 
@@ -12,13 +13,33 @@ type KanbanCardProps = {
   lead: CrmLead;
   detailHref?: string;
   onWhatsAppChat?: (lead: CrmLead) => void;
+  /** Static clone for DragOverlay — skips drag listeners. */
+  overlay?: boolean;
 };
 
-export function KanbanCard({ lead, detailHref, onWhatsAppChat }: KanbanCardProps) {
+function leadVisualKey(lead: CrmLead) {
+  return [
+    lead.id,
+    lead.company_name,
+    lead.status,
+    lead.phone,
+    lead.niche,
+    lead.city,
+    lead.rating,
+    lead.review_count,
+    lead.website_url,
+    lead.site_status,
+    lead.email,
+    lead.google_maps_url,
+  ].join("|");
+}
+
+function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false }: KanbanCardProps) {
   const router = useRouter();
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `lead-${lead.id}`,
     data: { leadId: lead.id, status: lead.status },
+    disabled: overlay,
   });
 
   const score = leadScore(lead);
@@ -27,14 +48,16 @@ export function KanbanCard({ lead, detailHref, onWhatsAppChat }: KanbanCardProps
   const meta = [lead.niche, lead.city].filter(Boolean).join(" · ");
   const href = detailHref ?? `/app/crm/${lead.id}`;
 
-  const style: CSSProperties = {
-    transform: CSS.Translate.toString(transform),
-    opacity: isDragging ? 0.45 : 1,
-    zIndex: isDragging ? 20 : undefined,
-  };
+  const style: CSSProperties | undefined = overlay
+    ? undefined
+    : {
+        transform: CSS.Translate.toString(transform),
+        opacity: isDragging ? 0.45 : 1,
+        zIndex: isDragging ? 20 : undefined,
+      };
 
   function openDetail() {
-    if (isDragging) return;
+    if (overlay || isDragging) return;
     router.push(href);
   }
 
@@ -49,19 +72,13 @@ export function KanbanCard({ lead, detailHref, onWhatsAppChat }: KanbanCardProps
     event.stopPropagation();
   }
 
-  return (
-    <article
-      ref={setNodeRef}
-      style={style}
-      {...listeners}
-      {...attributes}
-      role="button"
-      tabIndex={0}
-      onClick={openDetail}
-      onKeyDown={onCardKeyDown}
-      aria-label={`${lead.company_name}, score ${score}`}
-      className="cursor-grab rounded-2xl border border-black/[0.04] bg-white p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition-[box-shadow,transform] hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)] active:cursor-grabbing"
-    >
+  function onWhatsApp() {
+    if (onWhatsAppChat) onWhatsAppChat(lead);
+    else if (whatsapp) window.open(`https://wa.me/${whatsapp}`, "_blank", "noopener,noreferrer");
+  }
+
+  const face = (
+    <>
       <div className="flex items-center gap-2">
         <span
           className={`inline-flex min-w-8 items-center justify-center rounded-md px-1.5 py-0.5 text-xs font-bold tabular-nums text-white ${
@@ -92,8 +109,8 @@ export function KanbanCard({ lead, detailHref, onWhatsAppChat }: KanbanCardProps
         {lead.phone ? (
           <a
             href={`tel:${lead.phone.replace(/\D/g, "")}`}
-            onClick={stopDrag}
-            onPointerDown={stopDrag}
+            onClick={overlay ? undefined : stopDrag}
+            onPointerDown={overlay ? undefined : stopDrag}
             className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-2 py-2 text-xs font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-well)]"
           >
             <Phone size={14} /> Ligar
@@ -106,12 +123,15 @@ export function KanbanCard({ lead, detailHref, onWhatsAppChat }: KanbanCardProps
         {whatsapp ? (
           <button
             type="button"
-            onClick={(event) => {
-              stopDrag(event);
-              if (onWhatsAppChat) onWhatsAppChat(lead);
-              else window.open(`https://wa.me/${whatsapp}`, "_blank", "noopener,noreferrer");
-            }}
-            onPointerDown={stopDrag}
+            onClick={
+              overlay
+                ? undefined
+                : (event) => {
+                    stopDrag(event);
+                    onWhatsApp();
+                  }
+            }
+            onPointerDown={overlay ? undefined : stopDrag}
             className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-2 py-2 text-xs font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-well)]"
           >
             <ChatCircleDots size={14} /> WhatsApp
@@ -122,6 +142,40 @@ export function KanbanCard({ lead, detailHref, onWhatsAppChat }: KanbanCardProps
           </span>
         )}
       </div>
+    </>
+  );
+
+  if (overlay) {
+    return (
+      <article className="rounded-2xl border border-black/[0.04] bg-white p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.06)]">
+        {face}
+      </article>
+    );
+  }
+
+  return (
+    <article
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+      role="button"
+      tabIndex={0}
+      onClick={openDetail}
+      onKeyDown={onCardKeyDown}
+      aria-label={`${lead.company_name}, score ${score}`}
+      className="cursor-grab rounded-2xl border border-black/[0.04] bg-white p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition-[box-shadow,transform] hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)] active:cursor-grabbing"
+    >
+      {face}
     </article>
   );
 }
+
+export const KanbanCard = memo(KanbanCardInner, (prev, next) => {
+  return (
+    leadVisualKey(prev.lead) === leadVisualKey(next.lead) &&
+    prev.detailHref === next.detailHref &&
+    prev.onWhatsAppChat === next.onWhatsAppChat &&
+    prev.overlay === next.overlay
+  );
+});

@@ -1,37 +1,63 @@
 "use client";
 
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverlay,
-  MouseSensor,
-  TouchSensor,
-  closestCorners,
-  useDroppable,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  Buildings,
-  CaretDown,
-  LockSimple,
-  MagnifyingGlass,
-  Plus,
-} from "@phosphor-icons/react";
-import { useMemo, useState } from "react";
-import { CreateLeadModal } from "@/components/crm/create-lead-modal";
-import { KanbanCard } from "@/components/crm/kanban-card";
-import { WhatsAppChatModal, WhatsAppControlPanel } from "@/components/crm/whatsapp-chat";
+import { Buildings } from "@phosphor-icons/react/dist/csr/Buildings";
+import { CaretDown } from "@phosphor-icons/react/dist/csr/CaretDown";
+import { LockSimple } from "@phosphor-icons/react/dist/csr/LockSimple";
+import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
+import dynamic from "next/dynamic";
+import { useCallback, useMemo, useState } from "react";
 import {
   FILTER_CHIPS,
   PIPELINE_COLUMNS,
   SORT_OPTIONS,
-  columnForStatus,
   matchesFilter,
   matchesSearch,
   sortLeads,
 } from "@/lib/crm/pipeline";
 import type { CrmFilterId, CrmLead, CrmSortId, LeadPatch, LeadStatus, PipelineColumnId } from "@/lib/crm/types";
+
+const CrmKanbanBoard = dynamic(
+  () => import("@/components/crm/crm-kanban-board").then((mod) => mod.CrmKanbanBoard),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        className="mt-6 flex gap-3 overflow-x-auto pb-4"
+        aria-busy="true"
+        aria-label="Carregando quadro Kanban"
+      >
+        {PIPELINE_COLUMNS.map((column) => (
+          <div
+            key={column.id}
+            className="flex h-[420px] w-[260px] shrink-0 flex-col rounded-[20px] bg-[var(--neu-bg-well)]/80 p-2.5 sm:w-[272px]"
+          >
+            <div className="flex items-center gap-2 px-2 py-2">
+              <span className="size-2.5 rounded-full" style={{ backgroundColor: column.color }} />
+              <span className="text-sm font-semibold text-[var(--text)]">{column.title}</span>
+            </div>
+            <div className="mt-2 flex-1 animate-pulse rounded-2xl bg-white/50" />
+          </div>
+        ))}
+      </div>
+    ),
+  },
+);
+
+const CreateLeadModal = dynamic(
+  () => import("@/components/crm/create-lead-modal").then((mod) => mod.CreateLeadModal),
+  { ssr: false },
+);
+
+const WhatsAppChatModal = dynamic(
+  () => import("@/components/crm/whatsapp-chat").then((mod) => mod.WhatsAppChatModal),
+  { ssr: false },
+);
+
+const WhatsAppControlPanel = dynamic(
+  () => import("@/components/crm/whatsapp-chat").then((mod) => mod.WhatsAppControlPanel),
+  { ssr: false },
+);
 
 type WhatsAppConversationSummary = {
   id: number;
@@ -41,26 +67,6 @@ type WhatsAppConversationSummary = {
   last_message_at: string | null;
   lead_id: number | null;
 };
-
-function ColumnDropZone({
-  columnId,
-  children,
-}: {
-  columnId: PipelineColumnId;
-  children: React.ReactNode;
-}) {
-  const { setNodeRef, isOver } = useDroppable({ id: columnId });
-  return (
-    <div
-      ref={setNodeRef}
-      className={`min-h-[120px] space-y-2.5 rounded-2xl p-1 transition-colors ${
-        isOver ? "bg-[var(--brand-tint)]/60" : ""
-      }`}
-    >
-      {children}
-    </div>
-  );
-}
 
 async function patchLeadStatus(lead: CrmLead, status: LeadStatus) {
   const response = await fetch(`/api/v1/leads/${lead.id}`, {
@@ -94,7 +100,6 @@ export function CrmBoard({
   const [filter, setFilter] = useState<CrmFilterId>("all");
   const [sort, setSort] = useState<CrmSortId>("recent");
   const [createOpen, setCreateOpen] = useState(false);
-  const [activeId, setActiveId] = useState<number | null>(null);
   const [persistError, setPersistError] = useState<string | null>(null);
   const [chatLead, setChatLead] = useState<CrmLead | null>(null);
   const [baseline, setBaseline] = useState(initialLeads);
@@ -104,11 +109,6 @@ export function CrmBoard({
     setLeads(initialLeads);
   }
 
-  const sensors = useSensors(
-    useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 160, tolerance: 6 } }),
-  );
-
   const filtered = useMemo(() => {
     const list = leads.filter(
       (lead) => matchesSearch(lead, query) && matchesFilter(lead, filter),
@@ -116,53 +116,49 @@ export function CrmBoard({
     return sortLeads(list, sort);
   }, [leads, query, filter, sort]);
 
-  const activeLead = activeId == null ? null : leads.find((lead) => lead.id === activeId) ?? null;
-
-  function updateLead(updated: LeadPatch) {
+  const updateLead = useCallback((updated: LeadPatch) => {
     setLeads((current) =>
       current.map((lead) => (lead.id === updated.id ? { ...lead, ...updated } : lead)),
     );
-  }
+  }, []);
 
-  async function moveLead(leadId: number, columnId: PipelineColumnId) {
-    const lead = leads.find((item) => item.id === leadId);
-    const column = PIPELINE_COLUMNS.find((item) => item.id === columnId);
-    if (!lead || !column) return;
-    if (column.statuses.includes(lead.status)) return;
+  const moveLead = useCallback(
+    async (leadId: number, columnId: PipelineColumnId) => {
+      const lead = leads.find((item) => item.id === leadId);
+      const column = PIPELINE_COLUMNS.find((item) => item.id === columnId);
+      if (!lead || !column) return;
+      if (column.statuses.includes(lead.status)) return;
 
-    const previous = lead.status;
-    updateLead({ id: lead.id, status: column.dropStatus });
-    setPersistError(null);
+      const previous = lead.status;
+      updateLead({ id: lead.id, status: column.dropStatus });
+      setPersistError(null);
 
-    if (demoMode) return;
+      if (demoMode) return;
 
-    try {
-      await patchLeadStatus(lead, column.dropStatus);
-    } catch (error) {
-      updateLead({ id: lead.id, status: previous });
-      setPersistError(error instanceof Error ? error.message : "Falha ao salvar o status.");
-    }
-  }
+      try {
+        await patchLeadStatus(lead, column.dropStatus);
+      } catch (error) {
+        updateLead({ id: lead.id, status: previous });
+        setPersistError(error instanceof Error ? error.message : "Falha ao salvar o status.");
+      }
+    },
+    [demoMode, leads, updateLead],
+  );
 
-  function onDragEnd(event: DragEndEvent) {
-    setActiveId(null);
-    const { active, over } = event;
-    if (!over) return;
-    const leadId = Number(String(active.id).replace("lead-", ""));
-    if (!Number.isFinite(leadId)) return;
+  const onMoveLead = useCallback(
+    (leadId: number, columnId: PipelineColumnId) => {
+      void moveLead(leadId, columnId);
+    },
+    [moveLead],
+  );
 
-    const overId = String(over.id);
-    const column =
-      PIPELINE_COLUMNS.find((item) => item.id === overId) ??
-      (() => {
-        const overLeadId = Number(overId.replace("lead-", ""));
-        const overLead = leads.find((item) => item.id === overLeadId);
-        return overLead ? columnForStatus(overLead.status) : null;
-      })();
+  const onWhatsAppChat = useCallback((lead: CrmLead) => {
+    setChatLead(lead);
+  }, []);
 
-    if (!column) return;
-    void moveLead(leadId, column.id);
-  }
+  const onCreated = useCallback((lead: CrmLead) => {
+    setLeads((current) => [lead, ...current]);
+  }, []);
 
   return (
     <main className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
@@ -277,74 +273,17 @@ export function CrmBoard({
       )}
 
       {!loadError && leads.length > 0 && (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCorners}
-          onDragStart={(event) => {
-            const id = Number(String(event.active.id).replace("lead-", ""));
-            setActiveId(Number.isFinite(id) ? id : null);
-          }}
-          onDragCancel={() => setActiveId(null)}
-          onDragEnd={onDragEnd}
-        >
-          <section
-            className="mt-6 flex gap-3 overflow-x-auto pb-4"
-            aria-label="Quadro Kanban do CRM"
-          >
-            {PIPELINE_COLUMNS.map((column) => {
-              const columnLeads = filtered.filter((lead) => column.statuses.includes(lead.status));
-              return (
-                <div
-                  key={column.id}
-                  className="flex w-[260px] shrink-0 flex-col rounded-[20px] bg-[var(--neu-bg-well)]/80 p-2.5 sm:w-[272px]"
-                >
-                  <div className="flex items-center gap-2 px-2 py-2">
-                    <span
-                      className="size-2.5 rounded-full"
-                      style={{ backgroundColor: column.color }}
-                      aria-hidden
-                    />
-                    <h2 className="text-sm font-semibold text-[var(--text)]">{column.title}</h2>
-                    <span className="ml-auto text-xs font-semibold tabular-nums text-[var(--text-4)]">
-                      {columnLeads.length}
-                    </span>
-                  </div>
-                  <ColumnDropZone columnId={column.id}>
-                    {columnLeads.map((lead) => (
-                      <KanbanCard
-                        key={lead.id}
-                        lead={lead}
-                        detailHref={demoMode ? `/preview/crm/${lead.id}` : undefined}
-                        onWhatsAppChat={(item) => setChatLead(item)}
-                      />
-                    ))}
-                    {columnLeads.length === 0 && (
-                      <p className="px-2 py-10 text-center text-sm text-[var(--text-5)]">Sem leads</p>
-                    )}
-                  </ColumnDropZone>
-                </div>
-              );
-            })}
-          </section>
-
-          <DragOverlay dropAnimation={null}>
-            {activeLead ? (
-              <div className="w-[256px] scale-[1.02] opacity-95 shadow-xl pointer-events-none">
-                <KanbanCard
-                  lead={activeLead}
-                  detailHref={demoMode ? `/preview/crm/${activeLead.id}` : undefined}
-                />
-              </div>
-            ) : null}
-          </DragOverlay>
-        </DndContext>
+        <CrmKanbanBoard
+          leads={filtered}
+          demoMode={demoMode}
+          onMoveLead={onMoveLead}
+          onWhatsAppChat={onWhatsAppChat}
+        />
       )}
 
-      <CreateLeadModal
-        open={createOpen}
-        onClose={() => setCreateOpen(false)}
-        onCreated={(lead) => setLeads((current) => [lead, ...current])}
-      />
+      {createOpen && (
+        <CreateLeadModal open onClose={() => setCreateOpen(false)} onCreated={onCreated} />
+      )}
 
       {chatLead && (
         <WhatsAppChatModal
@@ -359,5 +298,4 @@ export function CrmBoard({
   );
 }
 
-// Re-export types used by the CRM page
 export type { CrmLead, LeadStatus } from "@/lib/crm/types";

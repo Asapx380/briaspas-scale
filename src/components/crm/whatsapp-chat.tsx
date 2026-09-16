@@ -1,6 +1,10 @@
 "use client";
 
-import { ChatCircleDots, PaperPlaneTilt, Robot, User, X } from "@phosphor-icons/react";
+import { ChatCircleDots } from "@phosphor-icons/react/dist/csr/ChatCircleDots";
+import { PaperPlaneTilt } from "@phosphor-icons/react/dist/csr/PaperPlaneTilt";
+import { Robot } from "@phosphor-icons/react/dist/csr/Robot";
+import { User } from "@phosphor-icons/react/dist/csr/User";
+import { X } from "@phosphor-icons/react/dist/csr/X";
 import { FormEvent, useEffect, useState } from "react";
 
 type WhatsAppMessage = {
