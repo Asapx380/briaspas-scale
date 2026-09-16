@@ -19,8 +19,8 @@ function escapedAttribute(value: string) {
   return value.replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;");
 }
 
-function visitScript(slug: string) {
-  return `<script>(function(){var n='briaspas_visit_session',v=document.cookie.split('; ').find(function(x){return x.indexOf(n+'=')===0});var i=v?v.split('=')[1]:crypto.randomUUID();if(!v)document.cookie=n+'='+i+'; Path=/; Max-Age=31536000; SameSite=Lax'+(location.protocol==='https:'?'; Secure':'');fetch('/api/v1/site-visits',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({slug:${JSON.stringify(slug)},sessionId:i,referrerHost:document.referrer?new URL(document.referrer).hostname:null,utmSource:new URLSearchParams(location.search).get('utm_source'),utmMedium:new URLSearchParams(location.search).get('utm_medium'),utmCampaign:new URLSearchParams(location.search).get('utm_campaign')}),keepalive:true})})()</script>`;
+function visitScript(slug: string, isPreview = false) {
+  return `<script>(function(){var n='briaspas_visit_session',v=document.cookie.split('; ').find(function(x){return x.indexOf(n+'=')===0});var i=v?v.split('=')[1]:crypto.randomUUID();if(!v)document.cookie=n+'='+i+'; Path=/; Max-Age=31536000; SameSite=Lax'+(location.protocol==='https'?'; Secure':'');var p=${isPreview ? "true" : "false"}||new URLSearchParams(location.search).has('preview');fetch('/api/v1/site-visits',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({slug:${JSON.stringify(slug)},sessionId:i,referrerHost:document.referrer?new URL(document.referrer).hostname:null,utmSource:new URLSearchParams(location.search).get('utm_source'),utmMedium:new URLSearchParams(location.search).get('utm_medium'),utmCampaign:new URLSearchParams(location.search).get('utm_campaign'),isPreview:p}),keepalive:true})})()</script>`;
 }
 
 function previewAssetUrl(value: string, slug: string, token: string, sourcePath: string) {
@@ -105,9 +105,12 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     let content: string | ArrayBuffer;
     if (isIndex) {
       const html = await data.text();
+      const withVisit = html.includes("</body>")
+        ? html.replace(/<\/body\s*>/i, `${visitScript(slug, Boolean(preview))}</body>`)
+        : `${html}${visitScript(slug, Boolean(preview))}`;
       content = preview && activePreviewToken
-        ? addPreviewTokenToHtml(html, slug, activePreviewToken)
-        : html.replace(/<\/body\s*>/i, `${visitScript(slug)}</body>`);
+        ? addPreviewTokenToHtml(withVisit, slug, activePreviewToken)
+        : withVisit;
     } else if (preview && activePreviewToken && assetPath.toLowerCase().endsWith(".css")) {
       content = addPreviewTokenToCss(await data.text(), slug, activePreviewToken, assetPath);
     } else {

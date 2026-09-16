@@ -4,7 +4,7 @@ import { createPublicClient } from "@/lib/supabase/public";
 
 export const runtime = "nodejs";
 
-const BOT_PATTERN = /bot|crawler|spider|preview|facebookexternalhit|whatsapp|slack/i;
+const BOT_PATTERN = /bot|crawler|spider|facebookexternalhit|whatsapp|slackbot|linkedinbot/i;
 
 function shortText(value: unknown, maximum: number) {
   if (value === null || value === undefined || value === "") return null;
@@ -36,6 +36,7 @@ export async function POST(request: Request) {
   const utmSource = shortText(values.utmSource, 120);
   const utmMedium = shortText(values.utmMedium, 120);
   const utmCampaign = shortText(values.utmCampaign, 120);
+  const isPreview = values.isPreview === true;
   if (
     !slug || !sessionId ||
     referrerHost === undefined || utmSource === undefined ||
@@ -56,8 +57,12 @@ export async function POST(request: Request) {
     target_utm_source: utmSource,
     target_utm_medium: utmMedium,
     target_utm_campaign: utmCampaign,
+    target_is_preview: isPreview,
   });
 
-  if (error) return new Response(null, { status: 204 });
+  if (error) {
+    console.warn(`site_visit_track_failed error=${error.message}`);
+    return new Response(null, { status: 204 });
+  }
   return new Response(null, { status: 204 });
 }

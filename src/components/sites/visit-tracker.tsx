@@ -17,9 +17,20 @@ function getSessionId() {
   return created;
 }
 
-export function VisitTracker({ slug }: { slug: string }) {
+type VisitTrackerProps = {
+  slug: string;
+  /** true quando o visitante abre a prévia/demo do site. */
+  isPreview?: boolean;
+};
+
+export function VisitTracker({ slug, isPreview = false }: VisitTrackerProps) {
   useEffect(() => {
     const query = new URLSearchParams(location.search);
+    const previewFlag =
+      isPreview ||
+      query.has("preview") ||
+      document.cookie.split("; ").some((item) => item.startsWith("briaspas_preview_"));
+
     let referrerHost: string | null = null;
     try {
       referrerHost = document.referrer ? new URL(document.referrer).hostname : null;
@@ -37,10 +48,11 @@ export function VisitTracker({ slug }: { slug: string }) {
         utmSource: query.get("utm_source"),
         utmMedium: query.get("utm_medium"),
         utmCampaign: query.get("utm_campaign"),
+        isPreview: previewFlag,
       }),
       keepalive: true,
     });
-  }, [slug]);
+  }, [slug, isPreview]);
 
   return null;
 }

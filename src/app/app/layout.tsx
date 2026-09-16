@@ -22,13 +22,19 @@ export default async function AppLayout({ children }: AppLayoutProps) {
   let notificationCount = 0;
   try {
     const nowIso = new Date().toISOString();
-    const { count } = await supabase
-      .from("leads")
-      .select("id", { count: "exact", head: true })
-      .not("follow_up_at", "is", null)
-      .lt("follow_up_at", nowIso)
-      .not("status", "in", "(won,lost)");
-    notificationCount = count ?? 0;
+    const [{ count: overdueCount }, { count: hotCount }] = await Promise.all([
+      supabase
+        .from("leads")
+        .select("id", { count: "exact", head: true })
+        .not("follow_up_at", "is", null)
+        .lt("follow_up_at", nowIso)
+        .not("status", "in", "(won,lost)"),
+      supabase
+        .from("workspace_notifications")
+        .select("id", { count: "exact", head: true })
+        .is("read_at", null),
+    ]);
+    notificationCount = (overdueCount ?? 0) + (hotCount ?? 0);
   } catch {
     notificationCount = 0;
   }
