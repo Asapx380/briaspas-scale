@@ -10,10 +10,11 @@ import type { CrmLead } from "@/lib/crm/types";
 
 type KanbanCardProps = {
   lead: CrmLead;
+  detailHref?: string;
   onWhatsAppChat?: (lead: CrmLead) => void;
 };
 
-export function KanbanCard({ lead, onWhatsAppChat }: KanbanCardProps) {
+export function KanbanCard({ lead, detailHref, onWhatsAppChat }: KanbanCardProps) {
   const router = useRouter();
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `lead-${lead.id}`,
@@ -24,6 +25,7 @@ export function KanbanCard({ lead, onWhatsAppChat }: KanbanCardProps) {
   const tier = leadTier(score);
   const whatsapp = toBrazilianWhatsAppNumber(lead.phone);
   const meta = [lead.niche, lead.city].filter(Boolean).join(" · ");
+  const href = detailHref ?? `/app/crm/${lead.id}`;
 
   const style: CSSProperties = {
     transform: CSS.Translate.toString(transform),
@@ -32,7 +34,8 @@ export function KanbanCard({ lead, onWhatsAppChat }: KanbanCardProps) {
   };
 
   function openDetail() {
-    router.push(`/app/crm/${lead.id}`);
+    if (isDragging) return;
+    router.push(href);
   }
 
   function onCardKeyDown(event: KeyboardEvent<HTMLElement>) {

@@ -4,7 +4,8 @@ import {
   DndContext,
   DragEndEvent,
   DragOverlay,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   closestCorners,
   useDroppable,
   useSensor,
@@ -104,7 +105,8 @@ export function CrmBoard({
   }
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 160, tolerance: 6 } }),
   );
 
   const filtered = useMemo(() => {
@@ -312,6 +314,7 @@ export function CrmBoard({
                       <KanbanCard
                         key={lead.id}
                         lead={lead}
+                        detailHref={demoMode ? `/preview/crm/${lead.id}` : undefined}
                         onWhatsAppChat={(item) => setChatLead(item)}
                       />
                     ))}
@@ -326,8 +329,11 @@ export function CrmBoard({
 
           <DragOverlay dropAnimation={null}>
             {activeLead ? (
-              <div className="w-[256px] scale-[1.02] opacity-95 shadow-xl">
-                <KanbanCard lead={activeLead} />
+              <div className="w-[256px] scale-[1.02] opacity-95 shadow-xl pointer-events-none">
+                <KanbanCard
+                  lead={activeLead}
+                  detailHref={demoMode ? `/preview/crm/${activeLead.id}` : undefined}
+                />
               </div>
             ) : null}
           </DragOverlay>

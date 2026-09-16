@@ -383,7 +383,7 @@ export function LeadDetailView({
   async function deleteLead() {
     if (!window.confirm("Remover este lead e todos os dados e sites vinculados?")) return;
     if (demoMode) {
-      router.push("/app/crm");
+      router.push("/preview/crm");
       return;
     }
     setSaving(true);
@@ -399,14 +399,14 @@ export function LeadDetailView({
     if (siblingIds.length === 0) return;
     const current = index >= 0 ? index : 0;
     const next = (current + delta + siblingIds.length) % siblingIds.length;
-    router.push(`/app/crm/${siblingIds[next]}`);
+    router.push(`${demoMode ? "/preview/crm" : "/app/crm"}/${siblingIds[next]}`);
   }
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <Link
-          href="/app/crm"
+          href={demoMode ? "/preview/crm" : "/app/crm"}
           className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--text-3)] hover:text-[var(--brand)]"
         >
           <ArrowLeft size={16} /> CRM{" "}
