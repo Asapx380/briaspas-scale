@@ -93,6 +93,7 @@ const SOURCE_LABELS: Record<string, string> = {
   google_places: "Google Places",
   openstreetmap: "OpenStreetMap",
   foursquare: "Foursquare",
+  scraper_kit: "Scraper Kit",
 };
 
 const STATUS_OPTIONS: { value: LeadStatus; label: string }[] = [

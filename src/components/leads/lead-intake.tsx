@@ -41,18 +41,22 @@ const FIELD_CLASS =
 const HEADER_ALIASES = {
   companyName: ["name", "place name", "business name", "company", "company name", "nome", "nome da empresa", "empresa", "title"],
   phone: ["phone", "phone number", "telephone", "telefone", "telefone principal", "international phone number"],
-  email: ["email", "e mail", "e-mail", "business email", "email da empresa"],
-  address: ["address", "full address", "formatted address", "endereco", "endereco completo", "logradouro"],
+  email: ["email", "e mail", "e-mail", "business email", "email da empresa", "emails"],
+  address: ["address", "full address", "formatted address", "complete address", "endereco", "endereco completo", "logradouro"],
   niche: ["category", "business category", "type", "niche", "categoria", "tipo", "segmento", "ramo"],
   city: ["city", "locality", "municipality", "cidade", "municipio"],
   websiteUrl: ["website", "website url", "site", "site url", "url do site"],
   instagram: ["instagram", "instagram url", "perfil do instagram"],
-  photoUrls: ["photos", "photo urls", "image urls", "fotos", "urls das fotos"],
-  googleMapsUrl: ["google maps", "google maps url", "maps url", "map url", "direct google maps link", "link do maps", "url do google maps"],
+  photoUrls: ["photos", "photo urls", "image urls", "fotos", "urls das fotos", "images", "thumbnail"],
+  googleMapsUrl: ["google maps", "google maps url", "maps url", "map url", "direct google maps link", "link do maps", "url do google maps", "link"],
   googlePlaceId: ["place id", "google place id", "placeid", "googleplaceid"],
-  rating: ["rating", "google maps rating", "stars", "star rating", "avaliacao", "nota", "estrelas"],
+  rating: ["rating", "google maps rating", "stars", "star rating", "avaliacao", "nota", "estrelas", "review rating"],
   reviewCount: ["reviews", "review count", "total reviews", "total review count", "user rating count", "avaliacoes", "numero de avaliacoes"],
 } as const;
+
+const SCRAPER_KIT_HEADERS = new Set([
+  "title", "review rating", "review count", "emails", "place id", "cid", "complete address", "link",
+]);
 
 type CsvField = keyof typeof HEADER_ALIASES;
 
@@ -197,16 +201,19 @@ function readCsv(text: string, defaultNiche: string, defaultCity: string) {
   }
 
   if (leads.length === 0) throw new Error("Nenhuma empresa válida foi encontrada no arquivo.");
-  if (leads.length > 100) throw new Error("Importe no máximo 100 empresas de cada vez.");
+  if (leads.length > 200) throw new Error("Importe no máximo 200 empresas de cada vez.");
   if (leads.some((lead) => !lead.niche || !lead.city)) {
     throw new Error("Informe o nicho e a cidade padrão antes de carregar o CSV.");
   }
+
+  const scraperKit = headers.some((header) => SCRAPER_KIT_HEADERS.has(normalizeHeader(header)));
 
   return {
     leads,
     ignored,
     recognized: Object.keys(indexes).length,
     totalHeaders: headers.length,
+    source: scraperKit ? ("scraper_kit" as const) : ("maps2sheets" as const),
   };
 }
 
@@ -330,6 +337,7 @@ function CsvImporter() {
   const [isImporting, setIsImporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ImportResult | null>(null);
+  const [importSource, setImportSource] = useState<"maps2sheets" | "scraper_kit">("maps2sheets");
 
   const phoneCount = useMemo(() => leads.filter((lead) => lead.phone).length, [leads]);
   const websiteCount = useMemo(() => leads.filter((lead) => lead.websiteUrl).length, [leads]);
@@ -347,6 +355,7 @@ function CsvImporter() {
       const parsed = readCsv(await file.text(), defaultNiche.trim(), defaultCity.trim());
       setFileName(file.name);
       setLeads(parsed.leads);
+      setImportSource(parsed.source);
       setIgnored(parsed.ignored);
       setMappingInfo(`${parsed.recognized} de ${parsed.totalHeaders} colunas reconhecidas`);
     } catch (fileError) {
@@ -390,7 +399,12 @@ function CsvImporter() {
       const response = await fetch("/api/v1/leads/imports", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ leads }),
+        body: JSON.stringify({
+          source: importSource,
+          defaultCity: defaultCity.trim() || undefined,
+          defaultNiche: defaultNiche.trim() || undefined,
+          leads,
+        }),
       });
       if (!response.ok) throw new Error(await responseMessage(response, "Não foi possível importar as empresas."));
       const payload = (await response.json()) as { data: ImportResult };
@@ -420,7 +434,7 @@ function CsvImporter() {
       <div onDragOver={(event) => event.preventDefault()} onDrop={handleDrop} className="mt-5 flex min-h-44 flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 bg-[var(--neu-bg-pop)] px-5 py-8 text-center">
         <FileCsv size={34} className="text-[var(--brand)]" />
         <p className="mt-4 font-semibold text-[var(--text)]">Solte o CSV aqui</p>
-        <p className="mt-1 max-w-md text-sm leading-6 text-[var(--text-4)]">Aceita arquivos do Maps2Sheets e planilhas com cabeçalhos em português ou inglês.</p>
+        <p className="mt-1 max-w-md text-sm leading-6 text-[var(--text-4)]">Aceita Maps2Sheets, google-maps-scraper-kit (title, phone, emails, website…) e planilhas em português ou inglês.</p>
         <input ref={inputRef} type="file" accept=".csv,text/csv" onChange={handleFileChange} className="sr-only" />
         <div className="mt-5 flex flex-wrap justify-center gap-3">
           <button type="button" onClick={() => inputRef.current?.click()} className="inline-flex h-10 items-center gap-2 rounded-xl bg-[var(--brand)] px-4 text-sm font-semibold text-white hover:bg-[var(--brand-hover)] active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]">
