@@ -86,7 +86,8 @@ export async function searchPlaces(input: LeadSearchInput): Promise<LeadSearchRe
     },
     body: JSON.stringify({
       textQuery: `${input.niche} em ${input.city}, Brasil`,
-      pageSize: input.limit ?? 10,
+      // Places Text Search (New) aceita pageSize no máximo 20.
+      pageSize: Math.min(Math.max(input.limit ?? 10, 1), 20),
       pageToken: input.pageToken,
       languageCode: "pt-BR",
       regionCode: "BR",

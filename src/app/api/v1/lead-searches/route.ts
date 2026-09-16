@@ -9,6 +9,10 @@ import {
   FoursquareRequestError,
   searchFoursquarePlaces,
 } from "@/lib/foursquare/search-places";
+import {
+  DEFAULT_LEAD_SEARCH_LIMIT,
+  MAX_LEAD_SEARCH_LIMIT,
+} from "@/lib/lead-sources/search-limits";
 import type { LeadSearchInput } from "@/lib/lead-sources/types";
 import { checkRateLimit, rateLimitResponse } from "@/lib/security/rate-limit";
 
@@ -33,7 +37,7 @@ function parseInput(value: unknown): LeadSearchInput | null {
   const body = value as Record<string, unknown>;
   const niche = typeof body.niche === "string" ? body.niche.trim() : "";
   const city = typeof body.city === "string" ? body.city.trim() : "";
-  const limit = body.limit === undefined ? 10 : body.limit;
+  const limit = body.limit === undefined ? DEFAULT_LEAD_SEARCH_LIMIT : body.limit;
   const pageToken = body.pageToken;
 
   if (
@@ -44,7 +48,7 @@ function parseInput(value: unknown): LeadSearchInput | null {
     typeof limit !== "number" ||
     !Number.isInteger(limit) ||
     limit < 1 ||
-    limit > 50 ||
+    limit > MAX_LEAD_SEARCH_LIMIT ||
     (pageToken !== undefined &&
       (typeof pageToken !== "string" || pageToken.length > 2_048))
   ) {
@@ -89,7 +93,7 @@ export async function POST(request: Request) {
   if (!input) {
     return errorResponse(
       "validation_error",
-      "Informe um nicho, uma cidade e um limite entre 1 e 50.",
+      `Informe um nicho, uma cidade e um limite entre 1 e ${MAX_LEAD_SEARCH_LIMIT}.`,
       422,
     );
   }

@@ -1,4 +1,5 @@
 import { getFoursquareApiKey } from "@/lib/foursquare/env";
+import { MAX_LEAD_SEARCH_LIMIT } from "@/lib/lead-sources/search-limits";
 import type {
   DiscoveredLead,
   LeadSearchInput,
@@ -110,7 +111,10 @@ export async function searchFoursquarePlaces(
   const url = new URL(SEARCH_URL);
   url.searchParams.set("query", input.niche);
   url.searchParams.set("near", `${input.city}, Brasil`);
-  url.searchParams.set("limit", String(Math.min(input.limit ?? 25, 50)));
+  url.searchParams.set(
+    "limit",
+    String(Math.min(input.limit ?? 25, MAX_LEAD_SEARCH_LIMIT)),
+  );
   url.searchParams.set("fields", FIELDS);
 
   const response = await fetch(url, {
