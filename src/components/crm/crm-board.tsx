@@ -5,6 +5,7 @@ import {
   ArrowSquareOut,
   Buildings,
   CalendarBlank,
+  ChatCircleDots,
   Check,
   EnvelopeSimple,
   Eye,
@@ -14,12 +15,14 @@ import {
   MapPin,
   NotePencil,
   Phone,
+  Sparkle,
   Star,
   X,
 } from "@phosphor-icons/react";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import type { SiteBrief } from "@/lib/sites/design-plan";
+import { WhatsAppChatModal, WhatsAppControlPanel } from "@/components/crm/whatsapp-chat";
 
 export type LeadStatus = "new" | "contacted" | "replied" | "hot" | "proposal" | "won" | "lost";
 
@@ -83,6 +86,16 @@ export type CrmLead = {
   site_status: "not_generated" | "generating" | "ready" | "failed" | "published";
   site_source: "uploaded" | "generated" | null;
   site_brief: SiteBrief | null;
+  ai_diagnosis: {
+    resumo?: string;
+    dorPrincipal?: string;
+    prioridade?: string;
+  } | null;
+  ai_outreach: {
+    mensagem?: string;
+    canal?: string;
+    channel?: string;
+  } | null;
   created_at: string;
   updated_at: string | null;
 };
@@ -162,6 +175,12 @@ function LeadCard({ lead, onUpdated, onDeleted, nowMs }: { lead: CrmLead; onUpda
   const [siteError, setSiteError] = useState<string | null>(null);
   const [brief, setBrief] = useState<SiteBrief | null>(lead.site_brief);
   const [copied, setCopied] = useState(false);
+  const [outreachCopied, setOutreachCopied] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [diagnosisBusy, setDiagnosisBusy] = useState(false);
+  const [diagnosisError, setDiagnosisError] = useState<string | null>(null);
+  const [diagnosis, setDiagnosis] = useState(lead.ai_diagnosis);
+  const [outreach, setOutreach] = useState(lead.ai_outreach);
 
   async function generateBrief() {
     setSiteBusy(true);
@@ -209,6 +228,39 @@ function LeadCard({ lead, onUpdated, onDeleted, nowMs }: { lead: CrmLead; onUpda
     if (!brief) return;
     await navigator.clipboard.writeText(briefingText(brief));
     setCopied(true); window.setTimeout(() => setCopied(false), 1800);
+  }
+
+  async function generateDiagnosis() {
+    setDiagnosisBusy(true);
+    setDiagnosisError(null);
+    try {
+      const response = await fetch(`/api/v1/leads/${lead.id}/diagnosis`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ channel: "whatsapp" }),
+      });
+      const payload = await response.json() as {
+        data?: { diagnosis?: CrmLead["ai_diagnosis"]; outreach?: CrmLead["ai_outreach"] };
+        error?: { message?: string };
+      };
+      if (!response.ok || !payload.data?.diagnosis) {
+        throw new Error(payload.error?.message ?? "Não foi possível gerar o diagnóstico.");
+      }
+      setDiagnosis(payload.data.diagnosis);
+      setOutreach(payload.data.outreach ?? null);
+      onUpdated({ id: lead.id, ai_diagnosis: payload.data.diagnosis, ai_outreach: payload.data.outreach ?? null });
+    } catch (err) {
+      setDiagnosisError(err instanceof Error ? err.message : "Não foi possível gerar o diagnóstico.");
+    } finally {
+      setDiagnosisBusy(false);
+    }
+  }
+
+  async function copyOutreach() {
+    if (!outreach?.mensagem) return;
+    await navigator.clipboard.writeText(outreach.mensagem);
+    setOutreachCopied(true);
+    window.setTimeout(() => setOutreachCopied(false), 1800);
   }
 
   async function changePublication(action: "publish" | "unpublish") {
@@ -391,13 +443,55 @@ function LeadCard({ lead, onUpdated, onDeleted, nowMs }: { lead: CrmLead; onUpda
         {brief && <section className="mt-4 space-y-3 border-t border-[var(--brand)]/15 pt-4 text-xs text-[var(--text-2)]"><div className="flex items-center justify-between gap-3"><p className="font-semibold text-[var(--brand)]">Briefing do site</p><button type="button" onClick={copyBrief} className="text-[var(--brand)] hover:text-[var(--brand)]">{copied ? "Copiado" : "Copiar briefing"}</button></div><p className="leading-5">{brief.resumoDoNegocio}</p><p><strong>Tom:</strong> {brief.tomDeVoz}</p><div className="flex gap-1.5">{Object.entries(brief.colors).map(([name, color]) => <span key={name} title={`${name}: ${color}`} className="size-5 rounded-full border border-black/10" style={{ backgroundColor: color }} />)}</div><p><strong>Fontes:</strong> {brief.typography.display} + {brief.typography.body}</p><p><strong>Layout:</strong> {brief.layoutConcept}</p><ul className="space-y-1">{brief.servicosSugeridos.map((item) => <li key={item.nome}><strong>{item.nome}:</strong> {item.microbeneficio}</li>)}</ul><ul className="space-y-1 text-[var(--text-3)]">{brief.diferenciais.map((item) => <li key={item}>• {item}</li>)}</ul><p><strong>CTA:</strong> {brief.ctaPrincipal}</p>{brief.fotoSugerida && <a href={brief.fotoSugerida.url} target="_blank" rel="noreferrer" className="block text-[var(--brand)] hover:text-[var(--brand)]">Ver foto sugerida — {brief.fotoSugerida.credito}</a>}</section>}
       </div>
 
+      <div className="mt-4 rounded-lg border border-emerald-500/15 bg-emerald-500/[0.04] p-3">
+        <div className="flex items-center justify-between gap-3">
+          <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
+            <Sparkle size={15} weight="fill" /> Diagnóstico e abordagem
+          </p>
+          {diagnosis?.prioridade && (
+            <span className="text-[11px] capitalize text-[var(--text-4)]">Prioridade {diagnosis.prioridade}</span>
+          )}
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button type="button" disabled={diagnosisBusy} onClick={generateDiagnosis} className="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/20 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 hover:bg-emerald-500/10 disabled:opacity-60">
+            {diagnosisBusy ? "Gerando..." : diagnosis ? "Regenerar diagnóstico" : "Gerar diagnóstico + copy"}
+          </button>
+          {outreach?.mensagem && (
+            <button type="button" onClick={copyOutreach} className="rounded-md border border-black/8 px-2.5 py-1.5 text-xs font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-well)]">
+              {outreachCopied ? "Copy copiada" : "Copiar abordagem"}
+            </button>
+          )}
+        </div>
+        {diagnosisError && <p role="alert" className="mt-2 text-xs text-rose-600">{diagnosisError}</p>}
+        {diagnosis?.dorPrincipal && (
+          <div className="mt-3 space-y-2 text-xs leading-5 text-[var(--text-2)]">
+            <p><strong>Dor:</strong> {diagnosis.dorPrincipal}</p>
+            {diagnosis.resumo && <p className="text-[var(--text-3)]">{diagnosis.resumo}</p>}
+            {outreach?.mensagem && <p className="rounded-lg bg-white/80 p-2.5 text-[var(--text-3)] whitespace-pre-wrap">{outreach.mensagem}</p>}
+          </div>
+        )}
+      </div>
+
       <div className="mt-4 flex flex-wrap gap-3 border-t border-black/8 pt-3 text-xs font-medium">
-        {whatsappNumber && <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer" className="text-emerald-700 hover:text-emerald-600">WhatsApp</a>}
+        {whatsappNumber && (
+          <button type="button" onClick={() => setChatOpen(true)} className="inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-600">
+            <ChatCircleDots size={14} /> Chat WhatsApp
+          </button>
+        )}
+        {whatsappNumber && <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer" className="text-emerald-700 hover:text-emerald-600">Abrir wa.me</a>}
         {lead.website_url && <a href={lead.website_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[var(--brand)]">Site <ArrowSquareOut size={14} /></a>}
         {lead.google_maps_url && <a href={lead.google_maps_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[var(--brand)]">Mapa <ArrowSquareOut size={14} /></a>}
         {lead.site_status === "published" && <Link href={`/empresa/${lead.slug}`} target="_blank" className="inline-flex items-center gap-1 text-[var(--brand)]">Site criado <ArrowSquareOut size={14} /></Link>}
         <button type="button" onClick={() => setEditing((current) => !current)} className="ml-auto inline-flex items-center gap-1.5 text-[var(--text-2)] hover:text-[var(--text)]"><NotePencil size={15} />Editar</button>
       </div>
+
+      <WhatsAppChatModal
+        leadId={lead.id}
+        companyName={lead.company_name}
+        phone={lead.phone}
+        open={chatOpen}
+        onClose={() => setChatOpen(false)}
+      />
 
       {editing && (
         <form onSubmit={save} className="mt-4 space-y-3 border-t border-black/8 pt-4">
@@ -417,7 +511,22 @@ function LeadCard({ lead, onUpdated, onDeleted, nowMs }: { lead: CrmLead; onUpda
   );
 }
 
-export function CrmBoard({ initialLeads, loadError }: { initialLeads: CrmLead[]; loadError: string | null }) {
+export function CrmBoard({
+  initialLeads,
+  loadError,
+  whatsappConversations = [],
+}: {
+  initialLeads: CrmLead[];
+  loadError: string | null;
+  whatsappConversations?: Array<{
+    id: number;
+    contact_name: string | null;
+    contact_phone: string | null;
+    agent_enabled: boolean;
+    last_message_at: string | null;
+    lead_id: number | null;
+  }>;
+}) {
   const [leads, setLeads] = useState(initialLeads);
   const [nowMs, setNowMs] = useState(0);
   useEffect(() => {
@@ -439,6 +548,8 @@ export function CrmBoard({ initialLeads, loadError }: { initialLeads: CrmLead[];
         </div>
         <Link href="/app/leads" className="inline-flex items-center gap-2 rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--brand-hover)]">Adicionar empresas <ArrowRight size={17} weight="bold" /></Link>
       </div>
+
+      <WhatsAppControlPanel conversations={whatsappConversations} />
 
       {loadError && <p role="alert" className="mt-8 rounded-xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-700">{loadError}</p>}
       {!loadError && overdueCount > 0 && <p role="status" className="mt-8 rounded-xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-800"><strong>{overdueCount} {overdueCount === 1 ? "follow-up atrasado" : "follow-ups atrasados"}.</strong> Os cards correspondentes estão destacados para você priorizar hoje.</p>}
