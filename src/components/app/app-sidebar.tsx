@@ -50,8 +50,10 @@ const NAV_ITEMS: NavItem[] = [
 
 function isActive(pathname: string, item: NavItem) {
   if (item.href === "#") return false;
-  if (item.match === "exact") return pathname === item.href;
-  return pathname === item.href || pathname.startsWith(`${item.href}/`);
+  // Preview do shell: destaca Dashboard para screenshots sem auth.
+  const path = pathname.startsWith("/preview/shell") ? "/app" : pathname;
+  if (item.match === "exact") return path === item.href;
+  return path === item.href || path.startsWith(`${item.href}/`);
 }
 
 type AppSidebarProps = {
