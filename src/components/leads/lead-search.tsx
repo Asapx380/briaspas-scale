@@ -12,6 +12,11 @@ import {
   Star,
 } from "@phosphor-icons/react";
 import { FormEvent, useState } from "react";
+import {
+  DEFAULT_LEAD_SEARCH_LIMIT,
+  LEAD_SEARCH_LIMIT_OPTIONS,
+  type LeadSearchLimitOption,
+} from "@/lib/lead-sources/search-limits";
 import type {
   DiscoveredLead,
   LeadSearchResult,
@@ -33,12 +38,13 @@ type SaveState = "saving" | "saved" | "duplicate" | "error";
 async function requestLeads(
   niche: string,
   city: string,
+  limit: number,
   pageToken?: string,
 ): Promise<LeadSearchResult> {
   const response = await fetch("/api/v1/lead-searches", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ niche, city, limit: 25, pageToken }),
+    body: JSON.stringify({ niche, city, limit, pageToken }),
   });
 
   const payload = (await response.json()) as ApiSuccess | ApiError;
@@ -146,7 +152,12 @@ function LeadRow({
 export function LeadSearch() {
   const [niche, setNiche] = useState("");
   const [city, setCity] = useState("");
-  const [searchedFor, setSearchedFor] = useState<{ niche: string; city: string } | null>(null);
+  const [limit, setLimit] = useState<LeadSearchLimitOption>(DEFAULT_LEAD_SEARCH_LIMIT);
+  const [searchedFor, setSearchedFor] = useState<{
+    niche: string;
+    city: string;
+    limit: number;
+  } | null>(null);
   const [leads, setLeads] = useState<DiscoveredLead[]>([]);
   const [nextPageToken, setNextPageToken] = useState<string | null>(null);
   const [sourceLabel, setSourceLabel] = useState<string | null>(null);
@@ -170,11 +181,11 @@ export function LeadSearch() {
     setError(null);
 
     try {
-      const result = await requestLeads(normalizedNiche, normalizedCity);
+      const result = await requestLeads(normalizedNiche, normalizedCity, limit);
       setLeads(result.leads);
       setNextPageToken(result.nextPageToken);
       setSourceLabel(result.sourceLabel);
-      setSearchedFor({ niche: normalizedNiche, city: normalizedCity });
+      setSearchedFor({ niche: normalizedNiche, city: normalizedCity, limit });
       setBulkMessage(null);
     } catch (requestError) {
       setLeads([]);
@@ -200,6 +211,7 @@ export function LeadSearch() {
       const result = await requestLeads(
         searchedFor.niche,
         searchedFor.city,
+        searchedFor.limit,
         nextPageToken,
       );
       setLeads((currentLeads) => [...currentLeads, ...result.leads]);
@@ -328,7 +340,7 @@ export function LeadSearch() {
 
       <form
         onSubmit={handleSearch}
-        className="grid gap-4 rounded-2xl border border-black/8 bg-[var(--neu-bg-pop)] p-5 sm:p-6 lg:grid-cols-[1fr_1fr_auto] lg:items-end"
+        className="grid gap-4 rounded-2xl border border-black/8 bg-[var(--neu-bg-pop)] p-5 sm:p-6 lg:grid-cols-[1fr_1fr_minmax(8.5rem,10rem)_auto] lg:items-end"
       >
         <label className="grid gap-2 text-sm font-medium text-[var(--text-2)]">
           Nicho
@@ -358,6 +370,25 @@ export function LeadSearch() {
             required
             className="h-11 rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-3.5 text-base text-[var(--text)] outline-none transition-colors placeholder:text-[var(--text-4)] focus:border-[var(--brand)]/60 focus:ring-2 focus:ring-[var(--brand)]/15"
           />
+        </label>
+
+        <label className="grid gap-2 text-sm font-medium text-[var(--text-2)]">
+          Quantos leads?
+          <select
+            name="limit"
+            aria-label="Limite"
+            value={limit}
+            onChange={(event) =>
+              setLimit(Number(event.target.value) as LeadSearchLimitOption)
+            }
+            className="h-11 rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-3.5 text-base text-[var(--text)] outline-none transition-colors focus:border-[var(--brand)]/60 focus:ring-2 focus:ring-[var(--brand)]/15"
+          >
+            {LEAD_SEARCH_LIMIT_OPTIONS.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
         </label>
 
         <button
