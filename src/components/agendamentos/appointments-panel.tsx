@@ -286,7 +286,7 @@ export function AppointmentsPanel({ appointments, leads, loadError }: Appointmen
             >
               <CaretLeft size={18} weight="bold" />
             </button>
-            <h2 className="min-w-[10rem] text-center text-base font-semibold capitalize text-[var(--text)] sm:text-lg">
+            <h2 className="min-w-[10rem] text-center text-base font-semibold text-[var(--text)] sm:text-lg">
               {headerLabel}
             </h2>
             <button
