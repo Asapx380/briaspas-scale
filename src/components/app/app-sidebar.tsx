@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Buildings,
+  CalendarBlank,
   ChartLineUp,
   CurrencyDollar,
   GearSix,
@@ -29,6 +30,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/app", label: "Dashboard", icon: ChartLineUp, match: "exact" },
   { href: "/app/leads", label: "Adicionar leads", icon: PlusCircle, match: "prefix" },
   { href: "/app/crm", label: "CRM", icon: Kanban, match: "prefix" },
+  { href: "/app/agendamentos", label: "Agendamentos", icon: CalendarBlank, match: "prefix" },
   { href: "/app/equipe", label: "Equipe", icon: UsersThree, match: "prefix" },
   { href: "/app/projetos", label: "Projetos", icon: ListChecks, match: "prefix" },
   { href: "/app/operacao", label: "Operação", icon: Buildings, match: "prefix" },
@@ -41,7 +43,6 @@ const NAV_ITEMS: NavItem[] = [
   { href: "#", label: "Cobrar clientes", icon: CurrencyDollar, badge: "EM BREVE" },
   { href: "#", label: "Templates", icon: Layout, badge: "EM BREVE" },
 ];
-
 function isActive(pathname: string, item: NavItem) {
   if (item.href === "#") return false;
   if (item.match === "exact") return pathname === item.href;
