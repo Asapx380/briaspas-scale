@@ -4,7 +4,13 @@ import { getCurrentWorkspace } from "@/lib/workspaces/current";
 export default async function IntegrationsPage() {
   const { supabase, workspaceId, userId } = await getCurrentWorkspace();
   const [{ data: leads }, { data: domains, error: domainError }, { data: google }] = await Promise.all([
-    supabase.from("leads").select("id, company_name, slug").eq("workspace_id", workspaceId).eq("site_status", "published").order("company_name"),
+    supabase
+      .from("leads")
+      .select("id, company_name, slug")
+      .eq("workspace_id", workspaceId)
+      .eq("site_status", "published")
+      .order("company_name")
+      .limit(200),
     supabase.from("custom_domains").select("id, hostname, status, verification_error, lead_id").eq("workspace_id", workspaceId),
     supabase.from("google_connections").select("status, google_account_email").eq("user_id", userId).maybeSingle(),
   ]);
