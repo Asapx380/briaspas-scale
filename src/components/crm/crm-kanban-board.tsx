@@ -44,6 +44,7 @@ type KanbanColumnProps = {
   leads: CrmLead[];
   detailHrefPrefix?: string;
   onWhatsAppChat?: (lead: CrmLead) => void;
+  pendingIds?: Set<number>;
 };
 
 const KanbanColumn = memo(function KanbanColumn({
@@ -53,6 +54,7 @@ const KanbanColumn = memo(function KanbanColumn({
   leads,
   detailHrefPrefix,
   onWhatsAppChat,
+  pendingIds,
 }: KanbanColumnProps) {
   return (
     <div className="flex w-[260px] shrink-0 flex-col rounded-[20px] bg-[var(--neu-bg-well)]/80 p-2.5 sm:w-[272px]">
@@ -70,6 +72,7 @@ const KanbanColumn = memo(function KanbanColumn({
             lead={lead}
             detailHref={detailHrefPrefix ? `${detailHrefPrefix}/${lead.id}` : undefined}
             onWhatsAppChat={onWhatsAppChat}
+            syncing={pendingIds?.has(lead.id) ?? false}
           />
         ))}
         {leads.length === 0 && (
@@ -98,6 +101,7 @@ export type CrmKanbanBoardProps = {
   demoMode?: boolean;
   onMoveLead: (leadId: number, columnId: PipelineColumnId) => void;
   onWhatsAppChat?: (lead: CrmLead) => void;
+  pendingIds?: Set<number>;
 };
 
 export function CrmKanbanBoard({
@@ -105,6 +109,7 @@ export function CrmKanbanBoard({
   demoMode = false,
   onMoveLead,
   onWhatsAppChat,
+  pendingIds,
 }: CrmKanbanBoardProps) {
   const [activeId, setActiveId] = useState<number | null>(null);
 
@@ -133,6 +138,7 @@ export function CrmKanbanBoard({
 
       const leadId = Number(String(active.id).replace("lead-", ""));
       if (!Number.isFinite(leadId)) return;
+      if (pendingIds?.has(leadId)) return;
 
       const overId = String(over.id);
       const column =
@@ -146,7 +152,7 @@ export function CrmKanbanBoard({
       if (!column) return;
       onMoveLead(leadId, column.id);
     },
-    [leadsById, onMoveLead],
+    [leadsById, onMoveLead, pendingIds],
   );
 
   return (
@@ -167,6 +173,7 @@ export function CrmKanbanBoard({
             leads={leadsByColumn[column.id]}
             detailHrefPrefix={detailHrefPrefix}
             onWhatsAppChat={onWhatsAppChat}
+            pendingIds={pendingIds}
           />
         ))}
       </section>

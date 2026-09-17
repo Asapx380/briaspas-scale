@@ -103,6 +103,7 @@ export function CrmBoard({
   const [persistError, setPersistError] = useState<string | null>(null);
   const [chatLead, setChatLead] = useState<CrmLead | null>(null);
   const [baseline, setBaseline] = useState(initialLeads);
+  const [pendingIds, setPendingIds] = useState<Set<number>>(() => new Set());
 
   if (initialLeads !== baseline) {
     setBaseline(initialLeads);
@@ -128,6 +129,7 @@ export function CrmBoard({
       const column = PIPELINE_COLUMNS.find((item) => item.id === columnId);
       if (!lead || !column) return;
       if (column.statuses.includes(lead.status)) return;
+      if (pendingIds.has(leadId)) return;
 
       const previous = lead.status;
       updateLead({ id: lead.id, status: column.dropStatus });
@@ -135,14 +137,21 @@ export function CrmBoard({
 
       if (demoMode) return;
 
+      setPendingIds((current) => new Set(current).add(leadId));
       try {
         await patchLeadStatus(lead, column.dropStatus);
       } catch (error) {
         updateLead({ id: lead.id, status: previous });
         setPersistError(error instanceof Error ? error.message : "Falha ao salvar o status.");
+      } finally {
+        setPendingIds((current) => {
+          const next = new Set(current);
+          next.delete(leadId);
+          return next;
+        });
       }
     },
-    [demoMode, leads, updateLead],
+    [demoMode, leads, pendingIds, updateLead],
   );
 
   const onMoveLead = useCallback(
@@ -278,6 +287,7 @@ export function CrmBoard({
           demoMode={demoMode}
           onMoveLead={onMoveLead}
           onWhatsAppChat={onWhatsAppChat}
+          pendingIds={pendingIds}
         />
       )}
 

@@ -503,6 +503,7 @@ export function AppointmentsPanel({ appointments, leads, loadError }: Appointmen
             role="dialog"
             aria-modal="true"
             aria-labelledby="novo-agendamento-title"
+            aria-busy={pending}
             className="app-card w-full max-w-md p-5 sm:p-6"
             initial={reduceMotion ? false : { opacity: 0, y: 16, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -518,8 +519,11 @@ export function AppointmentsPanel({ appointments, leads, loadError }: Appointmen
               <button
                 type="button"
                 aria-label="Fechar"
-                onClick={() => setModalOpen(false)}
-                className="grid size-9 place-items-center rounded-full text-[var(--text-3)] hover:bg-[var(--neu-bg-well)]"
+                disabled={pending}
+                onClick={() => {
+                  if (!pending) setModalOpen(false);
+                }}
+                className="grid size-9 place-items-center rounded-full text-[var(--text-3)] hover:bg-[var(--neu-bg-well)] disabled:opacity-50"
               >
                 <X size={18} weight="bold" />
               </button>
@@ -535,6 +539,7 @@ export function AppointmentsPanel({ appointments, leads, loadError }: Appointmen
                   name="title"
                   required
                   maxLength={200}
+                  disabled={pending}
                   placeholder="Ex.: Reunião com cliente"
                   className={fieldClass}
                 />
@@ -549,6 +554,7 @@ export function AppointmentsPanel({ appointments, leads, loadError }: Appointmen
                     name="startsAt"
                     type="datetime-local"
                     required
+                    disabled={pending}
                     defaultValue={defaultStartsAt}
                     className={fieldClass}
                   />
@@ -557,7 +563,7 @@ export function AppointmentsPanel({ appointments, leads, loadError }: Appointmen
                   <label htmlFor="appointment-ends" className="mb-1.5 block text-xs font-medium text-[var(--text-3)]">
                     Fim (opcional)
                   </label>
-                  <input id="appointment-ends" name="endsAt" type="datetime-local" className={fieldClass} />
+                  <input id="appointment-ends" name="endsAt" type="datetime-local" disabled={pending} className={fieldClass} />
                 </div>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
@@ -565,7 +571,7 @@ export function AppointmentsPanel({ appointments, leads, loadError }: Appointmen
                   <label htmlFor="appointment-status" className="mb-1.5 block text-xs font-medium text-[var(--text-3)]">
                     Status
                   </label>
-                  <select id="appointment-status" name="status" defaultValue="scheduled" className={fieldClass}>
+                  <select id="appointment-status" name="status" defaultValue="scheduled" disabled={pending} className={fieldClass}>
                     <option value="scheduled">Agendado</option>
                     <option value="pending">Pendente</option>
                     <option value="completed">Concluído</option>
@@ -576,7 +582,7 @@ export function AppointmentsPanel({ appointments, leads, loadError }: Appointmen
                   <label htmlFor="appointment-lead" className="mb-1.5 block text-xs font-medium text-[var(--text-3)]">
                     Lead (opcional)
                   </label>
-                  <select id="appointment-lead" name="leadId" defaultValue="" className={fieldClass}>
+                  <select id="appointment-lead" name="leadId" defaultValue="" disabled={pending} className={fieldClass}>
                     <option value="">Sem lead</option>
                     {leads.map((lead) => (
                       <option key={lead.id} value={lead.id}>
@@ -595,6 +601,7 @@ export function AppointmentsPanel({ appointments, leads, loadError }: Appointmen
                   name="notes"
                   rows={3}
                   maxLength={2000}
+                  disabled={pending}
                   placeholder="Detalhes do encontro"
                   className={fieldClass}
                 />
@@ -609,15 +616,18 @@ export function AppointmentsPanel({ appointments, leads, loadError }: Appointmen
               <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   type="button"
-                  onClick={() => setModalOpen(false)}
-                  className="rounded-full px-4 py-2.5 text-sm font-medium text-[var(--text-3)] hover:bg-[var(--neu-bg-well)]"
+                  disabled={pending}
+                  onClick={() => {
+                    if (!pending) setModalOpen(false);
+                  }}
+                  className="rounded-full px-4 py-2.5 text-sm font-medium text-[var(--text-3)] hover:bg-[var(--neu-bg-well)] disabled:opacity-50"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={pending}
-                  className="rounded-full bg-[var(--brand)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
+                  className="inline-flex items-center gap-2 rounded-full bg-[var(--brand)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
                 >
                   {pending ? "Salvando…" : "Salvar"}
                 </button>

@@ -6,6 +6,7 @@ import { Robot } from "@phosphor-icons/react/dist/csr/Robot";
 import { User } from "@phosphor-icons/react/dist/csr/User";
 import { X } from "@phosphor-icons/react/dist/csr/X";
 import { FormEvent, useEffect, useState } from "react";
+import { SkeletonBar, Spinner } from "@/components/ui/async-feedback";
 
 type WhatsAppMessage = {
   id: number;
@@ -42,46 +43,83 @@ export function WhatsAppChatModal({ leadId, companyName, phone, open, onClose }:
   const [conversation, setConversation] = useState<WhatsAppConversation | null>(null);
   const [messages, setMessages] = useState<WhatsAppMessage[]>([]);
   const [text, setText] = useState("");
+  const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [stubNote, setStubNote] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (!open) return;
     let cancelled = false;
     void (async () => {
+      setLoading(true);
+      setLoadError(null);
       setError(null);
-      const list = await fetch(`/api/v1/integrations/whatsapp/conversations?leadId=${leadId}`);
-      const listPayload = await list.json() as { data?: { conversations?: WhatsAppConversation[] } };
-      const existing = listPayload.data?.conversations?.[0] ?? null;
-      if (cancelled) return;
-      if (!existing) {
+      try {
+        const list = await fetch(`/api/v1/integrations/whatsapp/conversations?leadId=${leadId}`);
+        const listPayload = (await list.json()) as {
+          data?: { conversations?: WhatsAppConversation[] };
+          error?: { message?: string };
+        };
+        if (!list.ok) {
+          throw new Error(listPayload.error?.message ?? "Não foi possível carregar a conversa.");
+        }
+        const existing = listPayload.data?.conversations?.[0] ?? null;
+        if (cancelled) return;
+        if (!existing) {
+          setConversation(null);
+          setMessages([]);
+          return;
+        }
+        setConversation(existing);
+        const detail = await fetch(`/api/v1/integrations/whatsapp/conversations?conversationId=${existing.id}`);
+        const detailPayload = (await detail.json()) as {
+          data?: { conversation?: WhatsAppConversation; messages?: WhatsAppMessage[] };
+          error?: { message?: string };
+        };
+        if (!detail.ok) {
+          throw new Error(detailPayload.error?.message ?? "Não foi possível carregar as mensagens.");
+        }
+        if (cancelled) return;
+        setConversation(detailPayload.data?.conversation ?? existing);
+        setMessages(detailPayload.data?.messages ?? []);
+      } catch (fetchError) {
+        if (cancelled) return;
         setConversation(null);
         setMessages([]);
-        return;
+        setLoadError(fetchError instanceof Error ? fetchError.message : "Não foi possível carregar a conversa.");
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-      setConversation(existing);
-      const detail = await fetch(`/api/v1/integrations/whatsapp/conversations?conversationId=${existing.id}`);
-      const detailPayload = await detail.json() as {
-        data?: { conversation?: WhatsAppConversation; messages?: WhatsAppMessage[] };
-      };
-      if (cancelled) return;
-      setConversation(detailPayload.data?.conversation ?? existing);
-      setMessages(detailPayload.data?.messages ?? []);
     })();
     return () => {
       cancelled = true;
     };
-  }, [open, leadId]);
+  }, [open, leadId, reloadKey]);
 
   if (!open) return null;
 
   async function send(event: FormEvent) {
     event.preventDefault();
-    if (!text.trim()) return;
+    const body = text.trim();
+    if (!body || busy) return;
     setBusy(true);
     setError(null);
     setStubNote(null);
+
+    const optimisticId = -Date.now();
+    const optimistic: WhatsAppMessage = {
+      id: optimisticId,
+      direction: "outbound",
+      body,
+      status: "sending",
+      created_at: new Date().toISOString(),
+    };
+    setMessages((current) => [...current, optimistic]);
+    setText("");
+
     try {
       const response = await fetch("/api/v1/integrations/whatsapp/conversations", {
         method: "POST",
@@ -89,10 +127,10 @@ export function WhatsAppChatModal({ leadId, companyName, phone, open, onClose }:
         body: JSON.stringify({
           leadId,
           conversationId: conversation?.id,
-          text: text.trim(),
+          text: body,
         }),
       });
-      const payload = await response.json() as {
+      const payload = (await response.json()) as {
         data?: { conversationId?: number; stubbed?: boolean };
         error?: { message?: string };
       };
@@ -100,17 +138,24 @@ export function WhatsAppChatModal({ leadId, companyName, phone, open, onClose }:
       if (payload.data?.stubbed) {
         setStubNote("Meta API não configurada — mensagem enfileirada localmente (stub).");
       }
-      setText("");
       const id = payload.data?.conversationId;
       if (id) {
         const detail = await fetch(`/api/v1/integrations/whatsapp/conversations?conversationId=${id}`);
-        const detailPayload = await detail.json() as {
+        const detailPayload = (await detail.json()) as {
           data?: { conversation?: WhatsAppConversation; messages?: WhatsAppMessage[] };
         };
         setConversation(detailPayload.data?.conversation ?? null);
         setMessages(detailPayload.data?.messages ?? []);
+      } else {
+        setMessages((current) =>
+          current.map((message) =>
+            message.id === optimisticId ? { ...message, status: "sent" } : message,
+          ),
+        );
       }
     } catch (sendError) {
+      setMessages((current) => current.filter((message) => message.id !== optimisticId));
+      setText(body);
       setError(sendError instanceof Error ? sendError.message : "Falha ao enviar.");
     } finally {
       setBusy(false);
@@ -118,7 +163,7 @@ export function WhatsAppChatModal({ leadId, companyName, phone, open, onClose }:
   }
 
   async function simulateReply() {
-    if (!text.trim()) return;
+    if (!text.trim() || busy) return;
     setBusy(true);
     setError(null);
     try {
@@ -132,7 +177,7 @@ export function WhatsAppChatModal({ leadId, companyName, phone, open, onClose }:
           simulateInbound: true,
         }),
       });
-      const payload = await response.json() as {
+      const payload = (await response.json()) as {
         data?: { conversationId?: number };
         error?: { message?: string };
       };
@@ -141,7 +186,7 @@ export function WhatsAppChatModal({ leadId, companyName, phone, open, onClose }:
       const id = payload.data?.conversationId;
       if (id) {
         const detail = await fetch(`/api/v1/integrations/whatsapp/conversations?conversationId=${id}`);
-        const detailPayload = await detail.json() as {
+        const detailPayload = (await detail.json()) as {
           data?: { conversation?: WhatsAppConversation; messages?: WhatsAppMessage[] };
         };
         setConversation(detailPayload.data?.conversation ?? null);
@@ -155,7 +200,7 @@ export function WhatsAppChatModal({ leadId, companyName, phone, open, onClose }:
   }
 
   async function toggleAgent() {
-    if (!conversation) return;
+    if (!conversation || busy) return;
     setBusy(true);
     try {
       const response = await fetch("/api/v1/integrations/whatsapp/conversations", {
@@ -166,7 +211,7 @@ export function WhatsAppChatModal({ leadId, companyName, phone, open, onClose }:
           agentEnabled: !conversation.agent_enabled,
         }),
       });
-      const payload = await response.json() as {
+      const payload = (await response.json()) as {
         data?: { agent_enabled?: boolean; status?: string };
         error?: { message?: string };
       };
@@ -204,7 +249,7 @@ export function WhatsAppChatModal({ leadId, companyName, phone, open, onClose }:
         <div className="flex items-center gap-2 border-b border-black/8 px-4 py-2">
           <button
             type="button"
-            disabled={busy || !conversation}
+            disabled={busy || loading || !conversation}
             onClick={toggleAgent}
             className="inline-flex items-center gap-1.5 rounded-lg border border-black/8 px-2.5 py-1.5 text-xs font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-well)] disabled:opacity-50"
           >
@@ -213,7 +258,7 @@ export function WhatsAppChatModal({ leadId, companyName, phone, open, onClose }:
           </button>
           <button
             type="button"
-            disabled={busy || !text.trim()}
+            disabled={busy || loading || !text.trim()}
             onClick={simulateReply}
             className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/20 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 hover:bg-emerald-500/10 disabled:opacity-50"
           >
@@ -221,35 +266,60 @@ export function WhatsAppChatModal({ leadId, companyName, phone, open, onClose }:
           </button>
         </div>
 
-        <div className="flex-1 space-y-2 overflow-y-auto bg-[var(--neu-bg-pop)] px-4 py-4">
-          {messages.length === 0 && (
+        <div className="flex-1 space-y-2 overflow-y-auto bg-[var(--neu-bg-pop)] px-4 py-4" aria-busy={loading || busy}>
+          {loading && (
+            <div className="space-y-3" aria-label="Carregando conversa">
+              <p className="text-center text-xs font-medium text-[var(--text-4)]">Carregando conversa…</p>
+              <SkeletonBar className="ml-auto h-16 w-3/4 rounded-2xl" />
+              <SkeletonBar className="h-14 w-2/3 rounded-2xl" />
+              <SkeletonBar className="ml-auto h-12 w-1/2 rounded-2xl" />
+            </div>
+          )}
+
+          {!loading && loadError && (
+            <div role="alert" className="rounded-xl border border-rose-400/20 bg-rose-400/10 px-3 py-4 text-center">
+              <p className="text-xs text-rose-700">{loadError}</p>
+              <button
+                type="button"
+                onClick={() => setReloadKey((key) => key + 1)}
+                className="mt-3 rounded-lg bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-rose-500"
+              >
+                Tentar de novo
+              </button>
+            </div>
+          )}
+
+          {!loading && !loadError && messages.length === 0 && (
             <p className="rounded-xl border border-dashed border-black/10 bg-white/70 px-3 py-6 text-center text-xs text-[var(--text-4)]">
               Nenhuma mensagem ainda. Envie a abordagem ou simule uma resposta do lead.
             </p>
           )}
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${message.direction === "outbound" ? "justify-end" : "justify-start"}`}
-            >
+
+          {!loading &&
+            messages.map((message) => (
               <div
-                className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-5 ${
-                  message.direction === "outbound"
-                    ? "rounded-br-md bg-emerald-600 text-white"
-                    : "rounded-bl-md border border-black/8 bg-white text-[var(--text)]"
-                }`}
+                key={message.id}
+                className={`flex ${message.direction === "outbound" ? "justify-end" : "justify-start"}`}
               >
-                <p className="inline-flex items-center gap-1 text-[10px] opacity-70">
-                  {message.direction === "outbound" ? <Robot size={12} /> : <User size={12} />}
-                  {message.direction === "outbound" ? "Você / agente" : "Lead"} · {formatTime(message.created_at)}
-                </p>
-                <p className="mt-1 whitespace-pre-wrap">{message.body}</p>
+                <div
+                  className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-5 ${
+                    message.direction === "outbound"
+                      ? "rounded-br-md bg-emerald-600 text-white"
+                      : "rounded-bl-md border border-black/8 bg-white text-[var(--text)]"
+                  } ${message.status === "sending" ? "opacity-70" : ""}`}
+                >
+                  <p className="inline-flex items-center gap-1 text-[10px] opacity-70">
+                    {message.direction === "outbound" ? <Robot size={12} /> : <User size={12} />}
+                    {message.direction === "outbound" ? "Você / agente" : "Lead"} ·{" "}
+                    {message.status === "sending" ? "enviando…" : formatTime(message.created_at)}
+                  </p>
+                  <p className="mt-1 whitespace-pre-wrap">{message.body}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
 
-        <form onSubmit={send} className="border-t border-black/8 p-3">
+        <form onSubmit={send} className="border-t border-black/8 p-3" aria-busy={busy}>
           {error && <p role="alert" className="mb-2 text-xs text-rose-600">{error}</p>}
           {stubNote && <p role="status" className="mb-2 text-xs text-amber-700">{stubNote}</p>}
           <div className="flex gap-2">
@@ -258,15 +328,16 @@ export function WhatsAppChatModal({ leadId, companyName, phone, open, onClose }:
               onChange={(event) => setText(event.target.value)}
               placeholder="Escreva uma mensagem…"
               maxLength={4000}
-              className="h-11 flex-1 rounded-xl border border-black/8 bg-white px-3 text-sm text-[var(--text)] outline-none focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/15"
+              disabled={busy || loading}
+              className="h-11 flex-1 rounded-xl border border-black/8 bg-white px-3 text-sm text-[var(--text)] outline-none focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/15 disabled:opacity-60"
             />
             <button
               type="submit"
-              disabled={busy || !text.trim()}
+              disabled={busy || loading || !text.trim()}
               className="inline-flex h-11 items-center gap-1.5 rounded-xl bg-emerald-600 px-3.5 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-50"
             >
-              <PaperPlaneTilt size={16} weight="fill" />
-              Enviar
+              {busy ? <Spinner className="size-4" /> : <PaperPlaneTilt size={16} weight="fill" />}
+              {busy ? "Enviando…" : "Enviar"}
             </button>
           </div>
         </form>
