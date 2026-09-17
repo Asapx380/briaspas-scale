@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     useTypeScriptCli: false,
+    optimizePackageImports: ["@phosphor-icons/react", "motion"],
   },
   async headers() {
     return [

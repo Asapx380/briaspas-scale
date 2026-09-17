@@ -1,7 +1,19 @@
-import { LeadDetailView } from "@/components/crm/lead-detail-view";
+import dynamic from "next/dynamic";
 import type { CrmLead } from "@/lib/crm/types";
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
+
+const LeadDetailView = dynamic(
+  () => import("@/components/crm/lead-detail-view").then((mod) => mod.LeadDetailView),
+  {
+    loading: () => (
+      <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6">
+        <div className="h-8 w-48 animate-pulse rounded-xl bg-[var(--neu-bg-well)]" />
+        <div className="mt-6 h-40 animate-pulse rounded-2xl bg-[var(--neu-bg-well)]" />
+      </main>
+    ),
+  },
+);
 
 type PageProps = {
   params: Promise<{ id: string }>;
