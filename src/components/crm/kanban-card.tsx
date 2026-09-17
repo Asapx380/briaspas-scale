@@ -15,6 +15,8 @@ type KanbanCardProps = {
   onWhatsAppChat?: (lead: CrmLead) => void;
   /** Static clone for DragOverlay — skips drag listeners. */
   overlay?: boolean;
+  /** Persisting status after optimistic move. */
+  syncing?: boolean;
 };
 
 function leadVisualKey(lead: CrmLead) {
@@ -34,12 +36,12 @@ function leadVisualKey(lead: CrmLead) {
   ].join("|");
 }
 
-function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false }: KanbanCardProps) {
+function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, syncing = false }: KanbanCardProps) {
   const router = useRouter();
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `lead-${lead.id}`,
     data: { leadId: lead.id, status: lead.status },
-    disabled: overlay,
+    disabled: overlay || syncing,
   });
 
   const score = leadScore(lead);
@@ -52,7 +54,7 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false }: 
     ? undefined
     : {
         transform: CSS.Translate.toString(transform),
-        opacity: isDragging ? 0.45 : 1,
+        opacity: isDragging ? 0.45 : syncing ? 0.7 : 1,
         zIndex: isDragging ? 20 : undefined,
       };
 
@@ -163,9 +165,17 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false }: 
       tabIndex={0}
       onClick={openDetail}
       onKeyDown={onCardKeyDown}
-      aria-label={`${lead.company_name}, score ${score}`}
-      className="cursor-grab rounded-2xl border border-black/[0.04] bg-white p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition-[box-shadow,transform] hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)] active:cursor-grabbing"
+      aria-busy={syncing}
+      aria-label={`${lead.company_name}, score ${score}${syncing ? ", salvando status" : ""}`}
+      className={`cursor-grab rounded-2xl border border-black/[0.04] bg-white p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition-[box-shadow,transform,opacity] hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)] active:cursor-grabbing ${
+        syncing ? "ring-1 ring-[var(--brand)]/25" : ""
+      }`}
     >
+      {syncing && (
+        <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-[var(--brand)]" role="status">
+          Salvando…
+        </p>
+      )}
       {face}
     </article>
   );
@@ -176,6 +186,7 @@ export const KanbanCard = memo(KanbanCardInner, (prev, next) => {
     leadVisualKey(prev.lead) === leadVisualKey(next.lead) &&
     prev.detailHref === next.detailHref &&
     prev.onWhatsAppChat === next.onWhatsAppChat &&
-    prev.overlay === next.overlay
+    prev.overlay === next.overlay &&
+    prev.syncing === next.syncing
   );
 });

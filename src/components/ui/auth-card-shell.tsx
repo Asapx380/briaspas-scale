@@ -76,9 +76,12 @@ export function AuthField({
   onBlur,
   onFocus,
   trailingAction,
+  disabled,
   ...inputProps
 }: AuthFieldProps) {
   const [focused, setFocused] = useState(false);
+  const { pending } = useFormStatus();
+  const isDisabled = Boolean(disabled || pending);
 
   return (
     <div className="space-y-1.5">
@@ -104,6 +107,7 @@ export function AuthField({
           }}
           className="h-11 w-full rounded-xl border border-black/[0.08] bg-[var(--neu-bg-pop)] pr-11 pl-10 text-sm text-[var(--text)] outline-none transition-[background-color,border-color,box-shadow] duration-200 placeholder:text-[var(--text-4)] hover:bg-white focus:border-[var(--brand)]/45 focus:bg-white focus:shadow-[0_0_0_3px_rgba(0,113,227,0.12)] disabled:cursor-not-allowed disabled:opacity-50"
           {...inputProps}
+          disabled={isDisabled}
         />
         {trailingAction}
       </div>
@@ -119,16 +123,18 @@ type AuthSubmitButtonProps = Readonly<{
 
 export function AuthSubmitButton({ configured, label, pendingLabel }: AuthSubmitButtonProps) {
   const { pending } = useFormStatus();
+  const reduceMotion = useReducedMotion();
 
   return (
     <motion.button
       type="submit"
       disabled={!configured || pending}
-      whileHover={pending ? undefined : { scale: 1.01 }}
-      whileTap={pending ? undefined : { scale: 0.985 }}
+      aria-busy={pending}
+      whileHover={pending || reduceMotion ? undefined : { scale: 1.01 }}
+      whileTap={pending || reduceMotion ? undefined : { scale: 0.985 }}
       className="group relative mt-1 h-11 w-full overflow-hidden rounded-full bg-[#1f1f23] px-5 text-sm font-semibold text-white shadow-[0_10px_28px_rgba(15,23,42,0.18)] outline-none transition-colors hover:bg-[#2a2a2e] disabled:cursor-not-allowed disabled:opacity-55 focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2"
     >
-      {pending && (
+      {pending && !reduceMotion && (
         <motion.span
           aria-hidden="true"
           className="absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent"

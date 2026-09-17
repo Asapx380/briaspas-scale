@@ -4,9 +4,10 @@ import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { X } from "@phosphor-icons/react/dist/csr/X";
 import { FormEvent, useState } from "react";
 import type { CrmLead } from "@/lib/crm/types";
+import { Spinner } from "@/components/ui/async-feedback";
 
 const FIELD =
-  "mt-1.5 w-full rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-3 py-2.5 text-sm text-[var(--text)] placeholder:text-[var(--text-4)] focus:border-[var(--brand)]/40 focus:outline-none focus:ring-2 focus:ring-[rgba(0,113,227,0.2)]";
+  "mt-1.5 w-full rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-3 py-2.5 text-sm text-[var(--text)] placeholder:text-[var(--text-4)] focus:border-[var(--brand)]/40 focus:outline-none focus:ring-2 focus:ring-[rgba(0,113,227,0.2)] disabled:opacity-60";
 
 type CreateLeadModalProps = {
   open: boolean;
@@ -20,8 +21,14 @@ export function CreateLeadModal({ open, onClose, onCreated }: CreateLeadModalPro
 
   if (!open) return null;
 
+  function requestClose() {
+    if (busy) return;
+    onClose();
+  }
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (busy) return;
     const form = new FormData(event.currentTarget);
     setBusy(true);
     setError(null);
@@ -91,7 +98,8 @@ export function CreateLeadModal({ open, onClose, onCreated }: CreateLeadModalPro
       role="dialog"
       aria-modal="true"
       aria-labelledby="create-lead-title"
-      onClick={onClose}
+      aria-busy={busy}
+      onClick={requestClose}
     >
       <div
         className="app-card w-full max-w-lg p-5 sm:p-6"
@@ -106,8 +114,9 @@ export function CreateLeadModal({ open, onClose, onCreated }: CreateLeadModalPro
           </div>
           <button
             type="button"
-            onClick={onClose}
-            className="rounded-lg p-1.5 text-[var(--text-4)] hover:bg-[var(--neu-bg-well)] hover:text-[var(--text)]"
+            onClick={requestClose}
+            disabled={busy}
+            className="rounded-lg p-1.5 text-[var(--text-4)] hover:bg-[var(--neu-bg-well)] hover:text-[var(--text)] disabled:opacity-50"
             aria-label="Fechar"
           >
             <X size={18} />
@@ -117,35 +126,35 @@ export function CreateLeadModal({ open, onClose, onCreated }: CreateLeadModalPro
         <form onSubmit={submit} className="mt-5 grid gap-3 sm:grid-cols-2">
           <label className="block text-xs font-medium text-[var(--text-3)] sm:col-span-2">
             Nome da empresa
-            <input name="companyName" required maxLength={200} className={FIELD} placeholder="Ex.: Berg Barbearia" />
+            <input name="companyName" required maxLength={200} disabled={busy} className={FIELD} placeholder="Ex.: Berg Barbearia" />
           </label>
           <label className="block text-xs font-medium text-[var(--text-3)]">
             Telefone
-            <input name="phone" type="tel" maxLength={80} className={FIELD} placeholder="(86) 99999-9999" />
+            <input name="phone" type="tel" maxLength={80} disabled={busy} className={FIELD} placeholder="(86) 99999-9999" />
           </label>
           <label className="block text-xs font-medium text-[var(--text-3)]">
             E-mail
-            <input name="email" type="email" maxLength={320} className={FIELD} placeholder="contato@empresa.com" />
+            <input name="email" type="email" maxLength={320} disabled={busy} className={FIELD} placeholder="contato@empresa.com" />
           </label>
           <label className="block text-xs font-medium text-[var(--text-3)]">
             Categoria / nicho
-            <input name="niche" required maxLength={80} className={FIELD} placeholder="Barbearia" />
+            <input name="niche" required maxLength={80} disabled={busy} className={FIELD} placeholder="Barbearia" />
           </label>
           <label className="block text-xs font-medium text-[var(--text-3)]">
             Cidade
-            <input name="city" required maxLength={100} className={FIELD} placeholder="Teresina, PI" />
+            <input name="city" required maxLength={100} disabled={busy} className={FIELD} placeholder="Teresina, PI" />
           </label>
           <label className="block text-xs font-medium text-[var(--text-3)] sm:col-span-2">
             Endereço
-            <input name="address" maxLength={500} className={FIELD} placeholder="Rua, número e bairro" />
+            <input name="address" maxLength={500} disabled={busy} className={FIELD} placeholder="Rua, número e bairro" />
           </label>
           <label className="block text-xs font-medium text-[var(--text-3)]">
             Site
-            <input name="websiteUrl" type="url" maxLength={500} className={FIELD} placeholder="https://..." />
+            <input name="websiteUrl" type="url" maxLength={500} disabled={busy} className={FIELD} placeholder="https://..." />
           </label>
           <label className="block text-xs font-medium text-[var(--text-3)]">
             Google Maps
-            <input name="googleMapsUrl" type="url" maxLength={500} className={FIELD} placeholder="https://maps.google.com/..." />
+            <input name="googleMapsUrl" type="url" maxLength={500} disabled={busy} className={FIELD} placeholder="https://maps.google.com/..." />
           </label>
 
           {error && (
@@ -157,8 +166,9 @@ export function CreateLeadModal({ open, onClose, onCreated }: CreateLeadModalPro
           <div className="sm:col-span-2 flex justify-end gap-2 pt-2">
             <button
               type="button"
-              onClick={onClose}
-              className="rounded-xl border border-black/8 px-4 py-2.5 text-sm font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-well)]"
+              onClick={requestClose}
+              disabled={busy}
+              className="rounded-xl border border-black/8 px-4 py-2.5 text-sm font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-well)] disabled:opacity-50"
             >
               Cancelar
             </button>
@@ -167,7 +177,7 @@ export function CreateLeadModal({ open, onClose, onCreated }: CreateLeadModalPro
               disabled={busy}
               className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--brand-hover)] disabled:opacity-60"
             >
-              <Plus size={16} weight="bold" />
+              {busy ? <Spinner className="size-4" /> : <Plus size={16} weight="bold" />}
               {busy ? "Salvando..." : "Criar lead"}
             </button>
           </div>

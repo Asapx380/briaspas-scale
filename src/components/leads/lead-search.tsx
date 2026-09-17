@@ -21,6 +21,7 @@ import type {
   DiscoveredLead,
   LeadSearchResult,
 } from "@/lib/lead-sources/types";
+import { SkeletonRows, Spinner } from "@/components/ui/async-feedback";
 
 type ApiSuccess = {
   data: LeadSearchResult;
@@ -179,6 +180,11 @@ export function LeadSearch() {
 
     setIsLoading(true);
     setError(null);
+    setLeads([]);
+    setNextPageToken(null);
+    setSourceLabel(null);
+    setBulkMessage(null);
+    setSaveStates({});
 
     try {
       const result = await requestLeads(normalizedNiche, normalizedCity, limit);
@@ -186,7 +192,6 @@ export function LeadSearch() {
       setNextPageToken(result.nextPageToken);
       setSourceLabel(result.sourceLabel);
       setSearchedFor({ niche: normalizedNiche, city: normalizedCity, limit });
-      setBulkMessage(null);
     } catch (requestError) {
       setLeads([]);
       setNextPageToken(null);
@@ -333,7 +338,7 @@ export function LeadSearch() {
   }
 
   return (
-    <section className="mt-10" aria-labelledby="lead-search-title">
+    <section className="mt-10" aria-labelledby="lead-search-title" aria-busy={isLoading || isSavingAll}>
       <h2 id="lead-search-title" className="sr-only">
         Formulário de busca de empresas
       </h2>
@@ -396,7 +401,7 @@ export function LeadSearch() {
           disabled={isLoading}
           className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[var(--brand)] px-5 text-sm font-semibold text-white transition-colors hover:bg-[var(--brand-hover)] active:translate-y-px disabled:cursor-wait disabled:bg-[var(--brand)]/50 disabled:text-white/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
         >
-          <MagnifyingGlass size={18} weight="bold" aria-hidden="true" />
+          {isLoading ? <Spinner className="size-4" /> : <MagnifyingGlass size={18} weight="bold" aria-hidden="true" />}
           {isLoading ? "Buscando..." : "Buscar empresas"}
         </button>
       </form>
@@ -411,15 +416,7 @@ export function LeadSearch() {
       )}
 
       {isLoading && leads.length === 0 && (
-        <div className="mt-8 space-y-0" aria-label="Carregando empresas">
-          {[0, 1, 2].map((item) => (
-            <div key={item} className="border-t border-black/8 py-6 first:border-t-0">
-              <div className="h-5 w-2/5 animate-pulse rounded bg-white/10" />
-              <div className="mt-4 h-4 w-1/4 animate-pulse rounded bg-white/[0.07]" />
-              <div className="mt-3 h-4 w-3/5 animate-pulse rounded bg-white/[0.07]" />
-            </div>
-          ))}
-        </div>
+        <SkeletonRows count={3} className="mt-8 space-y-0" label="Carregando empresas" />
       )}
 
       {searchedFor && !isLoading && leads.length === 0 && !error && (
@@ -483,8 +480,9 @@ export function LeadSearch() {
               type="button"
               onClick={handleLoadMore}
               disabled={isLoading}
-              className="mt-4 rounded-xl border border-black/8 px-4 py-2.5 text-sm font-semibold text-[var(--text-2)] transition-colors hover:border-[var(--brand)]/30 hover:bg-[var(--brand-hover)]/10 active:translate-y-px disabled:cursor-wait disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-black/8 px-4 py-2.5 text-sm font-semibold text-[var(--text-2)] transition-colors hover:border-[var(--brand)]/30 hover:bg-[var(--brand-hover)]/10 active:translate-y-px disabled:cursor-wait disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
             >
+              {isLoading && <Spinner className="size-3.5" />}
               {isLoading ? "Carregando..." : "Carregar mais empresas"}
             </button>
           )}

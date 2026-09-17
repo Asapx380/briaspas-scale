@@ -261,4 +261,10 @@ body {
   .hero-glow-orb {
     animation: none !important;
   }
+
+  .animate-pulse,
+  .animate-spin,
+  .motion-safe\:animate-spin {
+    animation: none !important;
+  }
 }

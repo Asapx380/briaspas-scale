@@ -129,11 +129,15 @@ export function LeadDetailView({
   const [lead, setLead] = useState(initialLead);
   const [tab, setTab] = useState<TabId>("info");
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notes, setNotes] = useState(lead.notes ?? "");
   const [estimatedValue, setEstimatedValue] = useState(lead.estimated_value?.toString() ?? "");
   const [followUpAt, setFollowUpAt] = useState(toLocalDateTime(lead.follow_up_at));
-  const [siteBusy, setSiteBusy] = useState(false);
+  const [siteAction, setSiteAction] = useState<
+    null | "brief" | "upload" | "publish" | "unpublish" | "preview"
+  >(null);
+  const siteBusy = siteAction !== null;
   const [siteError, setSiteError] = useState<string | null>(null);
   const [brief, setBrief] = useState(lead.site_brief);
   const [copied, setCopied] = useState(false);
@@ -253,7 +257,7 @@ export function LeadDetailView({
   }
 
   async function generateBrief() {
-    setSiteBusy(true);
+    setSiteAction("brief");
     setSiteError(null);
     try {
       const response = await fetch(`/api/v1/leads/${lead.id}/generate-brief`, { method: "POST" });
@@ -269,7 +273,7 @@ export function LeadDetailView({
     } catch (err) {
       setSiteError(err instanceof Error ? err.message : "Não foi possível gerar o briefing.");
     } finally {
-      setSiteBusy(false);
+      setSiteAction(null);
     }
   }
 
@@ -277,7 +281,7 @@ export function LeadDetailView({
     const file = event.currentTarget.files?.[0];
     event.currentTarget.value = "";
     if (!file) return;
-    setSiteBusy(true);
+    setSiteAction("upload");
     setSiteError(null);
     try {
       const formData = new FormData();
@@ -301,12 +305,12 @@ export function LeadDetailView({
     } catch (err) {
       setSiteError(err instanceof Error ? err.message : "Não foi possível enviar o ZIP.");
     } finally {
-      setSiteBusy(false);
+      setSiteAction(null);
     }
   }
 
   async function changePublication(action: "publish" | "unpublish") {
-    setSiteBusy(true);
+    setSiteAction(action);
     setSiteError(null);
     try {
       const response = await fetch(`/api/v1/leads/${lead.id}/site`, {
@@ -325,14 +329,14 @@ export function LeadDetailView({
     } catch (err) {
       setSiteError(err instanceof Error ? err.message : "Não foi possível atualizar a publicação.");
     } finally {
-      setSiteBusy(false);
+      setSiteAction(null);
     }
   }
 
   async function previewSite() {
     const previewWindow = window.open("about:blank", "_blank");
     if (previewWindow) previewWindow.opener = null;
-    setSiteBusy(true);
+    setSiteAction("preview");
     setSiteError(null);
     try {
       const response = await fetch(`/api/v1/leads/${lead.id}/site-preview`, { method: "POST" });
@@ -349,7 +353,7 @@ export function LeadDetailView({
       previewWindow?.close();
       setSiteError(err instanceof Error ? err.message : "Não foi possível abrir a pré-visualização.");
     } finally {
-      setSiteBusy(false);
+      setSiteAction(null);
     }
   }
 
@@ -389,12 +393,12 @@ export function LeadDetailView({
       router.push("/preview/crm");
       return;
     }
-    setSaving(true);
+    setDeleting(true);
     const response = await fetch(`/api/v1/leads/${lead.id}`, { method: "DELETE" });
     if (response.ok) router.push("/app/crm");
     else {
       setError("Não foi possível remover este lead.");
-      setSaving(false);
+      setDeleting(false);
     }
   }
 
@@ -635,8 +639,13 @@ export function LeadDetailView({
                   className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/20 px-3 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-500/10 disabled:opacity-60"
                 >
                   <Sparkle size={15} weight="fill" />
-                  {diagnosisBusy ? "Gerando..." : diagnosis ? "Regenerar diagnóstico" : "Gerar diagnóstico + copy"}
+                  {diagnosisBusy ? "Gerando… pode levar ~30s" : diagnosis ? "Regenerar diagnóstico" : "Gerar diagnóstico + copy"}
                 </button>
+                {diagnosisBusy && (
+                  <p className="w-full text-xs text-[var(--text-4)]" role="status">
+                    Analisando o lead com IA. Mantenha esta aba aberta.
+                  </p>
+                )}
                 {outreach?.mensagem && (
                   <button
                     type="button"
@@ -695,7 +704,16 @@ export function LeadDetailView({
                     {lead.site_status === "published" && "Publicado"}
                   </span>
                 </div>
-                <div className="mt-3 flex flex-wrap gap-2">
+                <div className="mt-3 flex flex-wrap gap-2" aria-busy={siteBusy}>
+                  {siteBusy && (
+                    <p className="w-full text-xs font-medium text-[var(--brand)]" role="status">
+                      {siteAction === "brief" && "Gerando briefing…"}
+                      {siteAction === "upload" && "Enviando ZIP…"}
+                      {siteAction === "publish" && "Publicando site…"}
+                      {siteAction === "unpublish" && "Despublicando…"}
+                      {siteAction === "preview" && "Abrindo pré-visualização…"}
+                    </p>
+                  )}
                   <button
                     type="button"
                     disabled={siteBusy || demoMode}
@@ -703,10 +721,14 @@ export function LeadDetailView({
                     className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--brand)]/20 px-3 py-2 text-xs font-semibold text-[var(--brand)] disabled:opacity-60"
                   >
                     <MagicWand size={14} weight="fill" />{" "}
-                    {siteBusy ? "Gerando..." : brief ? "Regenerar briefing" : "Gerar briefing"}
+                    {siteAction === "brief" ? "Gerando…" : brief ? "Regenerar briefing" : "Gerar briefing"}
                   </button>
-                  <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-black/8 px-3 py-2 text-xs font-semibold text-[var(--text-2)]">
-                    Enviar ZIP
+                  <label
+                    className={`inline-flex items-center gap-1.5 rounded-xl border border-black/8 px-3 py-2 text-xs font-semibold text-[var(--text-2)] ${
+                      siteBusy || demoMode ? "cursor-not-allowed opacity-60" : "cursor-pointer"
+                    }`}
+                  >
+                    {siteAction === "upload" ? "Enviando ZIP…" : "Enviar ZIP"}
                     <input
                       type="file"
                       accept=".zip,application/zip"
@@ -720,9 +742,9 @@ export function LeadDetailView({
                       type="button"
                       disabled={siteBusy}
                       onClick={() => void previewSite()}
-                      className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--brand)]/20 px-3 py-2 text-xs font-semibold text-[var(--brand)]"
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--brand)]/20 px-3 py-2 text-xs font-semibold text-[var(--brand)] disabled:opacity-60"
                     >
-                      <Eye size={14} /> Pré-visualizar
+                      <Eye size={14} /> {siteAction === "preview" ? "Abrindo…" : "Pré-visualizar"}
                     </button>
                   )}
                   {lead.site_status === "ready" && (
@@ -730,9 +752,9 @@ export function LeadDetailView({
                       type="button"
                       disabled={siteBusy}
                       onClick={() => void changePublication("publish")}
-                      className="rounded-xl bg-emerald-500 px-3 py-2 text-xs font-semibold text-white"
+                      className="rounded-xl bg-emerald-500 px-3 py-2 text-xs font-semibold text-white disabled:opacity-60"
                     >
-                      Publicar
+                      {siteAction === "publish" ? "Publicando…" : "Publicar"}
                     </button>
                   )}
                   {lead.site_status === "published" && (
@@ -748,9 +770,9 @@ export function LeadDetailView({
                         type="button"
                         disabled={siteBusy}
                         onClick={() => void changePublication("unpublish")}
-                        className="rounded-xl border border-black/8 px-3 py-2 text-xs font-semibold text-[var(--text-3)]"
+                        className="rounded-xl border border-black/8 px-3 py-2 text-xs font-semibold text-[var(--text-3)] disabled:opacity-60"
                       >
-                        Despublicar
+                        {siteAction === "unpublish" ? "Despublicando…" : "Despublicar"}
                       </button>
                     </>
                   )}
@@ -845,11 +867,11 @@ export function LeadDetailView({
       <div className="mt-6 flex justify-end">
         <button
           type="button"
-          disabled={saving}
+          disabled={saving || deleting}
           onClick={() => void deleteLead()}
-          className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-400/10"
+          className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-400/10 disabled:opacity-60"
         >
-          <Trash size={15} /> Remover lead
+          <Trash size={15} /> {deleting ? "Removendo…" : "Remover lead"}
         </button>
       </div>
 
