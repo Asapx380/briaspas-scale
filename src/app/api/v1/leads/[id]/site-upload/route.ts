@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { revalidateTag } from "next/cache";
 import { InvalidSiteArchiveError, readUploadedSiteZip } from "@/lib/sites/uploaded-site-zip";
+import { uploadSiteFilesParallel } from "@/lib/storage/upload-site-files";
 import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
@@ -35,12 +36,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (!lead) return errorResponse("lead_not_found", "Lead não encontrado neste espaço de trabalho.", 404);
 
   const storagePath = `leads/${lead.id}/site/${randomUUID()}`;
-  for (const file of files) {
-    const { error: uploadError } = await supabase.storage.from("lead-sites").upload(`${storagePath}/${file.path}`, file.content, {
-      contentType: file.contentType, upsert: false,
-    });
-    if (uploadError) return errorResponse("site_upload_failed", "Não foi possível salvar todos os arquivos do site.", 500);
-  }
+  const { error: uploadError } = await uploadSiteFilesParallel(
+    supabase.storage.from("lead-sites"),
+    storagePath,
+    files,
+  );
+  if (uploadError) return errorResponse("site_upload_failed", "Não foi possível salvar todos os arquivos do site.", 500);
 
   const { data: updated, error: updateError } = await supabase.from("leads")
     .update({ site_source: "uploaded", site_storage_path: storagePath, site_status: "ready" })
