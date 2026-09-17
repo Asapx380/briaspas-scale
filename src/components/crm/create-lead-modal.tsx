@@ -116,10 +116,11 @@ export function CreateLeadModal({ open, onClose, onCreated }: CreateLeadModalPro
             type="button"
             onClick={requestClose}
             disabled={busy}
-            className="rounded-lg p-1.5 text-[var(--text-4)] hover:bg-[var(--neu-bg-well)] hover:text-[var(--text)] disabled:opacity-50"
-            aria-label="Fechar"
+            className="grid size-11 place-items-center rounded-lg text-[var(--text-4)] hover:bg-[var(--neu-bg-well)] hover:text-[var(--text)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] disabled:opacity-50"
+            aria-label="Fechar criação de lead"
+            title="Fechar"
           >
-            <X size={18} />
+            <X size={18} aria-hidden />
           </button>
         </div>
 

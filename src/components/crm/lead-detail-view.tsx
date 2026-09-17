@@ -428,19 +428,21 @@ export function LeadDetailView({
             type="button"
             onClick={() => goSibling(-1)}
             disabled={siblingIds.length < 2}
-            className="grid size-9 place-items-center rounded-xl border border-black/8 bg-white text-[var(--text-2)] hover:bg-[var(--neu-bg-pop)] disabled:opacity-40"
+            className="grid size-11 place-items-center rounded-xl border border-black/8 bg-white text-[var(--text-2)] hover:bg-[var(--neu-bg-pop)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] disabled:opacity-40"
             aria-label="Lead anterior"
+            title="Lead anterior"
           >
-            <CaretLeft size={16} />
+            <CaretLeft size={16} aria-hidden />
           </button>
           <button
             type="button"
             onClick={() => goSibling(1)}
             disabled={siblingIds.length < 2}
-            className="grid size-9 place-items-center rounded-xl border border-black/8 bg-white text-[var(--text-2)] hover:bg-[var(--neu-bg-pop)] disabled:opacity-40"
+            className="grid size-11 place-items-center rounded-xl border border-black/8 bg-white text-[var(--text-2)] hover:bg-[var(--neu-bg-pop)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] disabled:opacity-40"
             aria-label="Próximo lead"
+            title="Próximo lead"
           >
-            <CaretRight size={16} />
+            <CaretRight size={16} aria-hidden />
           </button>
         </div>
       </div>
@@ -468,28 +470,42 @@ export function LeadDetailView({
       </div>
 
       <section className="app-card mt-6 overflow-hidden p-0">
-        <div className="flex gap-1 overflow-x-auto border-b border-black/[0.06] px-3 pt-2 sm:px-5">
+        <div
+          className="flex gap-1 overflow-x-auto border-b border-black/[0.06] px-3 pt-2 sm:px-5"
+          role="tablist"
+          aria-label="Seções do lead"
+        >
           {TABS.map((item) => {
             const active = tab === item.id;
             return (
               <button
                 key={item.id}
                 type="button"
+                role="tab"
+                id={`lead-tab-${item.id}`}
+                aria-selected={active}
+                aria-controls={`lead-panel-${item.id}`}
+                tabIndex={active ? 0 : -1}
                 onClick={() => setTab(item.id)}
-                className={`relative shrink-0 px-3 py-3 text-sm font-semibold transition-colors ${
+                className={`relative shrink-0 px-3 py-3 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] ${
                   active ? "text-[var(--brand)]" : "text-[var(--text-4)] hover:text-[var(--text-2)]"
                 }`}
               >
                 {item.label}
                 {active && (
-                  <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-[var(--brand)]" />
+                  <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-[var(--brand)]" aria-hidden />
                 )}
               </button>
             );
           })}
         </div>
 
-        <div className="p-5 sm:p-7">
+        <div
+          className="p-5 sm:p-7"
+          role="tabpanel"
+          id={`lead-panel-${tab}`}
+          aria-labelledby={`lead-tab-${tab}`}
+        >
           {error && (
             <p role="alert" className="mb-4 rounded-xl border border-rose-400/20 bg-rose-400/10 px-3 py-2 text-sm text-rose-700">
               {error}
@@ -514,7 +530,9 @@ export function LeadDetailView({
                       <button
                         type="button"
                         onClick={() => setChatOpen(true)}
-                        className="font-semibold text-emerald-700 hover:underline"
+                        className="font-semibold text-emerald-700 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+                        aria-label={`Abrir chat WhatsApp de ${lead.company_name}`}
+                        title="Abrir conversa WhatsApp"
                       >
                         WhatsApp
                       </button>
@@ -544,7 +562,9 @@ export function LeadDetailView({
                         type="button"
                         disabled={saving}
                         onClick={() => void applyStatus(item.dropStatus)}
-                        className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+                        aria-pressed={active}
+                        title={`Definir etapa: ${item.title}`}
+                        className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] ${
                           active
                             ? "bg-[var(--brand)] text-white"
                             : "bg-[var(--neu-bg-well)] text-[var(--text-3)] hover:bg-[var(--neu-bg-pop)]"
@@ -586,7 +606,9 @@ export function LeadDetailView({
                         type="button"
                         disabled={saving}
                         onClick={() => void applyDealStatus(item.id)}
-                        className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
+                        aria-pressed={active}
+                        title={`Marcar negócio como ${item.label}`}
+                        className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] ${
                           active
                             ? "bg-[var(--text)] text-white shadow-sm"
                             : "text-[var(--text-3)] hover:text-[var(--text)]"
@@ -789,9 +811,11 @@ export function LeadDetailView({
                           setCopied(true);
                           window.setTimeout(() => setCopied(false), 1800);
                         }}
-                        className="text-[var(--brand)]"
+                        className="text-[var(--brand)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+                        aria-label="Copiar briefing do site"
+                        title="Copiar para a área de transferência"
                       >
-                        {copied ? "Copiado" : "Copiar"}
+                        {copied ? "Copiado" : "Copiar briefing"}
                       </button>
                     </div>
                     <p>{brief.resumoDoNegocio}</p>

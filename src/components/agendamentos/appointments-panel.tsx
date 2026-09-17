@@ -86,6 +86,31 @@ function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
 }
 
+function dayAccessibleLabel(day: Date, count: number) {
+  const dateLabel = day.toLocaleDateString("pt-BR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const countLabel =
+    count === 0
+      ? "Nenhum agendamento"
+      : count === 1
+        ? "1 agendamento"
+        : `${count} agendamentos`;
+  return `${dateLabel}. ${countLabel}. Clique para ver o dia`;
+}
+
+function periodUnitLabel(view: CalendarView) {
+  if (view === "month") return "mês";
+  if (view === "week") return "semana";
+  return "dia";
+}
+
+const FOCUS =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]";
+
 function toDatetimeLocalValue(date: Date) {
   const pad = (n: number) => String(n).padStart(2, "0");
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
@@ -280,27 +305,30 @@ export function AppointmentsPanel({ appointments, leads, loadError }: Appointmen
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <button
               type="button"
-              aria-label="Período anterior"
+              aria-label={`${periodUnitLabel(view).charAt(0).toUpperCase()}${periodUnitLabel(view).slice(1)} anterior`}
+              title={`${periodUnitLabel(view).charAt(0).toUpperCase()}${periodUnitLabel(view).slice(1)} anterior`}
               onClick={() => shiftCursor(-1)}
-              className="grid size-9 place-items-center rounded-full text-[var(--text-3)] transition-colors hover:bg-[var(--neu-bg-well)]"
+              className={`grid size-11 place-items-center rounded-full text-[var(--text-3)] transition-colors hover:bg-[var(--neu-bg-well)] ${FOCUS}`}
             >
-              <CaretLeft size={18} weight="bold" />
+              <CaretLeft size={18} weight="bold" aria-hidden />
             </button>
             <h2 className="min-w-[10rem] text-center text-base font-semibold text-[var(--text)] sm:text-lg">
               {headerLabel}
             </h2>
             <button
               type="button"
-              aria-label="Próximo período"
+              aria-label={`Próxim${view === "week" ? "a" : "o"} ${periodUnitLabel(view)}`}
+              title={`Próxim${view === "week" ? "a" : "o"} ${periodUnitLabel(view)}`}
               onClick={() => shiftCursor(1)}
-              className="grid size-9 place-items-center rounded-full text-[var(--text-3)] transition-colors hover:bg-[var(--neu-bg-well)]"
+              className={`grid size-11 place-items-center rounded-full text-[var(--text-3)] transition-colors hover:bg-[var(--neu-bg-well)] ${FOCUS}`}
             >
-              <CaretRight size={18} weight="bold" />
+              <CaretRight size={18} weight="bold" aria-hidden />
             </button>
             <button
               type="button"
               onClick={goToday}
-              className="ml-1 text-sm font-semibold text-[var(--brand)] hover:opacity-80"
+              className={`ml-1 text-sm font-semibold text-[var(--brand)] hover:opacity-80 ${FOCUS} rounded-md`}
+              title="Ir para hoje"
             >
               Hoje
             </button>
@@ -370,7 +398,9 @@ export function AppointmentsPanel({ appointments, leads, loadError }: Appointmen
                       if (view !== "month") setView("day");
                     }}
                     onDoubleClick={() => openCreate(day)}
-                    className={`min-h-[5.5rem] border-r border-b border-black/6 p-2 text-left transition-colors last:border-r-0 hover:bg-[var(--brand-tint)]/40 sm:min-h-[6.5rem] ${
+                    aria-label={dayAccessibleLabel(day, dayItems.length)}
+                    title={dayAccessibleLabel(day, dayItems.length)}
+                    className={`min-h-[5.5rem] border-r border-b border-black/6 p-2 text-left transition-colors last:border-r-0 hover:bg-[var(--brand-tint)]/40 sm:min-h-[6.5rem] ${FOCUS} ${
                       inMonth ? "bg-white" : "bg-[var(--neu-bg-pop)]/70"
                     }`}
                   >
@@ -439,7 +469,9 @@ export function AppointmentsPanel({ appointments, leads, loadError }: Appointmen
                       setSelectedDay(day);
                       setView("day");
                     }}
-                    className="min-h-[12rem] border-r border-black/6 p-2 text-left align-top last:border-r-0 hover:bg-[var(--brand-tint)]/30"
+                    aria-label={dayAccessibleLabel(day, dayItems.length)}
+                    title={dayAccessibleLabel(day, dayItems.length)}
+                    className={`min-h-[12rem] border-r border-black/6 p-2 text-left align-top last:border-r-0 hover:bg-[var(--brand-tint)]/30 ${FOCUS}`}
                   >
                     <div className="space-y-1.5">
                       {dayItems.map((item) => (
@@ -518,14 +550,15 @@ export function AppointmentsPanel({ appointments, leads, loadError }: Appointmen
               </div>
               <button
                 type="button"
-                aria-label="Fechar"
+                aria-label="Fechar novo agendamento"
+                title="Fechar"
                 disabled={pending}
                 onClick={() => {
                   if (!pending) setModalOpen(false);
                 }}
-                className="grid size-9 place-items-center rounded-full text-[var(--text-3)] hover:bg-[var(--neu-bg-well)] disabled:opacity-50"
+                className={`grid size-11 place-items-center rounded-full text-[var(--text-3)] hover:bg-[var(--neu-bg-well)] disabled:opacity-50 ${FOCUS}`}
               >
-                <X size={18} weight="bold" />
+                <X size={18} weight="bold" aria-hidden />
               </button>
             </div>
 

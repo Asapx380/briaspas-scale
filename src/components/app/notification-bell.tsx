@@ -147,12 +147,20 @@ export function NotificationBell({ count = 0 }: NotificationBellProps) {
         type="button"
         onClick={() => setOpen((value) => !value)}
         className="relative grid size-12 place-items-center rounded-full bg-white text-[var(--text)] shadow-[0_10px_30px_rgba(15,23,42,0.12)] transition-transform hover:scale-[1.03] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
-        aria-label={badge > 0 ? `Notificações, ${badge} não lidas` : "Notificações"}
+        aria-label={
+          badge > 0
+            ? `Notificações, ${badge} não lida${badge === 1 ? "" : "s"}`
+            : "Notificações, nenhuma não lida"
+        }
+        title="Abrir notificações"
         aria-expanded={open}
       >
-        <Bell size={20} weight="regular" />
+        <Bell size={20} weight="regular" aria-hidden />
         {badge > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 grid min-w-5 place-items-center rounded-full bg-[var(--brand)] px-1 text-[10px] font-bold text-white">
+          <span
+            className="absolute -top-0.5 -right-0.5 grid min-w-5 place-items-center rounded-full bg-[var(--brand)] px-1 text-[10px] font-bold text-white"
+            aria-hidden
+          >
             {badge > 9 ? "9+" : badge}
           </span>
         )}
