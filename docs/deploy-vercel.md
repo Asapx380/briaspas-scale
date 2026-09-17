@@ -14,6 +14,17 @@ O app é hospedado só na Vercel. Não use Netlify.
 
 Após o push em `main`, a Vercel faz o deploy automaticamente se o Git estiver conectado.
 
+## Forçar Production (Create Deployment)
+
+Se o painel mostrar Production em SHA antigo (ex.: `14d6df6` / “baseline limpa”) ou erro *GitHub could not find the given branch or commit reference*:
+
+1. Confirme o tip atual: `git ls-remote origin refs/heads/main` (SHA completo).
+2. Em **Deployments → Create Deployment**, cole o **SHA completo** do tip de `main` (não `tree/main`, não SHA curto só).
+3. Target: **Production**.
+4. Se o SHA novo ainda falhar: **Settings → Git → Disconnect** → **Connect** `Asapx380/briaspas-scale`, Production Branch = `main`, e tente de novo.
+
+`14d6df6` era tip pré–force-push e **não existe mais** no GitHub. Use sempre o tip atual de `main`.
+
 ## Remover o site Netlify (dashboard)
 
 Ainda existe um site Netlify ligado ao GitHub: **`briaspasscale`**  
