@@ -14,6 +14,8 @@
     "check": "npm run lint && npm run typecheck && npm run test && npm run security:secrets"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/utilities": "^3.2.2",
     "@phosphor-icons/react": "^2.1.10",
     "@supabase/ssr": "^0.12.6",
     "@supabase/supabase-js": "^2.115.0",
