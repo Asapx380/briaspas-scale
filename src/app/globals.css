@@ -21,17 +21,18 @@
   --card: #ffffff;
   --shadow-card: 0 8px 28px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
 
-  /* Soft-dark shell — LeadSite --neu-bg (#2A2D35), not pure black */
-  --shell: #2a2d35;
-  --shell-raised: #31343e;
-  --shell-well: #212329;
-  --shell-edge: rgba(255, 255, 255, 0.07);
-  --shell-edge: rgba(255, 255, 255, 0.07);
-  --shell-text: #f5f5f7;
-  --shell-muted: rgba(235, 235, 245, 0.55);
-  --shell-soft: rgba(235, 235, 245, 0.72);
-  --shell-shadow-dark: #1b1d22;
-  --shell-shadow-light: rgba(255, 255, 255, 0.1);
+  /* Light glass shell — matches CRM/site canvas (not soft-dark #2A2D35) */
+  --shell: rgba(255, 255, 255, 0.72);
+  --shell-raised: rgba(255, 255, 255, 0.88);
+  --shell-well: rgba(243, 244, 248, 0.9);
+  --shell-edge: rgba(15, 23, 42, 0.08);
+  --shell-text: #1d1d1f;
+  --shell-muted: #636366;
+  --shell-soft: #3a3a3c;
+  --shell-shadow-dark: rgba(15, 23, 42, 0.06);
+  --shell-shadow-light: rgba(255, 255, 255, 0.9);
+  --nav-active-bg: var(--brand);
+  --nav-active-text: #ffffff;
 
   --success: #1a7e3a;
   --warning: #ff9500;
@@ -88,11 +89,30 @@ body {
     var(--neu-bg);
 }
 
-.app-sidebar {
+.app-sidebar,
+.glass-sidebar {
   background:
-    linear-gradient(180deg, #31343e 0%, #2a2d35 42%, #24272f 100%);
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.82) 0%,
+      rgba(246, 247, 250, 0.78) 48%,
+      rgba(230, 231, 236, 0.72) 100%
+    );
   color: var(--shell-text);
-  box-shadow: inset -1px 0 0 var(--shell-edge);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow:
+    inset -1px 0 0 var(--shell-edge),
+    1px 0 0 rgba(255, 255, 255, 0.45);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .app-sidebar,
+  .glass-sidebar {
+    background: #f3f4f8;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 .funnel-stage {

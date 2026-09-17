@@ -1,9 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { List } from "@phosphor-icons/react";
 import { AppSidebar } from "@/components/app/app-sidebar";
 import { NotificationBell } from "@/components/app/notification-bell";
+
+const SIDEBAR_COLLAPSED_KEY = "briaspas.sidebar.collapsed";
 
 type AppShellProps = {
   email: string | null;
@@ -13,22 +16,57 @@ type AppShellProps = {
 
 export function AppShell({ email, notificationCount = 0, children }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      return window.localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1";
+    } catch {
+      return false;
+    }
+  });
+
+  function toggleCollapsed() {
+    setCollapsed((prev) => {
+      const next = !prev;
+      try {
+        window.localStorage.setItem(SIDEBAR_COLLAPSED_KEY, next ? "1" : "0");
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  }
 
   return (
     <div className="flex min-h-[100dvh] bg-[var(--neu-bg)] text-[var(--text)]">
-      <AppSidebar email={email} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <AppSidebar
+        email={email}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        collapsed={collapsed}
+        onToggleCollapsed={toggleCollapsed}
+      />
 
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="sticky top-0 z-20 flex items-center gap-3 border-b border-black/5 bg-[var(--neu-bg)]/90 px-4 py-3 backdrop-blur md:hidden">
           <button
             type="button"
-            className="grid size-10 place-items-center rounded-full bg-white shadow-sm"
+            className="grid size-10 place-items-center rounded-full bg-white/80 shadow-sm ring-1 ring-black/5 backdrop-blur"
             onClick={() => setSidebarOpen(true)}
             aria-label="Abrir menu"
           >
             <List size={20} weight="bold" />
           </button>
-          <span className="text-sm font-semibold">Briaspas Scale</span>
+          <div className="flex items-center gap-2">
+            <Image
+              src="/brand/briaspas-scale-symbol.png"
+              alt=""
+              width={24}
+              height={24}
+              className="size-6 object-contain"
+            />
+            <span className="text-sm font-semibold text-[var(--text)]">Briaspas Scale</span>
+          </div>
         </div>
 
         <div className="app-canvas relative min-h-0 flex-1">{children}</div>
