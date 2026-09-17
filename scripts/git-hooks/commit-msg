@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Strip agent co-author trailers so GitHub Contributors stays people-only.
+set -euo pipefail
+
+msg_file="${1:-}"
+if [[ -z "$msg_file" || ! -f "$msg_file" ]]; then
+  exit 0
+fi
+
+tmp="$(mktemp)"
+# Remove Co-authored-by lines that credit Cursor / cursoragent / generic agents.
+grep -Eiv '^[[:space:]]*Co-authored-by:[[:space:]].*(Cursor|cursoragent|@cursor\.com)' "$msg_file" >"$tmp" || true
+mv "$tmp" "$msg_file"
+
+# Soft guard: warn if author email looks like an agent (does not block).
+author_email="$(git var GIT_AUTHOR_IDENT 2>/dev/null | sed -n 's/.*<\([^>]*\)>.*/\1/p' || true)"
+if echo "${author_email:-}" | grep -Eiq 'cursoragent|@cursor\.com'; then
+  echo "warning: author email looks like an agent ($author_email). Prefer a human email before push." >&2
+fi
+
+exit 0

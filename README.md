@@ -27,7 +27,10 @@ Instale as dependências, caso ainda não estejam instaladas:
 
 ```bash
 npm install
+npm run hooks:install
 ```
+
+O hook `commit-msg` remove trailers `Co-authored-by` de agentes (Cursor/cursoragent) para manter Contributors só com pessoas da equipe. `npm install` também roda `hooks:install` via `postinstall`.
 
 Inicie o servidor de desenvolvimento:
 
