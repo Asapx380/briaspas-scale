@@ -46,9 +46,10 @@ export function SignInCard({ configured }: { configured: boolean }) {
               type="button"
               onClick={() => setShowPassword((visible) => !visible)}
               aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-              className="absolute top-1/2 right-3 -translate-y-1/2 rounded-md p-1 text-[var(--text-4)] transition-colors hover:text-[var(--text-2)] focus-visible:outline-2 focus-visible:outline-[var(--brand)]"
+              title={showPassword ? "Ocultar senha" : "Mostrar senha"}
+              className="absolute top-1/2 right-2 -translate-y-1/2 grid size-11 place-items-center rounded-md text-[var(--text-4)] transition-colors hover:text-[var(--text-2)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
             >
-              {showPassword ? <EyeSlash size={17} /> : <Eye size={17} />}
+              {showPassword ? <EyeSlash size={17} aria-hidden /> : <Eye size={17} aria-hidden />}
             </button>
           }
         />

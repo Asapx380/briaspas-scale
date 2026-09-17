@@ -65,7 +65,7 @@ export function PeriodFilter({ period }: PeriodFilterProps) {
                   router.push(option === "30d" ? "/app" : `/app?period=${option}`);
                 });
               }}
-              className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all disabled:cursor-wait ${
+              className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] disabled:cursor-wait ${
                 active
                   ? "bg-white text-[var(--text)] shadow-[0_4px_12px_rgba(15,23,42,0.08)]"
                   : "text-[var(--text-3)] hover:text-[var(--text)]"

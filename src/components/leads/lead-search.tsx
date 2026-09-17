@@ -381,7 +381,7 @@ export function LeadSearch() {
           Quantos leads?
           <select
             name="limit"
-            aria-label="Limite"
+            aria-label="Quantidade de leads a buscar"
             value={limit}
             onChange={(event) =>
               setLimit(Number(event.target.value) as LeadSearchLimitOption)

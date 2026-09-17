@@ -182,17 +182,18 @@ export function CrmBoard({
           <button
             type="button"
             onClick={() => setCreateOpen(true)}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--brand)] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[var(--brand-hover)]"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--brand)] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[var(--brand-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
           >
-            <Plus size={16} weight="bold" /> Criar lead
+            <Plus size={16} weight="bold" aria-hidden /> Criar lead
           </button>
           <button
             type="button"
             disabled
-            title="Disponível no plano superior"
+            title="Exportar leads — disponível no plano superior"
+            aria-label="Exportar leads (disponível no plano superior)"
             className="inline-flex items-center gap-1.5 rounded-xl border border-black/8 bg-white px-3.5 py-2.5 text-sm font-semibold text-[var(--text-4)]"
           >
-            <LockSimple size={15} weight="fill" /> Exportar
+            <LockSimple size={15} weight="fill" aria-hidden /> Exportar
           </button>
           <label className="relative inline-flex items-center">
             <span className="sr-only">Ordenar</span>
@@ -214,14 +215,17 @@ export function CrmBoard({
 
       <div className="mt-5 flex flex-col gap-3">
         <label className="relative block max-w-xl">
+          <span className="sr-only">Buscar leads</span>
           <MagnifyingGlass
             size={18}
+            aria-hidden
             className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-[var(--text-4)]"
           />
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Buscar por nome, categoria, cidade ou telefone..."
+            title="Buscar leads no CRM"
             className="w-full rounded-2xl border border-black/8 bg-white py-2.5 pr-4 pl-11 text-sm text-[var(--text)] placeholder:text-[var(--text-4)] shadow-sm focus:border-[var(--brand)]/35 focus:outline-none focus:ring-2 focus:ring-[rgba(0,113,227,0.18)]"
           />
         </label>
@@ -234,7 +238,8 @@ export function CrmBoard({
                 key={chip.id}
                 type="button"
                 onClick={() => setFilter(chip.id)}
-                className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition-colors ${
+                aria-pressed={active}
+                className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] ${
                   active
                     ? "bg-[var(--brand)] text-white shadow-sm"
                     : "border border-black/8 bg-white text-[var(--text-3)] hover:bg-[var(--neu-bg-pop)]"
