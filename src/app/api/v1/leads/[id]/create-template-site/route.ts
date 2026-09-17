@@ -9,6 +9,7 @@ import { getSelectedSiteGeneratorProvider, generateSiteBrief, isSiteGeneratorCon
 import { createStoredSiteZip } from "@/lib/sites/site-zip-writer";
 import { renderSiteTemplate, SiteTemplateError } from "@/lib/sites/template-renderer";
 import { readUploadedSiteZip } from "@/lib/sites/uploaded-site-zip";
+import { uploadSiteFilesParallel } from "@/lib/storage/upload-site-files";
 import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
@@ -85,12 +86,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const zip = createStoredSiteZip(rendered.files);
     const validatedFiles = await readUploadedSiteZip(zip);
     const storagePath = `leads/${lead.id}/site/${randomUUID()}`;
-    for (const file of validatedFiles) {
-      const { error: uploadError } = await supabase.storage.from("lead-sites").upload(`${storagePath}/${file.path}`, file.content, {
-        contentType: file.contentType, upsert: false,
-      });
-      if (uploadError) throw new Error("template_site_upload_failed");
-    }
+    const { error: uploadError } = await uploadSiteFilesParallel(
+      supabase.storage.from("lead-sites"),
+      storagePath,
+      validatedFiles,
+    );
+    if (uploadError) throw new Error("template_site_upload_failed");
 
     const token = createSitePreviewToken();
     const expiresAt = new Date(Date.now() + SITE_PREVIEW_TTL_MS).toISOString();
