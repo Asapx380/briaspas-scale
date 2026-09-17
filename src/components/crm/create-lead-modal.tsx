@@ -1,6 +1,7 @@
 "use client";
 
-import { Plus, X } from "@phosphor-icons/react";
+import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
+import { X } from "@phosphor-icons/react/dist/csr/X";
 import { FormEvent, useState } from "react";
 import type { CrmLead } from "@/lib/crm/types";
 

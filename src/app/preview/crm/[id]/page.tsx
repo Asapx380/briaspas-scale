@@ -1,6 +1,10 @@
-import { LeadDetailView } from "@/components/crm/lead-detail-view";
+import nextDynamic from "next/dynamic";
 import { CRM_DEMO_LEADS } from "@/lib/crm/fixtures";
 import { notFound } from "next/navigation";
+
+const LeadDetailView = nextDynamic(
+  () => import("@/components/crm/lead-detail-view").then((mod) => mod.LeadDetailView),
+);
 
 export const dynamic = "force-dynamic";
 

@@ -1,5 +1,9 @@
-import { CrmBoard } from "@/components/crm/crm-board";
+import nextDynamic from "next/dynamic";
 import { CRM_DEMO_LEADS } from "@/lib/crm/fixtures";
+
+const CrmBoard = nextDynamic(
+  () => import("@/components/crm/crm-board").then((mod) => mod.CrmBoard),
+);
 
 export const dynamic = "force-dynamic";
 

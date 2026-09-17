@@ -1,23 +1,26 @@
 "use client";
 
-import {
-  ArrowLeft,
-  ArrowSquareOut,
-  CaretLeft,
-  CaretRight,
-  Check,
-  Eye,
-  GlobeHemisphereWest,
-  MagicWand,
-  Phone,
-  Sparkle,
-  Trash,
-} from "@phosphor-icons/react";
+import { ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft";
+import { ArrowSquareOut } from "@phosphor-icons/react/dist/csr/ArrowSquareOut";
+import { CaretLeft } from "@phosphor-icons/react/dist/csr/CaretLeft";
+import { CaretRight } from "@phosphor-icons/react/dist/csr/CaretRight";
+import { Check } from "@phosphor-icons/react/dist/csr/Check";
+import { Eye } from "@phosphor-icons/react/dist/csr/Eye";
+import { GlobeHemisphereWest } from "@phosphor-icons/react/dist/csr/GlobeHemisphereWest";
+import { MagicWand } from "@phosphor-icons/react/dist/csr/MagicWand";
+import { Phone } from "@phosphor-icons/react/dist/csr/Phone";
+import { Sparkle } from "@phosphor-icons/react/dist/csr/Sparkle";
+import { Trash } from "@phosphor-icons/react/dist/csr/Trash";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
-import { WhatsAppChatModal } from "@/components/crm/whatsapp-chat";
 import type { SiteBrief } from "@/lib/sites/design-plan";
+
+const WhatsAppChatModal = dynamic(
+  () => import("@/components/crm/whatsapp-chat").then((mod) => mod.WhatsAppChatModal),
+  { ssr: false },
+);
 import {
   PIPELINE_COLUMNS,
   columnForStatus,
