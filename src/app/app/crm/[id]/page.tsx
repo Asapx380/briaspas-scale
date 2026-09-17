@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
-import { loadCrmLeadDetail } from "@/lib/crm/queries";
+import type { CrmLead } from "@/lib/crm/types";
+import { resolveLeadNeighbors } from "@/lib/pagination/lead-neighbors";
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 
@@ -24,8 +25,21 @@ export default async function CrmLeadDetailPage({ params }: PageProps) {
   if (!/^\d+$/.test(id)) notFound();
 
   const supabase = await createClient();
-  const { lead, siblingIds, notFound: missing } = await loadCrmLeadDetail(supabase, id);
-  if (missing || !lead) notFound();
+  const { data, error } = await supabase
+    .from("leads")
+    .select(
+      "id, company_name, phone, email, address, niche, city, status, notes, estimated_value, follow_up_at, website_url, google_maps_url, rating, review_count, source, slug, visit_count, site_status, site_source, site_brief, ai_diagnosis, ai_outreach, created_at, updated_at",
+    )
+    .eq("id", id)
+    .maybeSingle();
 
-  return <LeadDetailView lead={lead} siblingIds={siblingIds} />;
+  if (error || !data) notFound();
+
+  const lead = data as CrmLead;
+  const neighbors = await resolveLeadNeighbors(supabase, {
+    id: lead.id,
+    created_at: lead.created_at,
+  });
+
+  return <LeadDetailView lead={lead} neighbors={neighbors} />;
 }

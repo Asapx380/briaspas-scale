@@ -6,7 +6,8 @@ import { LockSimple } from "@phosphor-icons/react/dist/csr/LockSimple";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import dynamic from "next/dynamic";
-import { useCallback, useMemo, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import {
   FILTER_CHIPS,
   PIPELINE_COLUMNS,
@@ -16,6 +17,9 @@ import {
   sortLeads,
 } from "@/lib/crm/pipeline";
 import type { CrmFilterId, CrmLead, CrmSortId, LeadPatch, LeadStatus, PipelineColumnId } from "@/lib/crm/types";
+import { isClientSideCrmFilter } from "@/lib/pagination/crm-query";
+import { paginationSearchParams, type PageMeta } from "@/lib/pagination/params";
+import { ListPagination } from "@/components/ui/list-pagination";
 
 const CrmKanbanBoard = dynamic(
   () => import("@/components/crm/crm-kanban-board").then((mod) => mod.CrmKanbanBoard),
@@ -89,16 +93,23 @@ export function CrmBoard({
   loadError,
   whatsappConversations = [],
   demoMode = false,
+  pagination = null,
+  listQuery = { q: "", filter: "all" as CrmFilterId, sort: "recent" as CrmSortId },
 }: {
   initialLeads: CrmLead[];
   loadError: string | null;
   whatsappConversations?: WhatsAppConversationSummary[];
   demoMode?: boolean;
+  pagination?: PageMeta | null;
+  listQuery?: { q: string; filter: CrmFilterId; sort: CrmSortId };
 }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
   const [leads, setLeads] = useState(initialLeads);
-  const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<CrmFilterId>("all");
-  const [sort, setSort] = useState<CrmSortId>("recent");
+  const [query, setQuery] = useState(listQuery.q);
+  const [filter, setFilter] = useState<CrmFilterId>(listQuery.filter);
+  const [sort, setSort] = useState<CrmSortId>(listQuery.sort);
   const [createOpen, setCreateOpen] = useState(false);
   const [persistError, setPersistError] = useState<string | null>(null);
   const [chatLead, setChatLead] = useState<CrmLead | null>(null);
@@ -108,7 +119,38 @@ export function CrmBoard({
   if (initialLeads !== baseline) {
     setBaseline(initialLeads);
     setLeads(initialLeads);
+    setQuery(listQuery.q);
+    setFilter(listQuery.filter);
+    setSort(listQuery.sort);
   }
+
+  const pushListState = useCallback(
+    (patch: Record<string, string | number | null | undefined>) => {
+      if (demoMode) return;
+      const current = {
+        q: listQuery.q || undefined,
+        filter: listQuery.filter === "all" ? undefined : listQuery.filter,
+        sort: listQuery.sort === "recent" ? undefined : listQuery.sort,
+        page: pagination && pagination.page > 1 ? String(pagination.page) : undefined,
+        pageSize:
+          pagination && pagination.pageSize !== 50 ? String(pagination.pageSize) : undefined,
+      };
+      const qs = paginationSearchParams(current, patch);
+      startTransition(() => {
+        router.push(qs ? `${pathname}?${qs}` : pathname);
+      });
+    },
+    [demoMode, listQuery, pagination, pathname, router],
+  );
+
+  useEffect(() => {
+    if (demoMode) return;
+    const handle = window.setTimeout(() => {
+      if (query === listQuery.q) return;
+      pushListState({ q: query || null, page: null });
+    }, 350);
+    return () => window.clearTimeout(handle);
+  }, [demoMode, listQuery.q, pushListState, query]);
 
   const filtered = useMemo(() => {
     const list = leads.filter(
@@ -169,8 +211,13 @@ export function CrmBoard({
     setLeads((current) => [lead, ...current]);
   }, []);
 
+  const scoreFilterActive = isClientSideCrmFilter(filter) || sort === "score_desc";
+
   return (
-    <main className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+    <main
+      className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8"
+      aria-busy={isPending}
+    >
       <header className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
           <h1 className="text-3xl font-bold tracking-tight text-[var(--text)] sm:text-[2rem]">CRM</h1>
@@ -199,7 +246,11 @@ export function CrmBoard({
             <span className="sr-only">Ordenar</span>
             <select
               value={sort}
-              onChange={(event) => setSort(event.target.value as CrmSortId)}
+              onChange={(event) => {
+                const next = event.target.value as CrmSortId;
+                setSort(next);
+                pushListState({ sort: next === "recent" ? null : next, page: null });
+              }}
               className="appearance-none rounded-xl border border-black/8 bg-white py-2.5 pr-9 pl-3.5 text-sm font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-pop)]"
             >
               {SORT_OPTIONS.map((option) => (
@@ -225,6 +276,7 @@ export function CrmBoard({
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Buscar por nome, categoria, cidade ou telefone..."
+            aria-label="Buscar leads"
             title="Buscar leads no CRM"
             className="w-full rounded-2xl border border-black/8 bg-white py-2.5 pr-4 pl-11 text-sm text-[var(--text)] placeholder:text-[var(--text-4)] shadow-sm focus:border-[var(--brand)]/35 focus:outline-none focus:ring-2 focus:ring-[rgba(0,113,227,0.18)]"
           />
@@ -237,9 +289,13 @@ export function CrmBoard({
               <button
                 key={chip.id}
                 type="button"
-                onClick={() => setFilter(chip.id)}
                 aria-pressed={active}
+                onClick={() => {
+                  setFilter(chip.id);
+                  pushListState({ filter: chip.id === "all" ? null : chip.id, page: null });
+                }}
                 className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] ${
+
                   active
                     ? "bg-[var(--brand)] text-white shadow-sm"
                     : "border border-black/8 bg-white text-[var(--text-3)] hover:bg-[var(--neu-bg-pop)]"
@@ -250,6 +306,12 @@ export function CrmBoard({
             );
           })}
         </div>
+        {scoreFilterActive && pagination && pagination.total > pagination.pageSize ? (
+          <p className="text-xs text-[var(--text-4)]">
+            Filtros de score/tier e ordenação por score aplicam-se à página carregada. Use a busca
+            ou aumente o tamanho da página para ampliar o recorte.
+          </p>
+        ) : null}
       </div>
 
       {!demoMode && <WhatsAppControlPanel conversations={whatsappConversations} />}
@@ -257,6 +319,13 @@ export function CrmBoard({
       {loadError && (
         <p role="alert" className="mt-6 rounded-2xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-700">
           {loadError}
+          <button
+            type="button"
+            className="ml-3 font-semibold underline"
+            onClick={() => router.refresh()}
+          >
+            Tentar novamente
+          </button>
         </p>
       )}
       {persistError && (
@@ -287,13 +356,30 @@ export function CrmBoard({
       )}
 
       {!loadError && leads.length > 0 && (
-        <CrmKanbanBoard
-          leads={filtered}
-          demoMode={demoMode}
-          onMoveLead={onMoveLead}
-          onWhatsAppChat={onWhatsAppChat}
-          pendingIds={pendingIds}
-        />
+        <>
+          <CrmKanbanBoard
+            leads={filtered}
+            demoMode={demoMode}
+            onMoveLead={onMoveLead}
+            onWhatsAppChat={onWhatsAppChat}
+            pendingIds={pendingIds}
+          />
+          {pagination && !demoMode ? (
+            <ListPagination
+              className="mt-6"
+              meta={pagination}
+              pathname={pathname}
+              searchParams={{
+                q: listQuery.q || undefined,
+                filter: listQuery.filter === "all" ? undefined : listQuery.filter,
+                sort: listQuery.sort === "recent" ? undefined : listQuery.sort,
+                pageSize: String(pagination.pageSize),
+              }}
+              label="Paginação do CRM"
+            />
+          ) : null}
+        </>
+
       )}
 
       {createOpen && (

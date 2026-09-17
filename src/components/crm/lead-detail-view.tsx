@@ -33,6 +33,7 @@ import {
   toLocalDateTime,
 } from "@/lib/crm/pipeline";
 import type { CrmLead, LeadStatus } from "@/lib/crm/types";
+import type { LeadNeighbors } from "@/lib/pagination/lead-neighbors";
 
 type TabId =
   | "info"
@@ -119,10 +120,13 @@ function EmptyTab({ title, body }: { title: string; body: string }) {
 export function LeadDetailView({
   lead: initialLead,
   siblingIds,
+  neighbors,
   demoMode = false,
 }: {
   lead: CrmLead;
-  siblingIds: number[];
+  /** @deprecated Prefer `neighbors` — avoids loading every lead id. */
+  siblingIds?: number[];
+  neighbors?: LeadNeighbors;
   demoMode?: boolean;
 }) {
   const router = useRouter();
@@ -152,9 +156,13 @@ export function LeadDetailView({
   const tier = leadTier(score);
   const column = columnForStatus(lead.status);
   const whatsapp = toBrazilianWhatsAppNumber(lead.phone);
-  const index = siblingIds.indexOf(lead.id);
-  const position = index >= 0 ? index + 1 : 1;
-  const total = Math.max(siblingIds.length, 1);
+  const siblingIndex = siblingIds?.indexOf(lead.id) ?? -1;
+  const position = neighbors?.position ?? (siblingIndex >= 0 ? siblingIndex + 1 : 1);
+  const total = neighbors?.total ?? Math.max(siblingIds?.length ?? 0, 1);
+  const canNavigate =
+    neighbors != null
+      ? Boolean(neighbors.prevId || neighbors.nextId)
+      : (siblingIds?.length ?? 0) >= 2;
 
   const dealStatus: "open" | "won" | "lost" =
     lead.status === "won" ? "won" : lead.status === "lost" ? "lost" : "open";
@@ -403,10 +411,16 @@ export function LeadDetailView({
   }
 
   function goSibling(delta: number) {
-    if (siblingIds.length === 0) return;
-    const current = index >= 0 ? index : 0;
+    const base = demoMode ? "/preview/crm" : "/app/crm";
+    if (neighbors) {
+      const target = delta < 0 ? neighbors.prevId : neighbors.nextId;
+      if (target != null) router.push(`${base}/${target}`);
+      return;
+    }
+    if (!siblingIds || siblingIds.length === 0) return;
+    const current = siblingIndex >= 0 ? siblingIndex : 0;
     const next = (current + delta + siblingIds.length) % siblingIds.length;
-    router.push(`${demoMode ? "/preview/crm" : "/app/crm"}/${siblingIds[next]}`);
+    router.push(`${base}/${siblingIds[next]}`);
   }
 
   return (
@@ -427,7 +441,7 @@ export function LeadDetailView({
           <button
             type="button"
             onClick={() => goSibling(-1)}
-            disabled={siblingIds.length < 2}
+            disabled={neighbors ? neighbors.prevId == null : !canNavigate}
             className="grid size-11 place-items-center rounded-xl border border-black/8 bg-white text-[var(--text-2)] hover:bg-[var(--neu-bg-pop)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] disabled:opacity-40"
             aria-label="Lead anterior"
             title="Lead anterior"
@@ -437,7 +451,7 @@ export function LeadDetailView({
           <button
             type="button"
             onClick={() => goSibling(1)}
-            disabled={siblingIds.length < 2}
+            disabled={neighbors ? neighbors.nextId == null : !canNavigate}
             className="grid size-11 place-items-center rounded-xl border border-black/8 bg-white text-[var(--text-2)] hover:bg-[var(--neu-bg-pop)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] disabled:opacity-40"
             aria-label="Próximo lead"
             title="Próximo lead"

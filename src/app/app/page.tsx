@@ -27,17 +27,36 @@ type DashboardPageProps = {
   searchParams: Promise<{ period?: string | string[] }>;
 };
 
+/** Narrow columns only — enough for KPIs/funnel without shipping unused fields. */
+const DASHBOARD_LEAD_COLUMNS =
+  "status, follow_up_at, site_status, created_at, won_at, estimated_value, updated_at";
+
 export default async function DashboardPage({ searchParams }: DashboardPageProps) {
   const params = await searchParams;
   const period = parsePeriod(params.period);
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("leads")
-    .select(
-      "status, follow_up_at, site_status, created_at, won_at, estimated_value, company_name, updated_at",
-    );
 
-  const leads = (data ?? []) as DashboardLead[];
+  // Batched scan avoids silent PostgREST ~1000-row truncation on large workspaces.
+  const leads: DashboardLead[] = [];
+  const batchSize = 500;
+  let from = 0;
+  let truncated = false;
+  for (;;) {
+    const { data } = await supabase
+      .from("leads")
+      .select(DASHBOARD_LEAD_COLUMNS)
+      .order("created_at", { ascending: false })
+      .range(from, from + batchSize - 1);
+    const chunk = (data ?? []) as DashboardLead[];
+    leads.push(...chunk);
+    if (chunk.length < batchSize) break;
+    from += batchSize;
+    if (from >= 10_000) {
+      truncated = true;
+      break;
+    }
+  }
+
   const now = new Date();
   const nowMs = now.getTime();
   const stages = buildFunnelStages(leads, nowMs);
@@ -55,7 +74,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Dashboard</h1>
           <p className="mt-2 text-sm text-[var(--text-3)] sm:text-base">
             Visão geral · {periodLabel(period)}
-          </p>
+            {truncated ? " · amostra limitada a 10k leads" : ""}          </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <PeriodFilter period={period} />

@@ -114,25 +114,38 @@ export async function POST(request: Request) {
     }), lead);
   }
 
-  const companyNames = [...new Set([...uniqueLeads.values()].map((lead) => lead.companyName))];
   const existingIdentityKeys = new Set<string>();
-  const NAME_CHUNK = 100;
-  for (let offset = 0; offset < companyNames.length; offset += NAME_CHUNK) {
-    const chunk = companyNames.slice(offset, offset + NAME_CHUNK);
-    const { data: existingLeads } = await supabase
-      .from("leads")
-      .select("company_name, phone, city")
-      .eq("workspace_id", membership.workspace_id)
-      .in("company_name", chunk);
-    for (const lead of existingLeads ?? []) {
-      existingIdentityKeys.add(
-        createLeadIdentityKey({
-          companyName: lead.company_name,
-          phone: lead.phone,
-          city: lead.city,
-        }),
-      );
+  const identityScan = await (async () => {
+    const batchSize = 500;
+    let from = 0;
+    for (;;) {
+      const { data: existingLeads, error: existingError } = await supabase
+        .from("leads")
+        .select("company_name, phone, city")
+        .eq("workspace_id", membership.workspace_id)
+        .order("id", { ascending: true })
+        .range(from, from + batchSize - 1);
+      if (existingError) {
+        return { error: existingError.message as string | null };
+      }
+      const chunk = existingLeads ?? [];
+      for (const lead of chunk) {
+        existingIdentityKeys.add(
+          createLeadIdentityKey({
+            companyName: lead.company_name,
+            phone: lead.phone,
+            city: lead.city,
+          }),
+        );
+      }
+      if (chunk.length < batchSize) return { error: null };
+      from += batchSize;
     }
+  })();
+
+  if (identityScan.error) {
+    return errorResponse("import_failed", "Não foi possível verificar duplicatas existentes.", 500);
+
   }
 
   const records = [...uniqueLeads.values()]

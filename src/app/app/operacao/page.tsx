@@ -1,15 +1,24 @@
 import { getCurrentWorkspace } from "@/lib/workspaces/current";
+import { scanInBatches } from "@/lib/pagination/scan";
 
 export default async function OperationsPage() {
   const { supabase, workspaceId } = await getCurrentWorkspace();
-  const [{ data: runs, error: runsError }, { data: leads }, { data: visits }] = await Promise.all([
+  const [{ data: runs, error: runsError }, sourceScan, { data: visits }] = await Promise.all([
     supabase
       .from("generation_runs")
       .select("status, duration_ms, total_tokens, estimated_cost_usd, provider, model, created_at")
       .eq("workspace_id", workspaceId)
       .order("created_at", { ascending: false })
       .limit(100),
-    supabase.from("leads").select("source, status, visit_count").eq("workspace_id", workspaceId),
+    scanInBatches<{ source: string }>(
+      () =>
+        supabase
+          .from("leads")
+          .select("source")
+          .eq("workspace_id", workspaceId)
+          .order("id", { ascending: true }),
+      { batchSize: 500, maxRows: 10_000 },
+    ),
     supabase
       .from("site_visit_sessions")
       .select("viewed_on, leads!inner(workspace_id)")
@@ -25,7 +34,7 @@ export default async function OperationsPage() {
   const tokens = (runs ?? []).reduce((sum, run) => sum + Number(run.total_tokens ?? 0), 0);
   const cost = (runs ?? []).reduce((sum, run) => sum + Number(run.estimated_cost_usd ?? 0), 0);
   const sourceCounts = Object.entries(
-    (leads ?? []).reduce<Record<string, number>>(
+    sourceScan.rows.reduce<Record<string, number>>(
       (result, lead) => ({ ...result, [lead.source]: (result[lead.source] ?? 0) + 1 }),
       {},
     ),
@@ -76,6 +85,9 @@ export default async function OperationsPage() {
               ))}
             </div>
           )}
+          {sourceScan.truncated ? (
+            <p className="mt-3 text-xs text-[var(--text-4)]">Contagem limitada aos 10k leads mais antigos.</p>
+          ) : null}
         </article>
         <article className="app-card p-5">
           <h2 className="font-semibold">Resumo financeiro da IA</h2>

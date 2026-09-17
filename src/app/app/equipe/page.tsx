@@ -1,16 +1,64 @@
+import { ListPagination } from "@/components/ui/list-pagination";
+import {
+  buildPageMeta,
+  parsePage,
+  parsePageSize,
+  rangeFromPage,
+} from "@/lib/pagination/params";
 import { assignLead } from "./actions";
 import { getCurrentWorkspace } from "@/lib/workspaces/current";
 
-export default async function TeamPage() {
+const EQUIPE_PAGE_SIZES = [25, 50, 100] as const;
+
+type EquipePageProps = {
+  searchParams: Promise<{ page?: string | string[]; pageSize?: string | string[] }>;
+};
+
+export default async function TeamPage({ searchParams }: EquipePageProps) {
+  const params = await searchParams;
+  const page = parsePage(params.page);
+  const pageSize = parsePageSize(params.pageSize, EQUIPE_PAGE_SIZES, 50);
+  const { from, to } = rangeFromPage(page, pageSize);
+
   const { supabase, workspaceId, role } = await getCurrentWorkspace();
-  const [{ data: memberships }, { data: leads }] = await Promise.all([
+  const [{ data: memberships }, metricsScan, portfolioResult] = await Promise.all([
     supabase.from("workspace_members").select("user_id, role").eq("workspace_id", workspaceId),
+    (async () => {
+      const rows: Array<{
+        assigned_to: string | null;
+        status: string;
+        estimated_value: number | null;
+        won_at: string | null;
+      }> = [];
+      const batchSize = 500;
+      let from = 0;
+      for (;;) {
+        const { data } = await supabase
+          .from("leads")
+          .select("assigned_to, status, estimated_value, won_at")
+          .eq("workspace_id", workspaceId)
+          .order("id", { ascending: true })
+          .range(from, from + batchSize - 1);
+        const chunk = data ?? [];
+        rows.push(...chunk);
+        if (chunk.length < batchSize) break;
+        from += batchSize;
+        if (from >= 10_000) break;
+      }
+      return rows;
+    })(),
     supabase
       .from("leads")
-      .select("id, company_name, status, estimated_value, assigned_to, won_at")
+      .select("id, company_name, status, estimated_value, assigned_to, won_at", { count: "exact" })
       .eq("workspace_id", workspaceId)
-      .order("created_at", { ascending: false }),
+      .order("created_at", { ascending: false })
+      .range(from, to),
   ]);
+
+  const leadsForMetrics = metricsScan;
+  const leads = portfolioResult.data ?? [];
+  const meta = buildPageMeta(portfolioResult.count ?? leads.length, page, pageSize);
+
   const memberIds = (memberships ?? []).map((member) => member.user_id);
   const { data: profiles } = memberIds.length
     ? await supabase.from("profiles").select("id, full_name").in("id", memberIds)
@@ -45,7 +93,7 @@ export default async function TeamPage() {
       ) : (
         <section className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {members.map((member) => {
-            const owned = (leads ?? []).filter((lead) => lead.assigned_to === member.user_id);
+            const owned = leadsForMetrics.filter((lead) => lead.assigned_to === member.user_id);
             const won = owned.filter(
               (lead) => lead.status === "won" && lead.won_at && new Date(lead.won_at) >= monthStart,
             );
@@ -82,46 +130,59 @@ export default async function TeamPage() {
         <div className="border-b border-black/5 px-5 py-4">
           <h2 className="font-semibold">Carteira de leads</h2>
         </div>
-        {(leads ?? []).length === 0 ? (
+        {leads.length === 0 ? (
           <p className="px-5 py-8 text-sm text-[var(--text-3)]">
             Sem leads na carteira. Adicione empresas para distribuir.
           </p>
         ) : (
-          <div className="divide-y divide-black/5">
-            {(leads ?? []).map((lead) => (
-              <div
-                key={lead.id}
-                className="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div>
-                  <p className="font-medium text-[var(--text)]">{lead.company_name}</p>
-                  <p className="mt-1 text-xs text-[var(--text-4)]">
-                    {lead.status} · {nameById.get(lead.assigned_to ?? "") ?? "Sem responsável"}
-                  </p>
+          <>
+            <div className="divide-y divide-black/5">
+              {leads.map((lead) => (
+                <div
+                  key={lead.id}
+                  className="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div>
+                    <p className="font-medium text-[var(--text)]">{lead.company_name}</p>
+                    <p className="mt-1 text-xs text-[var(--text-4)]">
+                      {lead.status} · {nameById.get(lead.assigned_to ?? "") ?? "Sem responsável"}
+                    </p>
+                  </div>
+                  {canAssign && (
+                    <form action={assignLead} className="flex gap-2">
+                      <input type="hidden" name="leadId" value={lead.id} />
+                      <select
+                        name="assigneeId"
+                        defaultValue={lead.assigned_to ?? ""}
+                        aria-label={`Responsável por ${lead.company_name}`}
+                        className="rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-3 py-2 text-sm"
+                      >
+                        <option value="">Sem responsável</option>
+                        {members.map((member) => (
+                          <option key={member.user_id} value={member.user_id}>
+                            {member.name}
+                          </option>
+                        ))}
+                      </select>
+                      <button className="rounded-xl bg-[var(--brand)] px-3 py-2 text-sm font-semibold text-white hover:opacity-90">
+                        Salvar
+                      </button>
+                    </form>
+                  )}
                 </div>
-                {canAssign && (
-                  <form action={assignLead} className="flex gap-2">
-                    <input type="hidden" name="leadId" value={lead.id} />
-                    <select
-                      name="assigneeId"
-                      defaultValue={lead.assigned_to ?? ""}
-                      className="rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-3 py-2 text-sm"
-                    >
-                      <option value="">Sem responsável</option>
-                      {members.map((member) => (
-                        <option key={member.user_id} value={member.user_id}>
-                          {member.name}
-                        </option>
-                      ))}
-                    </select>
-                    <button className="rounded-xl bg-[var(--brand)] px-3 py-2 text-sm font-semibold text-white hover:opacity-90">
-                      Salvar
-                    </button>
-                  </form>
-                )}
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+            <div className="border-t border-black/5 px-5 py-4">
+              <ListPagination
+                meta={meta}
+                pathname="/app/equipe"
+                searchParams={{
+                  pageSize: pageSize === 50 ? undefined : String(pageSize),
+                }}
+                label="Paginação da carteira"
+              />
+            </div>
+          </>
         )}
       </section>
     </main>
