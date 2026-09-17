@@ -335,6 +335,7 @@ function CsvImporter() {
   const [ignored, setIgnored] = useState(0);
   const [mappingInfo, setMappingInfo] = useState("");
   const [isImporting, setIsImporting] = useState(false);
+  const [isParsing, setIsParsing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ImportResult | null>(null);
   const [importSource, setImportSource] = useState<"maps2sheets" | "scraper_kit">("maps2sheets");
@@ -351,8 +352,23 @@ function CsvImporter() {
       return;
     }
 
+    setIsParsing(true);
     try {
-      const parsed = readCsv(await file.text(), defaultNiche.trim(), defaultCity.trim());
+      const text = await file.text();
+      const parsed = await new Promise<ReturnType<typeof readCsv>>((resolve, reject) => {
+        const run = () => {
+          try {
+            resolve(readCsv(text, defaultNiche.trim(), defaultCity.trim()));
+          } catch (parseError) {
+            reject(parseError);
+          }
+        };
+        if (typeof requestIdleCallback === "function") {
+          requestIdleCallback(() => run(), { timeout: 800 });
+        } else {
+          window.setTimeout(run, 0);
+        }
+      });
       setFileName(file.name);
       setLeads(parsed.leads);
       setImportSource(parsed.source);
@@ -362,6 +378,8 @@ function CsvImporter() {
       setFileName(null);
       setLeads([]);
       setError(fileError instanceof Error ? fileError.message : "Não foi possível ler o CSV.");
+    } finally {
+      setIsParsing(false);
     }
   }
 
@@ -431,16 +449,22 @@ function CsvImporter() {
         </label>
       </div>
 
-      <div onDragOver={(event) => event.preventDefault()} onDrop={handleDrop} className="mt-5 flex min-h-44 flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 bg-[var(--neu-bg-pop)] px-5 py-8 text-center">
+      <div onDragOver={(event) => event.preventDefault()} onDrop={handleDrop} className="mt-5 flex min-h-44 flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 bg-[var(--neu-bg-pop)] px-5 py-8 text-center" aria-busy={isParsing}>
         <FileCsv size={34} className="text-[var(--brand)]" />
-        <p className="mt-4 font-semibold text-[var(--text)]">Solte o CSV aqui</p>
-        <p className="mt-1 max-w-md text-sm leading-6 text-[var(--text-4)]">Aceita Maps2Sheets, google-maps-scraper-kit (title, phone, emails, website…) e planilhas em português ou inglês.</p>
-        <input ref={inputRef} type="file" accept=".csv,text/csv" onChange={handleFileChange} className="sr-only" />
+        <p className="mt-4 font-semibold text-[var(--text)]">
+          {isParsing ? "Lendo arquivo…" : "Solte o CSV aqui"}
+        </p>
+        <p className="mt-1 max-w-md text-sm leading-6 text-[var(--text-4)]">
+          {isParsing
+            ? "Processando colunas e linhas. Aguarde um momento."
+            : "Aceita Maps2Sheets, google-maps-scraper-kit (title, phone, emails, website…) e planilhas em português ou inglês."}
+        </p>
+        <input ref={inputRef} type="file" accept=".csv,text/csv" onChange={handleFileChange} className="sr-only" disabled={isParsing || isImporting} />
         <div className="mt-5 flex flex-wrap justify-center gap-3">
-          <button type="button" onClick={() => inputRef.current?.click()} className="inline-flex h-10 items-center gap-2 rounded-xl bg-[var(--brand)] px-4 text-sm font-semibold text-white hover:bg-[var(--brand-hover)] active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]">
-            <UploadSimple size={17} weight="bold" /> Selecionar CSV
+          <button type="button" disabled={isParsing || isImporting} onClick={() => inputRef.current?.click()} className="inline-flex h-10 items-center gap-2 rounded-xl bg-[var(--brand)] px-4 text-sm font-semibold text-white hover:bg-[var(--brand-hover)] active:translate-y-px disabled:cursor-wait disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]">
+            <UploadSimple size={17} weight="bold" /> {isParsing ? "Lendo…" : "Selecionar CSV"}
           </button>
-          <button type="button" onClick={downloadTemplate} className="inline-flex h-10 items-center gap-2 rounded-xl border border-black/8 px-4 text-sm font-semibold text-[var(--text-2)] hover:border-[var(--brand)]/30 hover:bg-[var(--brand-hover)]/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]">
+          <button type="button" onClick={downloadTemplate} disabled={isParsing} className="inline-flex h-10 items-center gap-2 rounded-xl border border-black/8 px-4 text-sm font-semibold text-[var(--text-2)] hover:border-[var(--brand)]/30 hover:bg-[var(--brand-hover)]/10 disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]">
             <DownloadSimple size={17} /> Baixar modelo
           </button>
         </div>

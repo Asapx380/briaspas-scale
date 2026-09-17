@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import {
   ArrowRight,
   Buildings,
@@ -22,6 +23,7 @@ import type {
   TrendPoint,
 } from "@/lib/dashboard/metrics";
 import { periodLabel } from "@/lib/dashboard/metrics";
+import { Spinner } from "@/components/ui/async-feedback";
 
 export type FunnelStage = {
   key: string;
@@ -38,32 +40,48 @@ type PeriodFilterProps = {
 
 export function PeriodFilter({ period }: PeriodFilterProps) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   return (
-    <div
-      className="inline-flex rounded-full bg-[var(--neu-bg-well)] p-1 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05)]"
-      role="group"
-      aria-label="Período do dashboard"
-    >
-      {PERIODS.map((option) => {
-        const active = option === period;
-        const label = option === "7d" ? "7 dias" : option === "30d" ? "30 dias" : "Mês";
-        return (
-          <button
-            key={option}
-            type="button"
-            aria-pressed={active}
-            onClick={() => router.push(option === "30d" ? "/app" : `/app?period=${option}`)}
-            className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
-              active
-                ? "bg-white text-[var(--text)] shadow-[0_4px_12px_rgba(15,23,42,0.08)]"
-                : "text-[var(--text-3)] hover:text-[var(--text)]"
-            }`}
-          >
-            {label}
-          </button>
-        );
-      })}
+    <div className="inline-flex items-center gap-2">
+      <div
+        className="inline-flex rounded-full bg-[var(--neu-bg-well)] p-1 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05)]"
+        role="group"
+        aria-label="Período do dashboard"
+        aria-busy={isPending}
+      >
+        {PERIODS.map((option) => {
+          const active = option === period;
+          const label = option === "7d" ? "7 dias" : option === "30d" ? "30 dias" : "Mês";
+          return (
+            <button
+              key={option}
+              type="button"
+              aria-pressed={active}
+              disabled={isPending}
+              onClick={() => {
+                if (option === period) return;
+                startTransition(() => {
+                  router.push(option === "30d" ? "/app" : `/app?period=${option}`);
+                });
+              }}
+              className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all disabled:cursor-wait ${
+                active
+                  ? "bg-white text-[var(--text)] shadow-[0_4px_12px_rgba(15,23,42,0.08)]"
+                  : "text-[var(--text-3)] hover:text-[var(--text)]"
+              } ${isPending && !active ? "opacity-50" : ""}`}
+            >
+              {label}
+            </button>
+          );
+        })}
+      </div>
+      {isPending && (
+        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--text-3)]" role="status">
+          <Spinner className="size-3.5 text-[var(--brand)]" />
+          Atualizando…
+        </span>
+      )}
     </div>
   );
 }
