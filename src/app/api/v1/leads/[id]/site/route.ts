@@ -33,11 +33,27 @@ export async function PATCH(
   }
 
   const { data: current, error: currentError } = await supabase
-    .from("leads").select("site_html, site_source, site_storage_path, site_status").eq("id", id).maybeSingle();
+    .from("leads")
+    .select("site_source, site_storage_path, site_status")
+    .eq("id", id)
+    .maybeSingle();
   if (currentError) return errorResponse("site_load_failed", "Não foi possível carregar o site.", 500);
   if (!current) return errorResponse("site_not_ready", "Lead não encontrado.", 404);
   const hasUploadedSite = current.site_source === "uploaded" && Boolean(current.site_storage_path);
-  if (action === "publish" && !current.site_html && !hasUploadedSite) {
+
+  let hasSiteHtml = false;
+  if (action === "publish" && !hasUploadedSite) {
+    const { data: htmlRow, error: htmlError } = await supabase
+      .from("leads")
+      .select("id")
+      .eq("id", id)
+      .not("site_html", "is", null)
+      .maybeSingle();
+    if (htmlError) return errorResponse("site_load_failed", "Não foi possível carregar o site.", 500);
+    hasSiteHtml = Boolean(htmlRow);
+  }
+
+  if (action === "publish" && !hasSiteHtml && !hasUploadedSite) {
     return errorResponse("site_not_ready", "Envie um ZIP ou gere um site antes de publicar.", 409);
   }
   if (action === "unpublish" && current.site_status !== "published") {

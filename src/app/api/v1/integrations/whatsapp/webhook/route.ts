@@ -22,6 +22,15 @@ type MetaChangeValue = {
   }>;
 };
 
+type IngestedWorkItem = {
+  body: string;
+  contactName: string | null;
+  waContactId: string;
+  conversationId: number;
+  leadId: number | null;
+  agentEnabled: boolean;
+};
+
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -74,12 +83,12 @@ export async function POST(request: Request) {
   const supabase = createPublicClient();
   const workspaceId = Number(process.env.WHATSAPP_WORKSPACE_ID?.trim() || "0");
   if (!Number.isInteger(workspaceId) || workspaceId <= 0) {
-    // Sem workspace configurado: ack seguro (evita retry loop da Meta) e registra aviso.
     console.warn("whatsapp_webhook_skipped reason=missing_WHATSAPP_WORKSPACE_ID");
     return new Response(null, { status: 200 });
   }
 
   const changes = payload.entry?.flatMap((entry) => entry.changes ?? []) ?? [];
+  const workItems: IngestedWorkItem[] = [];
 
   for (const change of changes) {
     const value = change.value;
@@ -110,49 +119,93 @@ export async function POST(request: Request) {
         agentEnabled: boolean;
       };
 
-      if (!conversation.agentEnabled) continue;
-
-      const context = await loadAgentContext(supabase, conversation.leadId, contactName, waContactId);
-      const reply = await craftWhatsAppReply(message.text.body, context);
-      await sleep(Math.min(reply.pauseMs, 6_000));
-
-      const sent = await sendWhatsAppText(waContactId, reply.text);
-      await supabase.rpc("append_whatsapp_outbound", {
-        target_conversation_id: conversation.conversationId,
-        target_body: reply.text,
-        target_wa_message_id: sent.messageId ?? null,
-        target_status: sent.ok ? (sent.stubbed ? "queued" : "sent") : "failed",
-        target_metadata: {
-          pauseMs: reply.pauseMs,
-          handoffToHuman: reply.handoffToHuman,
-          objectionHandled: reply.objectionHandled,
-          stubbed: "stubbed" in sent ? sent.stubbed : false,
-        },
+      workItems.push({
+        body: message.text.body,
+        contactName,
+        waContactId,
+        conversationId: conversation.conversationId,
+        leadId: conversation.leadId,
+        agentEnabled: conversation.agentEnabled,
       });
+    }
+  }
 
-      if (reply.handoffToHuman) {
-        // Melhor esforço: pause via update autenticado pode falhar sem service role; RPC cobrirá em follow-up.
-        await supabase
-          .from("whatsapp_conversations")
-          .update({ agent_enabled: false, status: "paused" })
-          .eq("id", conversation.conversationId);
-      }
+  const agentItems = workItems.filter((item) => item.agentEnabled);
+  const leadIds = [
+    ...new Set(
+      agentItems
+        .map((item) => item.leadId)
+        .filter((id): id is number => typeof id === "number" && Number.isInteger(id)),
+    ),
+  ];
+
+  const leadById = await loadLeadsById(supabase, leadIds);
+
+  for (const item of agentItems) {
+    const context = buildAgentContext(item, item.leadId != null ? leadById.get(item.leadId) ?? null : null);
+    const reply = await craftWhatsAppReply(item.body, context);
+    await sleep(Math.min(reply.pauseMs, 6_000));
+
+    const sent = await sendWhatsAppText(item.waContactId, reply.text);
+    await supabase.rpc("append_whatsapp_outbound", {
+      target_conversation_id: item.conversationId,
+      target_body: reply.text,
+      target_wa_message_id: sent.messageId ?? null,
+      target_status: sent.ok ? (sent.stubbed ? "queued" : "sent") : "failed",
+      target_metadata: {
+        pauseMs: reply.pauseMs,
+        handoffToHuman: reply.handoffToHuman,
+        objectionHandled: reply.objectionHandled,
+        stubbed: "stubbed" in sent ? sent.stubbed : false,
+      },
+    });
+
+    if (reply.handoffToHuman) {
+      await supabase
+        .from("whatsapp_conversations")
+        .update({ agent_enabled: false, status: "paused" })
+        .eq("id", item.conversationId);
     }
   }
 
   return new Response(null, { status: 200 });
 }
 
-async function loadAgentContext(
+type LeadAgentRow = {
+  id: number;
+  company_name: string | null;
+  niche: string | null;
+  city: string | null;
+  ai_diagnosis: unknown;
+  ai_outreach: unknown;
+};
+
+async function loadLeadsById(
   supabase: ReturnType<typeof createPublicClient>,
-  leadId: number | null,
-  contactName: string | null,
-  contactPhone: string,
-): Promise<WhatsAppAgentContext> {
-  if (!leadId) {
+  leadIds: number[],
+): Promise<Map<number, LeadAgentRow>> {
+  const map = new Map<number, LeadAgentRow>();
+  if (leadIds.length === 0) return map;
+
+  const { data: leads } = await supabase
+    .from("leads")
+    .select("id, company_name, niche, city, ai_diagnosis, ai_outreach")
+    .in("id", leadIds);
+
+  for (const lead of (leads ?? []) as LeadAgentRow[]) {
+    map.set(lead.id, lead);
+  }
+  return map;
+}
+
+function buildAgentContext(
+  item: Pick<IngestedWorkItem, "contactName" | "waContactId">,
+  lead: LeadAgentRow | null,
+): WhatsAppAgentContext {
+  if (!lead) {
     return {
-      contactName,
-      contactPhone,
+      contactName: item.contactName,
+      contactPhone: item.waContactId,
       companyName: null,
       niche: null,
       city: null,
@@ -162,21 +215,15 @@ async function loadAgentContext(
     };
   }
 
-  const { data: lead } = await supabase
-    .from("leads")
-    .select("company_name, niche, city, ai_diagnosis, ai_outreach")
-    .eq("id", leadId)
-    .maybeSingle();
-
-  const diagnosis = (lead?.ai_diagnosis as BusinessDiagnosis | null) ?? null;
-  const outreach = lead?.ai_outreach as { mensagem?: string } | null;
+  const diagnosis = (lead.ai_diagnosis as BusinessDiagnosis | null) ?? null;
+  const outreach = lead.ai_outreach as { mensagem?: string } | null;
 
   return {
-    contactName,
-    contactPhone,
-    companyName: lead?.company_name ?? null,
-    niche: lead?.niche ?? null,
-    city: lead?.city ?? null,
+    contactName: item.contactName,
+    contactPhone: item.waContactId,
+    companyName: lead.company_name ?? null,
+    niche: lead.niche ?? null,
+    city: lead.city ?? null,
     diagnosis,
     outreachMessage: outreach?.mensagem ?? null,
     recentMessages: [],

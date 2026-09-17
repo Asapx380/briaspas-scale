@@ -114,17 +114,26 @@ export async function POST(request: Request) {
     }), lead);
   }
 
-  const { data: existingLeads } = await supabase
-    .from("leads")
-    .select("company_name, phone, city")
-    .eq("workspace_id", membership.workspace_id);
-  const existingIdentityKeys = new Set((existingLeads ?? []).map((lead) =>
-    createLeadIdentityKey({
-      companyName: lead.company_name,
-      phone: lead.phone,
-      city: lead.city,
-    }),
-  ));
+  const companyNames = [...new Set([...uniqueLeads.values()].map((lead) => lead.companyName))];
+  const existingIdentityKeys = new Set<string>();
+  const NAME_CHUNK = 100;
+  for (let offset = 0; offset < companyNames.length; offset += NAME_CHUNK) {
+    const chunk = companyNames.slice(offset, offset + NAME_CHUNK);
+    const { data: existingLeads } = await supabase
+      .from("leads")
+      .select("company_name, phone, city")
+      .eq("workspace_id", membership.workspace_id)
+      .in("company_name", chunk);
+    for (const lead of existingLeads ?? []) {
+      existingIdentityKeys.add(
+        createLeadIdentityKey({
+          companyName: lead.company_name,
+          phone: lead.phone,
+          city: lead.city,
+        }),
+      );
+    }
+  }
 
   const records = [...uniqueLeads.values()]
     .filter((lead) => !existingIdentityKeys.has(createLeadIdentityKey({
