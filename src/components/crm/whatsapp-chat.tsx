@@ -241,8 +241,14 @@ export function WhatsAppChatModal({ leadId, companyName, phone, open, onClose }:
             <h2 id="wa-chat-title" className="mt-0.5 font-semibold text-[var(--text)]">{companyName}</h2>
             <p className="mt-1 text-xs text-[var(--text-4)]">{phone ?? "Sem telefone"} · {conversation?.agent_enabled ? "Agente ligado" : "Agente pausado"}</p>
           </div>
-          <button type="button" onClick={onClose} className="rounded-lg p-2 text-[var(--text-3)] hover:bg-[var(--neu-bg-well)]" aria-label="Fechar chat">
-            <X size={18} />
+          <button
+            type="button"
+            onClick={onClose}
+            className="grid size-11 place-items-center rounded-lg text-[var(--text-3)] hover:bg-[var(--neu-bg-well)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+            aria-label="Fechar chat WhatsApp"
+            title="Fechar chat WhatsApp"
+          >
+            <X size={18} aria-hidden />
           </button>
         </header>
 

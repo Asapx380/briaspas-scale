@@ -504,7 +504,7 @@ function CsvImporter() {
                     <td className="px-3 py-3">{lead.phone ?? "Não informado"}</td>
                     <td className="px-3 py-3">{lead.niche}</td>
                     <td className="px-3 py-3">{lead.city}</td>
-                    <td className="px-3 py-3"><button type="button" onClick={() => removeLead(index)} aria-label={`Remover ${lead.companyName}`} className="rounded-lg p-2 text-[var(--text-4)] hover:bg-[var(--neu-bg-well)] hover:text-rose-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"><Trash size={16} /></button></td>
+                    <td className="px-3 py-3"><button type="button" onClick={() => removeLead(index)} aria-label={`Remover ${lead.companyName} da pré-visualização`} title="Remover da pré-visualização" className="inline-grid min-h-11 min-w-11 place-items-center rounded-lg text-[var(--text-4)] hover:bg-[var(--neu-bg-well)] hover:text-rose-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"><Trash size={16} aria-hidden /></button></td>
                   </tr>
                 ))}
               </tbody>

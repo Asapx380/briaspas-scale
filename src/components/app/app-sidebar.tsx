@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useId, useRef, useState } from "react";
 import {
   ArrowCircleUp,
   Buildings,
@@ -21,6 +22,9 @@ import {
   X,
 } from "@phosphor-icons/react";
 import { logout } from "@/app/app/actions";
+
+const FOCUS =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]";
 
 type NavItem = {
   href: string;
@@ -73,22 +77,46 @@ export function AppSidebar({
 }: AppSidebarProps) {
   const pathname = usePathname();
   const initial = (email?.[0] ?? "U").toUpperCase();
+  const [accountOpen, setAccountOpen] = useState(false);
+  const accountMenuId = useId();
+  const accountRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!accountOpen) return;
+    function onPointerDown(event: MouseEvent) {
+      if (!accountRef.current?.contains(event.target as Node)) setAccountOpen(false);
+    }
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setAccountOpen(false);
+    }
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [accountOpen]);
 
   return (
     <>
-      <div
-        className={`fixed inset-0 z-40 bg-black/25 backdrop-blur-[2px] transition-opacity md:hidden ${open ? "opacity-100" : "pointer-events-none opacity-0"}`}
-        onClick={onClose}
-        aria-hidden={!open}
-      />
+      {open && (
+        <button
+          type="button"
+          className="fixed inset-0 z-40 bg-black/25 backdrop-blur-[2px] md:hidden"
+          onClick={onClose}
+          aria-label="Fechar menu de navegação"
+          title="Fechar menu de navegação"
+        />
+      )}
 
       <aside
+        id="app-sidebar"
         className={`app-sidebar glass-sidebar fixed inset-y-0 left-0 z-50 flex flex-col transition-[width,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] md:static md:translate-x-0 ${
           collapsed ? "md:w-[72px]" : "w-[260px]"
         } ${open ? "translate-x-0 w-[260px]" : "-translate-x-full w-[260px]"}`}
         aria-label="Barra lateral"
-        aria-modal={open}
-        role="dialog"
+        aria-modal={open || undefined}
+        role={open ? "dialog" : "complementary"}
         data-collapsed={collapsed ? "true" : "false"}
       >
         <div
@@ -100,7 +128,7 @@ export function AppSidebar({
         >
           <Link
             href="/app"
-            className={`flex min-w-0 items-center gap-2.5 ${collapsed ? "md:justify-center" : ""}`}
+            className={`flex min-w-0 items-center gap-2.5 ${collapsed ? "md:justify-center" : ""} ${FOCUS} rounded-lg`}
             onClick={onClose}
           >
             <Image
@@ -123,21 +151,28 @@ export function AppSidebar({
           <div className={`flex items-center gap-1 ${collapsed ? "md:w-full md:justify-center" : ""}`}>
             <button
               type="button"
-              className="grid size-8 shrink-0 place-items-center rounded-lg bg-black/[0.04] text-[var(--shell-muted)] transition-colors hover:bg-black/[0.07] hover:text-[var(--shell-text)] max-md:hidden"
+              className={`grid size-11 shrink-0 place-items-center rounded-lg bg-black/[0.04] text-[var(--shell-muted)] transition-colors hover:bg-black/[0.07] hover:text-[var(--shell-text)] max-md:hidden ${FOCUS}`}
               onClick={onToggleCollapsed}
-              aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
+              aria-label={collapsed ? "Expandir barra lateral" : "Recolher barra lateral"}
+              title={collapsed ? "Expandir barra lateral" : "Recolher barra lateral"}
               aria-pressed={collapsed}
             >
-              <SidebarSimple size={16} weight="bold" className={collapsed ? "rotate-180" : ""} />
+              <SidebarSimple
+                size={16}
+                weight="bold"
+                className={collapsed ? "rotate-180" : ""}
+                aria-hidden
+              />
             </button>
 
             <button
               type="button"
-              className="grid size-9 place-items-center rounded-full text-[var(--shell-muted)] hover:bg-black/[0.06] md:hidden"
+              className={`grid size-11 place-items-center rounded-full text-[var(--shell-muted)] hover:bg-black/[0.06] md:hidden ${FOCUS}`}
               onClick={onClose}
-              aria-label="Fechar menu"
+              aria-label="Fechar menu de navegação"
+              title="Fechar menu de navegação"
             >
-              <X size={18} weight="bold" />
+              <X size={18} weight="bold" aria-hidden />
             </button>
           </div>
         </div>
@@ -151,7 +186,7 @@ export function AppSidebar({
             const active = isActive(pathname, item);
             const disabled = Boolean(item.badge);
 
-            const className = `group flex w-full items-center gap-3 rounded-full text-[13px] font-medium transition-all duration-150 ${
+            const className = `group flex w-full items-center gap-3 rounded-full text-[13px] font-medium transition-all duration-150 ${FOCUS} ${
               collapsed ? "md:justify-center md:px-0 md:py-2.5" : "px-3.5 py-2.5"
             } ${
               active
@@ -219,12 +254,12 @@ export function AppSidebar({
           <Link
             href="/app/configuracoes/integracoes"
             onClick={onClose}
-            className={`flex w-full items-center justify-center gap-2 rounded-full bg-[var(--brand)] py-2.5 text-[13px] font-semibold text-white shadow-[0_8px_24px_rgba(0,113,227,0.28)] transition-opacity hover:opacity-90 ${
+            className={`flex w-full items-center justify-center gap-2 rounded-full bg-[var(--brand)] py-2.5 text-[13px] font-semibold text-white shadow-[0_8px_24px_rgba(0,113,227,0.28)] transition-opacity hover:opacity-90 ${FOCUS} ${
               collapsed ? "md:px-0" : "px-4"
             }`}
             title="Fazer upgrade"
           >
-            <ArrowCircleUp size={18} weight="fill" className="shrink-0" />
+            <ArrowCircleUp size={18} weight="fill" className="shrink-0" aria-hidden />
             <span className={collapsed ? "md:hidden" : ""}>Fazer upgrade</span>
           </Link>
 
@@ -248,44 +283,64 @@ export function AppSidebar({
           >
             <button
               type="button"
-              className="grid size-9 place-items-center rounded-full text-[var(--shell-muted)] transition-colors hover:bg-black/[0.05] hover:text-[var(--shell-text)]"
+              disabled
+              aria-disabled="true"
+              className={`grid size-11 place-items-center rounded-full text-[var(--shell-muted)] opacity-60 ${FOCUS}`}
               aria-label="Tema escuro (em breve)"
               title="Tema escuro — em breve"
             >
-              <Moon size={18} weight="regular" />
+              <Moon size={18} weight="regular" aria-hidden />
             </button>
 
             <Link
               href="/app/configuracoes/integracoes"
               onClick={onClose}
-              className="grid size-9 place-items-center rounded-full text-[var(--shell-muted)] transition-colors hover:bg-black/[0.05] hover:text-[var(--shell-text)]"
-              aria-label="Configurações"
-              title="Configurações"
+              className={`grid size-11 place-items-center rounded-full text-[var(--shell-muted)] transition-colors hover:bg-black/[0.05] hover:text-[var(--shell-text)] ${FOCUS}`}
+              aria-label="Abrir configurações e integrações"
+              title="Abrir configurações e integrações"
             >
-              <GearSix size={18} weight="regular" />
+              <GearSix size={18} weight="regular" aria-hidden />
             </Link>
 
-            <div className="group relative">
-              <div
-                className="grid size-9 place-items-center rounded-full bg-[var(--brand)] text-xs font-bold text-white shadow-sm"
-                title={email ?? "Conta"}
-                aria-label={email ? `Conta ${email}` : "Conta"}
+            <div className="relative" ref={accountRef}>
+              <button
+                type="button"
+                className={`grid size-11 place-items-center rounded-full bg-[var(--brand)] text-xs font-bold text-white shadow-sm ${FOCUS}`}
+                title={email ? `Conta: ${email}` : "Conta"}
+                aria-label={
+                  email
+                    ? `Conta: ${email}. Abrir menu da conta`
+                    : "Abrir menu da conta"
+                }
+                aria-haspopup="menu"
+                aria-expanded={accountOpen}
+                aria-controls={accountMenuId}
+                onClick={() => setAccountOpen((value) => !value)}
               >
                 {initial}
-              </div>
-              <form
-                action={logout}
-                className={`absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 ${
-                  collapsed ? "md:left-full md:bottom-1/2 md:mb-0 md:ml-2 md:translate-x-0 md:translate-y-1/2" : ""
-                }`}
-              >
-                <button
-                  type="submit"
-                  className="whitespace-nowrap rounded-lg bg-white px-3 py-1.5 text-[11px] font-medium text-[var(--text-2)] shadow-[0_4px_16px_rgba(15,23,42,0.12)] ring-1 ring-black/6 hover:text-[var(--text)]"
+              </button>
+              {accountOpen && (
+                <form
+                  id={accountMenuId}
+                  action={logout}
+                  role="menu"
+                  aria-label="Menu da conta"
+                  className={`absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 ${
+                    collapsed
+                      ? "md:left-full md:bottom-1/2 md:mb-0 md:ml-2 md:translate-x-0 md:translate-y-1/2"
+                      : ""
+                  }`}
                 >
-                  Sair
-                </button>
-              </form>
+                  <button
+                    type="submit"
+                    role="menuitem"
+                    className={`whitespace-nowrap rounded-lg bg-white px-3 py-2 text-[12px] font-medium text-[var(--text-2)] shadow-[0_4px_16px_rgba(15,23,42,0.12)] ring-1 ring-black/6 hover:text-[var(--text)] ${FOCUS}`}
+                    title="Sair da conta"
+                  >
+                    Sair da conta
+                  </button>
+                </form>
+              )}
             </div>
           </div>
         </div>

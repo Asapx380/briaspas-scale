@@ -3,11 +3,15 @@
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { ChatCircleDots } from "@phosphor-icons/react/dist/csr/ChatCircleDots";
+import { DotsSixVertical } from "@phosphor-icons/react/dist/csr/DotsSixVertical";
 import { Phone } from "@phosphor-icons/react/dist/csr/Phone";
 import { useRouter } from "next/navigation";
 import { memo, type CSSProperties, type KeyboardEvent, type MouseEvent } from "react";
 import { leadScore, leadTier, tierLabel, toBrazilianWhatsAppNumber } from "@/lib/crm/pipeline";
 import type { CrmLead } from "@/lib/crm/types";
+
+const FOCUS =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]";
 
 type KanbanCardProps = {
   lead: CrmLead;
@@ -63,7 +67,7 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, sy
     router.push(href);
   }
 
-  function onCardKeyDown(event: KeyboardEvent<HTMLElement>) {
+  function onOpenKeyDown(event: KeyboardEvent<HTMLElement>) {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       openDetail();
@@ -81,31 +85,54 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, sy
 
   const face = (
     <>
-      <div className="flex items-center gap-2">
-        <span
-          className={`inline-flex min-w-8 items-center justify-center rounded-md px-1.5 py-0.5 text-xs font-bold tabular-nums text-white ${
-            score >= 70 ? "bg-[#1A7E3A]" : score >= 45 ? "bg-[#34C759]" : "bg-[#8E8E93]"
-          }`}
-        >
-          {score}
-        </span>
-        {(tier === "quente" || tier === "morno") && (
-          <span
-            className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
-              tier === "quente"
-                ? "bg-[#E8F8EE] text-[#1A7E3A]"
-                : "bg-[#FFF4E5] text-[#B25E00]"
-            }`}
+      <div className="flex items-start gap-2">
+        {!overlay && (
+          <button
+            type="button"
+            className={`mt-0.5 grid size-8 shrink-0 cursor-grab place-items-center rounded-lg text-[var(--text-4)] hover:bg-[var(--neu-bg-well)] hover:text-[var(--text-2)] active:cursor-grabbing ${FOCUS}`}
+            aria-label={`Arrastar ${lead.company_name} no funil`}
+            title="Arrastar para outra etapa"
+            {...listeners}
+            {...attributes}
           >
-            {tierLabel(tier)}
-          </span>
+            <DotsSixVertical size={16} weight="bold" aria-hidden />
+          </button>
         )}
-      </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <span
+              className={`inline-flex min-w-8 items-center justify-center rounded-md px-1.5 py-0.5 text-xs font-bold tabular-nums text-white ${
+                score >= 70 ? "bg-[#1A7E3A]" : score >= 45 ? "bg-[#34C759]" : "bg-[#8E8E93]"
+              }`}
+            >
+              {score}
+            </span>
+            {(tier === "quente" || tier === "morno") && (
+              <span
+                className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                  tier === "quente"
+                    ? "bg-[#E8F8EE] text-[#1A7E3A]"
+                    : "bg-[#FFF4E5] text-[#B25E00]"
+                }`}
+              >
+                {tierLabel(tier)}
+              </span>
+            )}
+          </div>
 
-      <h3 className="mt-2.5 truncate text-[15px] font-semibold tracking-tight text-[var(--text)]">
-        {lead.company_name}
-      </h3>
-      {meta && <p className="mt-0.5 truncate text-xs text-[var(--text-4)]">{meta}</p>}
+          <button
+            type="button"
+            onClick={overlay ? undefined : openDetail}
+            onKeyDown={overlay ? undefined : onOpenKeyDown}
+            className={`mt-2.5 block w-full truncate text-left text-[15px] font-semibold tracking-tight text-[var(--text)] hover:text-[var(--brand)] ${FOCUS} rounded-md`}
+            aria-label={`Abrir detalhes de ${lead.company_name}`}
+            title="Abrir detalhes"
+          >
+            {lead.company_name}
+          </button>
+          {meta && <p className="mt-0.5 truncate text-xs text-[var(--text-4)]">{meta}</p>}
+        </div>
+      </div>
 
       <div className="mt-3 grid grid-cols-2 gap-2">
         {lead.phone ? (
@@ -113,12 +140,14 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, sy
             href={`tel:${lead.phone.replace(/\D/g, "")}`}
             onClick={overlay ? undefined : stopDrag}
             onPointerDown={overlay ? undefined : stopDrag}
-            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-2 py-2 text-xs font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-well)]"
+            className={`inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-2 py-2 text-xs font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-well)] ${FOCUS}`}
+            aria-label={`Ligar para ${lead.company_name}`}
+            title="Ligar"
           >
-            <Phone size={14} /> Ligar
+            <Phone size={14} aria-hidden /> Ligar
           </a>
         ) : (
-          <span className="inline-flex items-center justify-center rounded-xl border border-dashed border-black/8 px-2 py-2 text-xs text-[var(--text-5)]">
+          <span className="inline-flex min-h-11 items-center justify-center rounded-xl border border-dashed border-black/8 px-2 py-2 text-xs text-[var(--text-5)]">
             Sem tel.
           </span>
         )}
@@ -134,12 +163,14 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, sy
                   }
             }
             onPointerDown={overlay ? undefined : stopDrag}
-            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-2 py-2 text-xs font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-well)]"
+            className={`inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-2 py-2 text-xs font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-well)] ${FOCUS}`}
+            aria-label={`Abrir chat WhatsApp de ${lead.company_name}`}
+            title="Abrir conversa WhatsApp"
           >
-            <ChatCircleDots size={14} /> WhatsApp
+            <ChatCircleDots size={14} aria-hidden /> WhatsApp
           </button>
         ) : (
-          <span className="inline-flex items-center justify-center rounded-xl border border-dashed border-black/8 px-2 py-2 text-xs text-[var(--text-5)]">
+          <span className="inline-flex min-h-11 items-center justify-center rounded-xl border border-dashed border-black/8 px-2 py-2 text-xs text-[var(--text-5)]">
             Sem WA
           </span>
         )}
@@ -159,15 +190,9 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, sy
     <article
       ref={setNodeRef}
       style={style}
-      {...listeners}
-      {...attributes}
-      role="button"
-      tabIndex={0}
-      onClick={openDetail}
-      onKeyDown={onCardKeyDown}
       aria-busy={syncing}
       aria-label={`${lead.company_name}, score ${score}${syncing ? ", salvando status" : ""}`}
-      className={`cursor-grab rounded-2xl border border-black/[0.04] bg-white p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition-[box-shadow,transform,opacity] hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)] active:cursor-grabbing ${
+      className={`rounded-2xl border border-black/[0.04] bg-white p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition-[box-shadow,transform,opacity] hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)] ${
         syncing ? "ring-1 ring-[var(--brand)]/25" : ""
       }`}
     >
