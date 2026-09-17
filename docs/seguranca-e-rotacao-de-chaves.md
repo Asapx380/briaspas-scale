@@ -1,12 +1,12 @@
 # Segurança e rotação de chaves
 
-As chaves Groq, Google Places e Foursquare ficam somente em `.env.local` no desenvolvimento e em variáveis protegidas da hospedagem na produção. Nunca use prefixo `NEXT_PUBLIC_` para essas chaves.
+As chaves Groq, Google Places e Foursquare ficam somente em `.env.local` no desenvolvimento e em variáveis de ambiente da **Vercel** na produção. Nunca use prefixo `NEXT_PUBLIC_` para essas chaves.
 
 ## Rotação
 
 1. Gere uma nova chave no painel do provedor sem apagar a anterior.
 2. Restrinja a nova chave aos produtos e ambientes necessários.
-3. Atualize a variável correspondente na hospedagem e em `.env.local`.
+3. Atualize a variável correspondente na Vercel (Settings → Environment Variables) e em `.env.local`.
 4. Faça um teste de busca ou geração.
 5. Revogue a chave antiga somente depois do teste.
 6. Registre data, motivo e responsável pela rotação sem copiar o valor secreto.

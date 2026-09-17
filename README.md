@@ -19,7 +19,14 @@ CRM de prospecção para negócios locais: importa empresas, gera um site-demo p
 - TypeScript
 - Tailwind CSS 4
 - Supabase (Auth + Postgres + RLS)
+- Vercel (hospedagem de produção)
 - Turbopack no desenvolvimento e Webpack no build de produção
+
+## Produção (Vercel)
+
+URL: **https://briaspas-scale.vercel.app**
+
+Deploy só na Vercel. Passo a passo, variáveis de ambiente e como apagar o site Netlify antigo: [`docs/deploy-vercel.md`](./docs/deploy-vercel.md).
 
 ## Executar localmente
 
