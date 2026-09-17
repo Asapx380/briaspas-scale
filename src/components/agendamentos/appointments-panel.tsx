@@ -24,6 +24,7 @@ type AppointmentsPanelProps = {
   appointments: AppointmentItem[];
   leads: LeadOption[];
   loadError: string | null;
+  rangeNote?: string | null;
 };
 
 type CalendarView = "month" | "week" | "day";
@@ -122,7 +123,12 @@ function buildMonthCells(anchor: Date) {
   return Array.from({ length: 42 }, (_, index) => addDays(gridStart, index));
 }
 
-export function AppointmentsPanel({ appointments, leads, loadError }: AppointmentsPanelProps) {
+export function AppointmentsPanel({
+  appointments,
+  leads,
+  loadError,
+  rangeNote = null,
+}: AppointmentsPanelProps) {
   const reduceMotion = useReducedMotion();
   const [view, setView] = useState<CalendarView>("month");
   const [cursor, setCursor] = useState(() => startOfDay(new Date()));
@@ -254,6 +260,9 @@ export function AppointmentsPanel({ appointments, leads, loadError }: Appointmen
           <p className="mt-2 text-sm text-[var(--text-3)] sm:text-base">
             Visualize e gerencie seus agendamentos
           </p>
+          {rangeNote ? (
+            <p className="mt-1 text-xs text-[var(--text-4)]">{rangeNote}</p>
+          ) : null}
         </div>
         <button
           type="button"

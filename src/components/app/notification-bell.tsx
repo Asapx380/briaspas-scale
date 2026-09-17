@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Bell } from "@phosphor-icons/react";
 import Link from "next/link";
 import { SkeletonBar, Spinner } from "@/components/ui/async-feedback";
@@ -23,38 +23,38 @@ export function NotificationBell({ count = 0 }: NotificationBellProps) {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<NotificationItem[]>([]);
   const [fetchedUnread, setFetchedUnread] = useState<number | null>(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [marking, setMarking] = useState(false);
-  const [reloadKey, setReloadKey] = useState(0);
 
-  useEffect(() => {
-    if (!open) return;
-    let cancelled = false;
-    void (async () => {
-      setLoading(true);
-      setLoadError(null);
-      try {
-        const response = await fetch("/api/v1/notifications");
-        if (!response.ok) throw new Error("Não foi possível carregar as notificações.");
-        if (cancelled) return;
-        const payload = (await response.json()) as {
-          data?: { items?: NotificationItem[]; unread?: number };
+  const loadPage = useCallback(async (nextPage: number, append: boolean) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const params = new URLSearchParams({ limit: "30", page: String(nextPage) });
+      const response = await fetch(`/api/v1/notifications?${params}`);
+      if (!response.ok) throw new Error("Não foi possível carregar as notificações.");
+      const payload = (await response.json()) as {
+        data?: {
+          items?: NotificationItem[];
+          unread?: number;
+          hasMore?: boolean;
+          page?: number;
         };
-        if (cancelled) return;
-        setItems(payload.data?.items ?? []);
-        setFetchedUnread(payload.data?.unread ?? 0);
-      } catch (error) {
-        if (cancelled) return;
-        setLoadError(error instanceof Error ? error.message : "Falha ao carregar notificações.");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [open, reloadKey]);
+      };
+      const pageItems = payload.data?.items ?? [];
+      setItems((current) => (append ? [...current, ...pageItems] : pageItems));
+      if (!append) setFetchedUnread(payload.data?.unread ?? 0);
+      setPage(payload.data?.page ?? nextPage);
+      setHasMore(Boolean(payload.data?.hasMore));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Falha ao carregar notificações.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   async function markAllRead() {
     if (marking) return;
@@ -65,11 +65,21 @@ export function NotificationBell({ count = 0 }: NotificationBellProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ markAll: true }),
       });
-      setItems((current) => current.map((item) => ({ ...item, read_at: item.read_at ?? new Date().toISOString() })));
+      setItems((current) =>
+        current.map((item) => ({ ...item, read_at: item.read_at ?? new Date().toISOString() })),
+      );
       setFetchedUnread(0);
     } finally {
       setMarking(false);
     }
+  }
+
+  function toggleOpen() {
+    setOpen((value) => {
+      const next = !value;
+      if (next) void loadPage(1, false);
+      return next;
+    });
   }
 
   const badge = fetchedUnread ?? count;
@@ -77,7 +87,12 @@ export function NotificationBell({ count = 0 }: NotificationBellProps) {
   return (
     <div className="fixed right-5 bottom-5 z-30 sm:right-8 sm:bottom-8">
       {open && (
-        <div className="app-card absolute right-0 bottom-16 w-80 max-h-96 overflow-hidden p-0 text-sm text-[var(--text)]" aria-busy={loading || marking}>
+        <div
+          className="app-card absolute right-0 bottom-16 w-80 max-h-96 overflow-hidden p-0 text-sm text-[var(--text)]"
+          role="dialog"
+          aria-label="Painel de notificações"
+          aria-busy={loading || marking}
+        >
           <div className="flex items-center justify-between border-b border-black/8 px-4 py-3">
             <p className="font-semibold">Notificações</p>
             {badge > 0 && (
@@ -93,41 +108,52 @@ export function NotificationBell({ count = 0 }: NotificationBellProps) {
             )}
           </div>
           <div className="max-h-72 overflow-y-auto px-4 py-3">
-            {loading && (
+            {loading && items.length === 0 && (
               <div className="space-y-3" aria-label="Carregando notificações">
                 <SkeletonBar className="h-12 w-full rounded-lg" />
                 <SkeletonBar className="h-12 w-full rounded-lg" />
                 <SkeletonBar className="h-12 w-full rounded-lg" />
               </div>
             )}
-            {!loading && loadError && (
+            {error && (
               <div role="alert" className="space-y-2">
-                <p className="text-rose-600">{loadError}</p>
+                <p className="text-rose-600">{error}</p>
                 <button
                   type="button"
-                  onClick={() => setReloadKey((key) => key + 1)}
+                  onClick={() => void loadPage(1, false)}
                   className="text-xs font-semibold text-[var(--brand)] hover:underline"
                 >
                   Tentar de novo
                 </button>
               </div>
             )}
-            {!loading && !loadError && items.length === 0 && count > 0 && (
+            {!loading && !error && items.length === 0 && count > 0 && (
               <p className="text-[var(--text-3)]">
-                Você tem {count} follow-up{count === 1 ? "" : "s"} atrasado{count === 1 ? "" : "s"} no CRM.
+                Você tem {count} follow-up{count === 1 ? "" : "s"} atrasado
+                {count === 1 ? "" : "s"} no CRM.
               </p>
             )}
-            {!loading && !loadError && items.length === 0 && count === 0 && (
+            {!loading && !error && items.length === 0 && count === 0 && (
               <p className="text-[var(--text-3)]">Nenhuma notificação urgente no momento.</p>
             )}
-            {!loading && !loadError && (
+            {items.length > 0 && (
               <ul className="space-y-3">
                 {items.map((item) => (
-                  <li key={item.id} className={`rounded-lg border px-3 py-2 ${item.read_at ? "border-black/6 bg-white" : "border-[var(--brand)]/20 bg-[var(--brand-hover)]/8"}`}>
+                  <li
+                    key={item.id}
+                    className={`rounded-lg border px-3 py-2 ${
+                      item.read_at
+                        ? "border-black/6 bg-white"
+                        : "border-[var(--brand)]/20 bg-[var(--brand-hover)]/8"
+                    }`}
+                  >
                     <p className="font-semibold text-[var(--text)]">{item.title}</p>
                     <p className="mt-1 text-xs leading-5 text-[var(--text-3)]">{item.body}</p>
                     {item.lead_id && (
-                      <Link href="/app/crm" className="mt-2 inline-block text-xs font-semibold text-[var(--brand)]">
+                      <Link
+                        href="/app/crm"
+                        className="mt-2 inline-block text-xs font-semibold text-[var(--brand)]"
+                      >
                         Abrir CRM
                       </Link>
                     )}
@@ -135,7 +161,17 @@ export function NotificationBell({ count = 0 }: NotificationBellProps) {
                 ))}
               </ul>
             )}
-            {!loading && !loadError && count > 0 && items.length > 0 && (
+            {hasMore && (
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => void loadPage(page + 1, true)}
+                className="mt-3 w-full rounded-lg border border-black/8 py-2 text-xs font-semibold text-[var(--brand)] hover:bg-[var(--neu-bg-pop)] disabled:opacity-50"
+              >
+                {loading ? "Carregando…" : "Carregar mais"}
+              </button>
+            )}
+            {count > 0 && items.length > 0 && (
               <p className="mt-3 border-t border-black/8 pt-3 text-xs text-[var(--text-3)]">
                 Inclui follow-ups atrasados no funil quando aplicável.
               </p>
@@ -145,7 +181,7 @@ export function NotificationBell({ count = 0 }: NotificationBellProps) {
       )}
       <button
         type="button"
-        onClick={() => setOpen((value) => !value)}
+        onClick={toggleOpen}
         className="relative grid size-12 place-items-center rounded-full bg-white text-[var(--text)] shadow-[0_10px_30px_rgba(15,23,42,0.12)] transition-transform hover:scale-[1.03] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
         aria-label={
           badge > 0
