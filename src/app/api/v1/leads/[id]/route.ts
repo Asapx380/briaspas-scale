@@ -17,23 +17,48 @@ function nullableText(value: unknown, maximumLength: number) {
 function parseInput(value: unknown) {
   if (!value || typeof value !== "object") return null;
   const body = value as Record<string, unknown>;
-  const status = typeof body.status === "string" && LEAD_STATUSES.includes(body.status as LeadStatus)
-    ? body.status as LeadStatus
-    : null;
-  const notes = nullableText(body.notes, 10_000);
-  const estimatedValue = body.estimatedValue === null || body.estimatedValue === ""
-    ? null
-    : typeof body.estimatedValue === "number" && Number.isFinite(body.estimatedValue) && body.estimatedValue >= 0 && body.estimatedValue <= 9_999_999_999.99
-      ? body.estimatedValue
-      : undefined;
-  const followUpText = nullableText(body.followUpAt, 40);
-  const followUpAt = followUpText === null
-    ? null
-    : followUpText !== undefined && !Number.isNaN(Date.parse(followUpText))
-      ? new Date(followUpText).toISOString()
-      : undefined;
 
-  if (!status || notes === undefined || estimatedValue === undefined || followUpAt === undefined) return null;
+  const hasStatus = Object.prototype.hasOwnProperty.call(body, "status");
+  const hasNotes = Object.prototype.hasOwnProperty.call(body, "notes");
+  const hasEstimated = Object.prototype.hasOwnProperty.call(body, "estimatedValue");
+  const hasFollowUp = Object.prototype.hasOwnProperty.call(body, "followUpAt");
+
+  if (!hasStatus && !hasNotes && !hasEstimated && !hasFollowUp) return null;
+
+  const status = !hasStatus
+    ? undefined
+    : typeof body.status === "string" && LEAD_STATUSES.includes(body.status as LeadStatus)
+      ? body.status as LeadStatus
+      : null;
+  if (hasStatus && status === null) return null;
+
+  const notes = !hasNotes ? undefined : nullableText(body.notes, 10_000);
+  if (hasNotes && notes === undefined) return null;
+
+  const estimatedValue = !hasEstimated
+    ? undefined
+    : body.estimatedValue === null || body.estimatedValue === ""
+      ? null
+      : typeof body.estimatedValue === "number" &&
+          Number.isFinite(body.estimatedValue) &&
+          body.estimatedValue >= 0 &&
+          body.estimatedValue <= 9_999_999_999.99
+        ? body.estimatedValue
+        : undefined;
+  if (hasEstimated && estimatedValue === undefined) return null;
+
+  const followUpAt = !hasFollowUp
+    ? undefined
+    : (() => {
+        const followUpText = nullableText(body.followUpAt, 40);
+        if (followUpText === null) return null;
+        if (followUpText === undefined) return undefined;
+        return !Number.isNaN(Date.parse(followUpText))
+          ? new Date(followUpText).toISOString()
+          : undefined;
+      })();
+  if (hasFollowUp && followUpAt === undefined) return null;
+
   return { status, notes, estimatedValue, followUpAt };
 }
 
@@ -57,14 +82,15 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const input = parseInput(body);
   if (!input) return errorResponse("validation_error", "Revise o status, o valor e o prazo informados.", 422);
 
+  const update: Record<string, unknown> = {};
+  if (input.status !== undefined) update.status = input.status;
+  if (input.notes !== undefined) update.notes = input.notes;
+  if (input.estimatedValue !== undefined) update.estimated_value = input.estimatedValue;
+  if (input.followUpAt !== undefined) update.follow_up_at = input.followUpAt;
+
   const { data, error } = await supabase
     .from("leads")
-    .update({
-      status: input.status,
-      notes: input.notes,
-      estimated_value: input.estimatedValue,
-      follow_up_at: input.followUpAt,
-    })
+    .update(update)
     .eq("id", id)
     .select("id, status, notes, estimated_value, follow_up_at, updated_at")
     .maybeSingle();
