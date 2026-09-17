@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Reject pushes that would publish cursoragent / Cursor Agent idents to the remote.
+set -euo pipefail
+
+zero=0000000000000000000000000000000000000000
+agent_pat='cursoragent|cursor agent|@cursor\.com'
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [[ -z "${local_sha:-}" ]] && continue
+  if [[ "$local_sha" == "$zero" ]]; then
+    continue
+  fi
+
+  if [[ "$remote_sha" == "$zero" ]]; then
+    range="$local_sha"
+  else
+    range="$remote_sha..$local_sha"
+  fi
+
+  offending="$(
+    git log --format='%H|%an|%ae|%cn|%ce|%s' "$range" 2>/dev/null \
+      | grep -Ei "$agent_pat" || true
+  )"
+  if [[ -n "$offending" ]]; then
+    echo "error: push blocked — commits with Cursor/agent author or committer:" >&2
+    echo "$offending" >&2
+    echo "Rewrite with Wesley Luther <wesleyluther830@gmail.com> before pushing." >&2
+    exit 1
+  fi
+
+  trailer_hits="$(
+    git log --format='%H%n%b' "$range" 2>/dev/null \
+      | grep -Ei '^[[:space:]]*Co-authored-by:.*(Cursor|cursoragent|@cursor\.com)' || true
+  )"
+  if [[ -n "$trailer_hits" ]]; then
+    echo "error: push blocked — Co-authored-by Cursor/agent trailers present." >&2
+    echo "$trailer_hits" >&2
+    exit 1
+  fi
+done
+
+exit 0
