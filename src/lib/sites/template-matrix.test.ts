@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
@@ -7,6 +8,7 @@ import { listSiteTemplateManifests } from "./template-catalog";
 import { renderSiteTemplate } from "./template-renderer";
 
 const sourceRoot = "/home/asap/Documentos/Projetos/Freelance/15-PROJETOSPARAFREELLANCERS/landing-pages";
+const sourceAvailable = existsSync(sourceRoot);
 const phone = "(19) 98888-7766";
 const whatsappNumber = "5519988887766";
 const address = "Rua Teste Seguro, 150 - Centro, São Pedro - SP";
@@ -72,7 +74,7 @@ describe("matriz dos 15 templates", () => {
     });
   }
 
-  it("mantém os 15 arquivos de origem sem tokens", async () => {
+  it.skipIf(!sourceAvailable)("mantém os 15 arquivos de origem sem tokens", async () => {
     for (const manifest of listSiteTemplateManifests()) {
       const slug = manifest.id.replace(/-01$/, "");
       const source = await readFile(path.join(sourceRoot, slug, "index.html"), "utf8");
