@@ -73,7 +73,7 @@ export function AppShell({ email, notificationCount = 0, children }: AppShellPro
           </button>
           <div className="flex items-center gap-2">
             <Image
-              src="/brand/briaspas-scale-symbol.png"
+              src="/brand/briaspas-scale-symbol.png?v=2"
               alt=""
               width={24}
               height={24}

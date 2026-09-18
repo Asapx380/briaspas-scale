@@ -5,19 +5,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import {
-  ArrowCircleUp,
   Buildings,
   CalendarBlank,
   ChartLineUp,
-  CurrencyDollar,
   GearSix,
   Kanban,
-  Layout,
   ListChecks,
-  Moon,
   PlusCircle,
   SidebarSimple,
-  Translate,
   UsersThree,
   X,
 } from "@phosphor-icons/react";
@@ -31,7 +26,6 @@ type NavItem = {
   label: string;
   icon: typeof ChartLineUp;
   match?: "exact" | "prefix";
-  badge?: string;
 };
 
 const NAV_ITEMS: NavItem[] = [
@@ -48,12 +42,9 @@ const NAV_ITEMS: NavItem[] = [
     icon: GearSix,
     match: "prefix",
   },
-  { href: "#", label: "Cobrar clientes", icon: CurrencyDollar, badge: "EM BREVE" },
-  { href: "#", label: "Templates", icon: Layout, badge: "EM BREVE" },
 ];
 
 function isActive(pathname: string, item: NavItem) {
-  if (item.href === "#") return false;
   // Preview do shell: destaca Dashboard para screenshots sem auth.
   const path = pathname.startsWith("/preview/shell") ? "/app" : pathname;
   if (item.match === "exact") return path === item.href;
@@ -132,7 +123,7 @@ export function AppSidebar({
             onClick={onClose}
           >
             <Image
-              src="/brand/briaspas-scale-symbol.png"
+              src="/brand/briaspas-scale-symbol.png?v=2"
               alt="Briaspas Scale"
               width={128}
               height={128}
@@ -184,16 +175,13 @@ export function AppSidebar({
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const active = isActive(pathname, item);
-            const disabled = Boolean(item.badge);
 
             const className = `group flex w-full items-center gap-3 rounded-full text-[13px] font-medium transition-all duration-150 ${FOCUS} ${
               collapsed ? "md:justify-center md:px-0 md:py-2.5" : "px-3.5 py-2.5"
             } ${
               active
                 ? "bg-[var(--nav-active-bg)] text-[var(--nav-active-text)] shadow-[0_6px_16px_rgba(0,113,227,0.28)]"
-                : disabled
-                  ? "cursor-default text-[var(--shell-muted)]"
-                  : "text-[var(--shell-muted)] hover:bg-black/[0.04] hover:text-[var(--shell-text)]"
+                : "text-[var(--shell-muted)] hover:bg-black/[0.04] hover:text-[var(--shell-text)]"
             }`;
 
             const content = (
@@ -207,30 +195,8 @@ export function AppSidebar({
                 <span className={`flex-1 truncate text-left ${collapsed ? "md:hidden" : ""}`}>
                   {item.label}
                 </span>
-                {item.badge && (
-                  <span
-                    className={`rounded-full bg-white px-2 py-0.5 text-[9px] font-bold tracking-wide text-[#ff9500] shadow-[0_2px_8px_rgba(15,23,42,0.1)] ${
-                      collapsed ? "md:hidden" : ""
-                    }`}
-                  >
-                    {item.badge}
-                  </span>
-                )}
               </>
             );
-
-            if (disabled) {
-              return (
-                <span
-                  key={item.label}
-                  className={className}
-                  aria-disabled="true"
-                  title={collapsed ? `${item.label} — ${item.badge}` : undefined}
-                >
-                  {content}
-                </span>
-              );
-            }
 
             return (
               <Link
@@ -251,47 +217,11 @@ export function AppSidebar({
             collapsed ? "md:px-2" : "px-4"
           }`}
         >
-          <Link
-            href="/app/configuracoes/integracoes"
-            onClick={onClose}
-            className={`flex w-full items-center justify-center gap-2 rounded-full bg-[var(--brand)] py-2.5 text-[13px] font-semibold text-white shadow-[0_8px_24px_rgba(0,113,227,0.28)] transition-opacity hover:opacity-90 ${FOCUS} ${
-              collapsed ? "md:px-0" : "px-4"
-            }`}
-            title="Fazer upgrade"
-          >
-            <ArrowCircleUp size={18} weight="fill" className="shrink-0" aria-hidden />
-            <span className={collapsed ? "md:hidden" : ""}>Fazer upgrade</span>
-          </Link>
-
-          <div
-            className={`flex items-center gap-2 px-1 text-[11px] text-[var(--shell-muted)] ${
-              collapsed ? "md:hidden" : ""
-            }`}
-          >
-            <Translate size={14} className="shrink-0 text-[var(--shell-soft)]" aria-hidden />
-            <span className="font-medium text-[var(--shell-text)]">Português</span>
-            <span aria-hidden="true" className="text-[var(--text-5)]">
-              ·
-            </span>
-            <span className="text-[var(--text-4)]">English</span>
-          </div>
-
           <div
             className={`flex items-center ${
-              collapsed ? "md:flex-col md:gap-2" : "justify-between gap-2 px-0.5"
+              collapsed ? "md:flex-col md:gap-2" : "justify-end gap-2 px-0.5"
             }`}
           >
-            <button
-              type="button"
-              disabled
-              aria-disabled="true"
-              className={`grid size-11 place-items-center rounded-full text-[var(--shell-muted)] opacity-60 ${FOCUS}`}
-              aria-label="Tema escuro (em breve)"
-              title="Tema escuro — em breve"
-            >
-              <Moon size={18} weight="regular" aria-hidden />
-            </button>
-
             <Link
               href="/app/configuracoes/integracoes"
               onClick={onClose}
