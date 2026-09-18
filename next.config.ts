@@ -16,6 +16,13 @@ const contentSecurityPolicy = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  images: {
+    localPatterns: [
+      { pathname: "/**", search: "" },
+      { pathname: "/brand/briaspas-scale-symbol.png", search: "?v=2" },
+    ],
+    qualities: [75, 90],
+  },
   // Parent dirs (e.g. ~/package-lock.json) confuse Turbopack root inference.
   turbopack: {
     root: process.cwd(),

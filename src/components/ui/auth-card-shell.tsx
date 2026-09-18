@@ -23,9 +23,9 @@ export function AuthCardShell({ children, configured, subtitle, title }: AuthCar
       <div className="auth-noise pointer-events-none fixed inset-0 opacity-[0.03] mix-blend-soft-light" />
 
       <motion.div
-        initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        initial={reduceMotion ? { opacity: 0 } : { opacity: 0, transform: "translateY(16px)" }}
+        animate={{ opacity: 1, transform: "translateY(0)" }}
+        transition={{ duration: reduceMotion ? 0.2 : 0.55, ease: [0.23, 1, 0.32, 1] }}
         className="relative w-full max-w-md"
       >
         <section className="overflow-hidden rounded-[20px] border border-black/[0.06] bg-white p-6 shadow-[0_16px_48px_rgba(15,23,42,0.08)] sm:p-8">
@@ -37,7 +37,7 @@ export function AuthCardShell({ children, configured, subtitle, title }: AuthCar
             >
               <span className="relative flex size-12 items-center justify-center overflow-hidden rounded-full border border-black/[0.06] bg-[var(--neu-bg-pop)]">
                 <Image
-                  src="/brand/briaspas-scale-symbol.png"
+                  src="/brand/briaspas-scale-symbol.png?v=2"
                   alt=""
                   width={256}
                   height={256}
@@ -130,15 +130,15 @@ export function AuthSubmitButton({ configured, label, pendingLabel }: AuthSubmit
       type="submit"
       disabled={!configured || pending}
       aria-busy={pending}
-      whileHover={pending || reduceMotion ? undefined : { scale: 1.01 }}
-      whileTap={pending || reduceMotion ? undefined : { scale: 0.985 }}
+      whileHover={pending || reduceMotion ? undefined : { transform: "scale(1.01)" }}
+      whileTap={pending || reduceMotion ? undefined : { transform: "scale(0.985)" }}
       className="group relative mt-1 h-11 w-full overflow-hidden rounded-full bg-[#1f1f23] px-5 text-sm font-semibold text-white shadow-[0_10px_28px_rgba(15,23,42,0.18)] outline-none transition-colors hover:bg-[#2a2a2e] disabled:cursor-not-allowed disabled:opacity-55 focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2"
     >
       {pending && !reduceMotion && (
         <motion.span
           aria-hidden="true"
           className="absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-          animate={{ x: ["-160%", "260%"] }}
+          animate={{ transform: ["translateX(-160%)", "translateX(260%)"] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
         />
       )}
