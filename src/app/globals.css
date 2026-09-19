@@ -235,20 +235,91 @@ body {
     transform 160ms var(--ease-out),
     background-color 180ms ease,
     border-color 180ms ease,
-    box-shadow 180ms ease;
+    box-shadow 180ms ease,
+    color 160ms ease,
+    filter 160ms ease;
 }
 
 .marketing-button:active {
   transform: scale(0.97);
 }
 
+/* Primary CTA: keep white label; darken brand — never fade with opacity. */
+.marketing-button-primary {
+  background-color: var(--brand);
+  color: #ffffff;
+}
+
+.marketing-button-secondary {
+  background-color: #ffffff;
+  color: var(--text);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Header/footer ghost links (Entrar, nav): explicit contrast on hover. */
+.marketing-nav-link {
+  color: var(--text-3);
+  text-decoration-line: none;
+  text-underline-offset: 4px;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    text-decoration-color 160ms ease;
+}
+
+.marketing-ghost-cta {
+  color: var(--text-2);
+  border: 1px solid transparent;
+  text-decoration-line: none;
+  text-underline-offset: 4px;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    text-decoration-color 160ms ease;
+}
+
 .marketing-arrow {
   transition: transform 180ms var(--ease-out);
 }
 
+/* Color/contrast feedback — available whenever hover exists (not only fine pointers). */
+@media (hover: hover) {
+  .marketing-button-primary:hover {
+    background-color: var(--brand-hover);
+    color: #ffffff;
+  }
+
+  .marketing-button-secondary:hover {
+    border-color: rgba(0, 0, 0, 0.16);
+    background-color: var(--neu-bg-pop);
+    color: var(--text);
+  }
+
+  .marketing-nav-link:hover {
+    color: var(--brand);
+    text-decoration-line: underline;
+    text-decoration-color: color-mix(in oklab, var(--brand) 40%, transparent);
+  }
+
+  .marketing-ghost-cta:hover {
+    color: var(--brand);
+    background-color: var(--brand-tint);
+    border-color: color-mix(in oklab, var(--brand) 22%, transparent);
+    text-decoration-line: underline;
+    text-decoration-color: color-mix(in oklab, var(--brand) 35%, transparent);
+  }
+}
+
+/* Motion polish — fine pointer only; skipped under reduced-motion. */
 @media (hover: hover) and (pointer: fine) {
   .marketing-button:hover {
     transform: translateY(-2px);
+  }
+
+  .marketing-button-primary:hover {
+    filter: brightness(1.04);
   }
 
   .marketing-button:hover .marketing-arrow,
@@ -258,6 +329,21 @@ body {
 
   .journey-row:hover .journey-icon {
     transform: translateY(-2px) scale(1.04);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
+  .marketing-button:hover {
+    transform: none;
+  }
+
+  .marketing-button-primary:hover {
+    filter: none;
+  }
+
+  .marketing-button:hover .marketing-arrow,
+  .marketing-link:hover .marketing-arrow {
+    transform: none;
   }
 }
 
@@ -411,6 +497,10 @@ body {
   }
 
   .marketing-button,
+  .marketing-button-primary,
+  .marketing-button-secondary,
+  .marketing-nav-link,
+  .marketing-ghost-cta,
   .marketing-arrow,
   .journey-icon {
     transition: none;
