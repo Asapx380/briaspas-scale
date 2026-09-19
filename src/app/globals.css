@@ -6,12 +6,14 @@
   --foreground: #1d1d1f;
   --brand: #0071e3;
   --brand-hover: #005ec2;
+  /* AA em fundos claros (--neu-bg, #f4f7fb) para rótulos 14px semibold */
+  --brand-on-soft: #005bb5;
   --brand-3: #007aff;
   --brand-tint: #ebf4ff;
   --text: #1d1d1f;
   --text-2: #3a3a3c;
   --text-3: #636366;
-  --text-4: #8e8e93;
+  --text-4: #6e6e73;
   --text-5: #aeaeb2;
 
   --neu-bg: #e6e7ec;
@@ -34,6 +36,7 @@
   --nav-active-text: #ffffff;
 
   --success: #1a7e3a;
+  --success-ink: #145a2a;
   --warning: #ff9500;
   --danger: #ff3b30;
   --radius-card: 24px;
@@ -51,7 +54,7 @@
   --on-ink: #f5f5f7;
   --on-ink-muted: rgba(235, 235, 245, 0.72);
   --hot: #ff9500;
-  --hot-ink: #9a4a00;
+  --hot-ink: #8a4700;
   --won: #34c759;
   --won-ink: #166534;
   --brand-on-ink: #4da3ff;
@@ -138,17 +141,6 @@ body {
 
 .funnel-stage-last {
   clip-path: polygon(6% 0, 100% 0, 100% 100%, 0 100%);
-}
-
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 @keyframes landing-enter {
@@ -298,9 +290,15 @@ body {
   color: var(--hot-ink);
 }
 
-.marketing-chip-won {
-  background-color: color-mix(in oklab, var(--won) 16%, white);
-  color: var(--won-ink);
+.marketing-eyebrow {
+  color: var(--brand-on-soft);
+}
+
+.marketing-touch-target {
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  align-items: center;
+  justify-content: center;
 }
 
 .marketing-section-ink {
@@ -452,40 +450,6 @@ body {
   }
 }
 
-@keyframes funnel-grow {
-  from {
-    transform: scaleY(0.35);
-    opacity: 0.4;
-  }
-  to {
-    transform: scaleY(1);
-    opacity: 1;
-  }
-}
-
-@keyframes bar-fill {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
-.motion-fade-up {
-  animation: fade-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.funnel-stage-anim {
-  transform-origin: bottom center;
-  animation: funnel-grow 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.bar-fill-anim {
-  transform-origin: left center;
-  animation: bar-fill 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
 @media (prefers-reduced-transparency: reduce) {
   .auth-noise {
     display: none;
@@ -493,9 +457,6 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .motion-fade-up,
-  .funnel-stage-anim,
-  .bar-fill-anim,
   .app-card {
     animation: none !important;
     transition: none !important;

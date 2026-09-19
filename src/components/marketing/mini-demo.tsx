@@ -137,7 +137,7 @@ export default function MiniDemo() {
       className="mx-auto w-full max-w-7xl px-5 py-24 sm:px-8 lg:py-32"
     >
       <div className="max-w-2xl" data-reveal>
-        <p className="text-sm font-semibold text-[var(--brand)]">Experimente agora</p>
+        <p className="marketing-eyebrow text-sm font-semibold">Experimente agora</p>
         <h2 id={`${formId}-heading`} className="mt-3 text-3xl font-bold tracking-[-0.04em] sm:text-4xl">
           Veja como os leads aparecem na busca.
         </h2>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import nextDynamic from "next/dynamic";
 import {
   ArrowRight,
   CheckCircle,
@@ -8,9 +9,10 @@ import {
   ShieldCheck,
 } from "@phosphor-icons/react/dist/ssr";
 import { JourneySection } from "@/components/marketing/journey-section";
-import MiniDemo from "@/components/marketing/mini-demo";
 import SonicWaveformHero from "@/components/ui/sonic-waveform";
 import { ScrollMotion } from "@/components/ui/scroll-motion";
+
+const MiniDemo = nextDynamic(() => import("@/components/marketing/mini-demo"));
 
 const capabilities = [
   { text: "Busca e importação de empresas" },
@@ -23,7 +25,7 @@ const capabilities = [
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[var(--neu-bg)] text-[var(--text)]">
+    <main className="min-h-screen overflow-x-clip bg-[var(--neu-bg)] text-[var(--text)]">
       <ScrollMotion />
       <a href="#conteudo" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:shadow-lg">Ir para o conteúdo</a>
       <SonicWaveformHero />
@@ -70,8 +72,8 @@ export default function Home() {
 
       <section className="border-y border-black/[0.06] bg-[#f4f7fb] px-5 py-20 sm:px-8">
         <div data-reveal className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
-          <div><p className="text-sm font-semibold text-[var(--brand)]">MVP em validação</p><h2 className="mt-3 text-3xl font-bold tracking-tight">Use gratuitamente durante esta fase.</h2><p className="mt-3 max-w-2xl leading-7 text-[var(--text-3)]">Nesta fase gratuita você pode testar busca, importação, CRM e sites-demo. Agenda e projetos ainda estão em desenvolvimento.</p></div>
-          <Link href="/cadastro" className="marketing-button marketing-button-primary inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-6 py-3.5 text-sm font-semibold shadow-[0_10px_28px_rgba(0,113,227,0.24)]">Começar grátis <ArrowRight size={18} weight="bold" className="marketing-arrow" /></Link>
+          <div><p className="marketing-eyebrow text-sm font-semibold">MVP em validação</p><h2 className="mt-3 text-3xl font-bold tracking-tight">Use gratuitamente durante esta fase.</h2><p className="mt-3 max-w-2xl leading-7 text-[var(--text-3)]">Nesta fase gratuita você pode testar busca, importação, CRM e sites-demo. Agenda e projetos ainda estão em desenvolvimento.</p></div>
+          <Link href="/cadastro" className="marketing-button marketing-button-primary marketing-touch-target inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-6 py-3.5 text-sm font-semibold shadow-[0_10px_28px_rgba(0,113,227,0.24)]">Começar grátis <ArrowRight size={18} weight="bold" className="marketing-arrow" aria-hidden /></Link>
         </div>
       </section>
 

@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   },
   description: "Encontre negócios locais, apresente sites personalizados e acompanhe cada oportunidade até o fechamento.",
   applicationName: "Briaspas Scale",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "Briaspas Scale | Prospecção com sites-demo e CRM",
     description: "Da busca de empresas ao fechamento, sem perder o contexto comercial.",
