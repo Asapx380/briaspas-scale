@@ -18,6 +18,24 @@ test("apresenta o produto e abre a demonstração", async ({ page }) => {
   await expect(page.getByText("Os dados abaixo são fictícios")).toBeVisible();
 });
 
+test("mini-demo lista leads por nicho e cidade", async ({ page }) => {
+  await page.goto("/#mini-demo");
+
+  await page.getByLabel("Nicho").selectOption("dentista");
+  await page.getByLabel("Cidade").selectOption("sao-paulo");
+  await page.getByRole("button", { name: "Ver leads de exemplo" }).click();
+
+  await expect(
+    page.getByRole("heading", { name: "3 leads demonstrativos de Dentista em São Paulo" }),
+  ).toBeVisible();
+  await expect(page.getByRole("list", { name: "Leads de exemplo" }).getByRole("listitem")).toHaveCount(3);
+  await expect(page.locator('[aria-live="polite"]')).toHaveText(
+    "3 leads de exemplo para Dentista em São Paulo. Dados fictícios.",
+  );
+  await expect(page.getByText("Odonto Viva São Paulo")).toBeVisible();
+  await expect(page.getByText("(11) 9****-1198")).toBeVisible();
+});
+
 test("mantém os caminhos principais acessíveis", async ({ page }) => {
   await page.goto("/");
 
