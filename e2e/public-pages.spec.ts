@@ -1,5 +1,35 @@
 import { expect, test } from "@playwright/test";
 
+import { DEMO_GALLERY_ITEMS } from "../src/lib/marketing/demo-gallery";
+
+test("galeria sites-demo revela cartões e abre as três prévias", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 900 });
+  await page.goto("/#sites-demo");
+
+  const gallery = page.locator("#sites-demo");
+  await expect(gallery.getByRole("heading", { name: /Três segmentos/ })).toBeVisible();
+
+  const cards = gallery.locator(".demo-gallery-card[data-reveal]");
+  await expect(cards).toHaveCount(3);
+
+  await expect
+    .poll(async () => {
+      const opacities = await cards.evaluateAll((nodes) =>
+        nodes.map((node) => window.getComputedStyle(node).opacity),
+      );
+      return opacities.every((value) => value === "1");
+    })
+    .toBe(true);
+
+  for (const [index, item] of DEMO_GALLERY_ITEMS.entries()) {
+    await page.goto("/#sites-demo");
+    const card = page.locator("#sites-demo .demo-gallery-card").nth(index);
+    await card.getByRole("link", { name: "Ver demonstração" }).click();
+    await expect(page).toHaveURL(new RegExp(`${item.href.replace(/\//g, "\\/")}$`));
+    await expect(page.getByText("Site demonstrativo — dados fictícios")).toBeVisible();
+  }
+});
+
 test("apresenta o produto e abre a demonstração", async ({ page }) => {
   await page.goto("/");
 

@@ -1,17 +1,12 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, MapPin, Sparkle } from "@phosphor-icons/react";
-import { motion, useReducedMotion } from "motion/react";
+import { ArrowRight, MapPin, Sparkle } from "@phosphor-icons/react/dist/ssr";
 import { DEMO_GALLERY_ITEMS } from "@/lib/marketing/demo-gallery";
 
 const FOCUS =
   "rounded-sm outline-none focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[var(--brand)]";
 
 export function DemoGallerySection() {
-  const reduceMotion = useReducedMotion();
-
   return (
     <section
       id="sites-demo"
@@ -35,17 +30,10 @@ export function DemoGallerySection() {
         aria-label="Galeria de sites demonstrativos"
       >
         {DEMO_GALLERY_ITEMS.map((item, index) => (
-          <motion.li
+          <li
             key={item.slug}
-            className="demo-gallery-card list-none"
-            initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-            whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={
-              reduceMotion
-                ? { duration: 0 }
-                : { duration: 0.45, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }
-            }
+            data-reveal
+            className={`demo-gallery-card list-none reveal-delay-${Math.min(index + 1, 5)}`}
           >
             <article className="demo-gallery-card-inner flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--card)] shadow-[var(--shadow-card)]">
               <div className="demo-gallery-media relative aspect-[16/10] w-full overflow-hidden bg-[var(--neu-bg-well)]">
@@ -82,7 +70,7 @@ export function DemoGallerySection() {
                 </div>
               </div>
             </article>
-          </motion.li>
+          </li>
         ))}
       </ul>
     </section>
