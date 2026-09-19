@@ -15,7 +15,7 @@ export default function SonicWaveformHero() {
           <Image src="/brand/briaspas-scale-symbol.png?v=2" alt="" width={256} height={256} priority className="size-10" />
           <span className="text-sm font-semibold tracking-tight">Briaspas Scale</span>
         </Link>
-        <nav aria-label="Navegação da página" className="hidden items-center gap-7 text-sm font-medium md:flex">
+        <nav aria-label="Navegação da página" className="hidden items-center gap-5 whitespace-nowrap text-sm font-medium md:flex lg:gap-7">
           <Link href="#como-funciona" className="marketing-nav-link">Como funciona</Link>
           <Link href="#recursos" className="marketing-nav-link">Recursos</Link>
           <Link href="#seguranca" className="marketing-nav-link">Segurança</Link>
@@ -60,7 +60,7 @@ export default function SonicWaveformHero() {
         </div>
 
         <div className="landing-preview-enter motion-delay-5 relative min-w-0 w-full rounded-[28px] border border-white/80 bg-white/55 p-3 shadow-[0_28px_80px_rgba(15,23,42,0.13)] backdrop-blur-sm sm:p-5">
-          <div className="mb-3 flex items-center justify-between gap-2 px-2 text-xs font-medium text-[var(--text-4)]">
+          <div className="mb-3 flex items-center justify-between gap-2 px-2 text-xs font-medium text-[var(--text-3)]">
             <span className="truncate">Site-demo + lead</span>
             <span className="shrink-0">Dados demonstrativos</span>
           </div>
