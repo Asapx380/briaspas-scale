@@ -1,4 +1,5 @@
-import { Buildings, Tooth } from "@phosphor-icons/react/dist/ssr";
+import { Tooth } from "@phosphor-icons/react/dist/ssr";
+import { HeroLeadCard } from "@/components/marketing/hero-lead-card";
 
 export function HeroMock() {
   return (
@@ -45,21 +46,7 @@ export function HeroMock() {
             </div>
           </div>
 
-          <div className="mt-3 max-w-[min(100%,18rem)] rounded-2xl border border-black/[0.08] bg-white p-3 shadow-[0_16px_40px_rgba(15,23,42,0.14)] sm:absolute sm:right-4 sm:bottom-2 sm:mt-0 sm:w-[15.5rem]">
-            <div className="flex items-start gap-2.5">
-              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[var(--neu-bg)] text-[var(--text-3)]">
-                <Buildings size={18} weight="duotone" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="marketing-chip-hot rounded-full px-2 py-0.5 text-[10px] font-semibold">Quente</span>
-                  <span className="rounded-full bg-[var(--neu-bg)] px-2 py-0.5 text-[10px] font-semibold text-[var(--text-3)]">Sem site</span>
-                </div>
-                <p className="mt-1.5 truncate text-sm font-semibold text-[var(--text)]">Clínica Sorriso</p>
-                <p className="truncate text-[11px] text-[var(--text-3)]">Campinas, SP</p>
-              </div>
-            </div>
-          </div>
+          <HeroLeadCard />
         </div>
       </div>
     </div>
