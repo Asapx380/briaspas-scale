@@ -1,27 +1,15 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  ChartLineUp,
   CheckCircle,
-  Factory,
   Globe,
   Kanban,
   LockKey,
   ShieldCheck,
-  Sparkle,
 } from "@phosphor-icons/react/dist/ssr";
+import { JourneySection } from "@/components/marketing/journey-section";
 import SonicWaveformHero from "@/components/ui/sonic-waveform";
 import { ScrollMotion } from "@/components/ui/scroll-motion";
-
-const journey = [
-  { icon: Factory, title: "Encontre", text: "Busque empresas por nicho e cidade ou importe sua própria lista." },
-  {
-    icon: Sparkle,
-    title: "Apresente",
-    text: "Monte um site-demo com as informações do negócio que você encontrou ou cadastrou — sempre revisadas antes de enviar.",
-  },
-  { icon: ChartLineUp, title: "Priorize", text: "Veja visitas, organize retornos e concentre energia nos leads mais quentes." },
-];
 
 const capabilities = [
   { text: "Busca e importação de empresas" },
@@ -39,21 +27,7 @@ export default function Home() {
       <a href="#conteudo" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:shadow-lg">Ir para o conteúdo</a>
       <SonicWaveformHero />
 
-      <section id="como-funciona" className="mx-auto w-full max-w-7xl px-5 py-24 sm:px-8 lg:py-32">
-        <div id="conteudo" className="max-w-2xl scroll-mt-24" data-reveal>
-          <h2 className="text-3xl font-bold tracking-[-0.04em] sm:text-5xl">Do primeiro contato ao projeto fechado.</h2>
-          <p className="mt-5 max-w-xl text-base leading-7 text-[var(--text-3)]">Um processo curto, rastreável e feito para quem vende sites para negócios locais.</p>
-        </div>
-        <div className="mt-14 overflow-hidden rounded-[24px] bg-white shadow-[var(--shadow-card)]" data-reveal="clip">
-          {journey.map(({ icon: Icon, title, text }) => (
-            <article key={title} className="journey-row grid gap-5 border-b border-black/[0.07] p-6 last:border-0 sm:grid-cols-[3rem_1fr] sm:p-8 lg:grid-cols-[3rem_0.4fr_1fr] lg:items-center">
-              <div className="journey-icon grid size-12 place-items-center rounded-[14px] bg-[var(--brand-tint)] text-[var(--brand)]"><Icon size={23} weight="duotone" /></div>
-              <h3 className="text-xl font-semibold tracking-tight">{title}</h3>
-              <p className="max-w-2xl leading-7 text-[var(--text-3)]">{text}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+      <JourneySection />
 
       <section id="recursos" className="marketing-section-ink">
         <div className="mx-auto grid w-full max-w-7xl gap-12 px-5 py-24 sm:px-8 lg:grid-cols-[0.78fr_1.22fr] lg:py-32">

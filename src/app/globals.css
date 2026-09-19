@@ -394,6 +394,58 @@ body {
   transition: transform 180ms var(--ease-out);
 }
 
+/* Landing — sticky 3-step journey (#como-funciona) */
+@media (min-width: 1024px) {
+  .journey-sticky-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .journey-panel-layer {
+    position: relative;
+    opacity: 1;
+    transform: none;
+  }
+
+  [data-journey-enhanced="true"] .journey-sticky-inner {
+    display: block;
+    position: relative;
+    min-height: min(70vh, 32rem);
+  }
+
+  [data-journey-enhanced="true"] .journey-panel-layer {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 300ms var(--ease-out);
+    pointer-events: none;
+  }
+
+  [data-journey-enhanced="true"] .journey-panel-layer[data-active="true"] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  [data-journey-enhanced="true"] .journey-step[data-active="true"] .journey-step-copy {
+    color: var(--text);
+  }
+
+  [data-journey-enhanced="true"] .journey-step[data-active="false"] .journey-step-copy {
+    color: var(--text-3);
+  }
+
+  [data-journey-enhanced="true"] .journey-step[data-active="false"] .journey-icon {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-journey-enhanced="true"] .journey-panel-layer {
+    transition: none;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
