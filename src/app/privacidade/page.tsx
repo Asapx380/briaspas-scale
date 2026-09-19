@@ -7,7 +7,7 @@ export default function PrivacyPage() {
     <main className="min-h-screen bg-[var(--neu-bg)] px-5 py-12 text-[var(--text)] sm:px-8 sm:py-16">
       <ScrollMotion />
       <article className="mx-auto max-w-3xl">
-        <Link href="/" className="landing-enter marketing-link inline-flex items-center gap-2 text-sm font-semibold text-[var(--brand)]">
+        <Link href="/" className="landing-enter marketing-link marketing-eyebrow inline-flex items-center gap-2 text-sm font-semibold">
           <ArrowLeft size={16} weight="bold" className="marketing-arrow" /> Voltar
         </Link>
 

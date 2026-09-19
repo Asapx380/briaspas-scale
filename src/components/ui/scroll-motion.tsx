@@ -6,7 +6,14 @@ export function ScrollMotion() {
   useEffect(() => {
     const elements = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
 
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     elements.forEach((element) => element.setAttribute("data-motion-ready", "true"));
+
+    if (prefersReducedMotion) {
+      elements.forEach((element) => element.setAttribute("data-visible", "true"));
+      return;
+    }
 
     if (!("IntersectionObserver" in window)) {
       elements.forEach((element) => element.setAttribute("data-visible", "true"));
