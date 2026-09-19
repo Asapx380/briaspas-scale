@@ -28,14 +28,7 @@ export function JourneyScrollSync() {
         }
       });
       panels.forEach((panel, i) => {
-        const isActive = i === safeIndex;
-        panel.dataset.active = isActive ? "true" : "false";
-        panel.setAttribute("aria-hidden", isActive ? "false" : "true");
-        if (isActive) {
-          panel.removeAttribute("inert");
-        } else {
-          panel.setAttribute("inert", "");
-        }
+        panel.dataset.active = i === safeIndex ? "true" : "false";
       });
     };
 
@@ -50,8 +43,6 @@ export function JourneyScrollSync() {
         });
         panels.forEach((panel) => {
           panel.removeAttribute("data-active");
-          panel.removeAttribute("aria-hidden");
-          panel.removeAttribute("inert");
         });
         return;
       }

@@ -66,7 +66,7 @@ export function JourneySection() {
                       </h3>
                       <p className="mt-3 text-base leading-7 text-[var(--text-3)]">{step.text}</p>
                     </div>
-                    <div className="journey-step-inline-panel mt-8 lg:hidden" aria-hidden={false}>
+                    <div className="journey-step-inline-panel mt-8 lg:hidden" aria-hidden="true" inert>
                       <Panel />
                     </div>
                   </article>
@@ -75,11 +75,7 @@ export function JourneySection() {
             })}
           </ol>
 
-          <div
-            className="journey-panels-col hidden lg:block"
-            aria-label="Visualização demonstrativa das etapas"
-            aria-live="polite"
-          >
+          <div className="journey-panels-col hidden lg:block">
             <div className="journey-sticky-wrap sticky top-24">
               <div className="journey-sticky-inner">
                 {journeyPanels.map((entry, index) => (
@@ -89,8 +85,8 @@ export function JourneySection() {
                     data-active={index === 0 ? "true" : "false"}
                     className="journey-panel-layer"
                     id={`journey-panel-${entry.id}`}
-                    role="region"
-                    aria-labelledby={`journey-step-title-${entry.id}`}
+                    aria-hidden="true"
+                    inert
                   >
                     <entry.Panel />
                   </div>

@@ -17,31 +17,46 @@ const kanbanColumns = [
   {
     title: "Base",
     cards: [
-      { name: "Auto Mecânica Norte", meta: "Sem site" },
-      { name: "Sabor da Roça", meta: "Site desatualizado" },
+      { name: "Auto Mecânica Norte", meta: "Sem site", chip: null },
+      { name: "Sabor da Roça", meta: "Site desatualizado", chip: "morno" as const },
     ],
   },
   {
     title: "Abordado",
     cards: [
-      { name: "Clínica Sorriso", meta: "Link enviado" },
-      { name: "Studio Fit", meta: "Aguardando resposta" },
+      { name: "Clínica Sorriso", meta: "Link enviado", chip: "quente" as const },
+      { name: "Studio Fit", meta: "Aguardando resposta", chip: "morno" as const },
     ],
   },
   {
     title: "Follow Up",
     cards: [
-      { name: "Pet Shop Amigo", meta: "2 visitas no link" },
-      { name: "Advocacia Lima", meta: "Retorno agendado" },
+      { name: "Pet Shop Amigo", meta: "2 visitas no link", chip: "quente" as const },
+      { name: "Advocacia Lima", meta: "Retorno agendado", chip: null },
     ],
   },
 ] as const;
 
 function DemoLabel() {
   return (
-    <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--text-4)]">
+    <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
       Dados demonstrativos
     </p>
+  );
+}
+
+function TierChip({ tier }: { tier: "quente" | "morno" }) {
+  if (tier === "quente") {
+    return (
+      <span className="marketing-chip-hot mb-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold">
+        Quente
+      </span>
+    );
+  }
+  return (
+    <span className="mb-1 inline-block rounded-full bg-[var(--neu-bg)] px-2 py-0.5 text-[10px] font-semibold text-[var(--text-3)]">
+      Morno
+    </span>
   );
 }
 
@@ -53,14 +68,14 @@ export function JourneyPanelEncontre() {
         <label className="block">
           <span className="text-xs font-semibold text-[var(--text-3)]">Nicho</span>
           <span className="mt-1.5 flex items-center gap-2 rounded-xl border border-black/[0.08] bg-[var(--neu-bg)] px-3 py-2.5 text-sm text-[var(--text-2)]">
-            <MagnifyingGlass size={16} className="shrink-0 text-[var(--text-4)]" aria-hidden="true" />
+            <MagnifyingGlass size={16} className="shrink-0 text-[var(--text-3)]" aria-hidden="true" />
             Odontologia
           </span>
         </label>
         <label className="block">
           <span className="text-xs font-semibold text-[var(--text-3)]">Cidade</span>
           <span className="mt-1.5 flex items-center gap-2 rounded-xl border border-black/[0.08] bg-[var(--neu-bg)] px-3 py-2.5 text-sm text-[var(--text-2)]">
-            <MapPin size={16} className="shrink-0 text-[var(--text-4)]" aria-hidden="true" />
+            <MapPin size={16} className="shrink-0 text-[var(--text-3)]" aria-hidden="true" />
             Campinas, SP
           </span>
         </label>
@@ -73,12 +88,12 @@ export function JourneyPanelEncontre() {
             </span>
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold text-[var(--text)]">{company.name}</p>
-              <p className="truncate text-xs text-[var(--text-4)]">{company.niche} · {company.city}</p>
+              <p className="truncate text-xs text-[var(--text-3)]">{company.niche} · {company.city}</p>
             </div>
           </li>
         ))}
       </ul>
-      <p className="mt-3 text-xs leading-5 text-[var(--text-4)]">
+      <p className="mt-3 text-xs leading-5 text-[var(--text-3)]">
         Exemplo ilustrativo. Na conta, você busca ou importa empresas reais do seu mercado.
       </p>
     </div>
@@ -90,14 +105,12 @@ export function JourneyPanelApresente() {
     <div className="journey-panel-card overflow-hidden rounded-[22px] border border-black/[0.08] bg-white shadow-[var(--shadow-card)]">
       <div className="flex items-center justify-between gap-2 border-b border-black/[0.06] bg-[var(--neu-bg-pop)] px-4 py-3">
         <DemoLabel />
-        <button
-          type="button"
+        <span
           className="marketing-button inline-flex items-center gap-1.5 rounded-full border border-black/[0.08] bg-white px-3 py-1.5 text-xs font-semibold text-[var(--text-2)]"
-          aria-label="Copiar link do site-demo (demonstração)"
         >
           <Copy size={14} weight="bold" aria-hidden="true" />
           Copiar link
-        </button>
+        </span>
       </div>
       <div className="bg-[linear-gradient(180deg,#f8fbff_0%,#eef4fb_100%)] p-4">
         <div className="rounded-2xl border border-black/[0.05] bg-white p-3 shadow-sm">
@@ -107,15 +120,15 @@ export function JourneyPanelApresente() {
             </span>
             <div className="min-w-0">
               <p className="truncate text-sm font-bold text-[var(--text)]">Clínica Sorriso</p>
-              <p className="truncate text-[11px] text-[var(--text-4)]">Odontologia em Campinas</p>
+              <p className="truncate text-[11px] text-[var(--text-3)]">Odontologia em Campinas</p>
             </div>
           </div>
           <div className="mt-3 flex items-center gap-2 rounded-lg bg-[var(--neu-bg)] px-2.5 py-2 text-[11px] text-[var(--text-3)]">
             <LinkIcon size={14} className="shrink-0 text-[var(--brand)]" aria-hidden="true" />
-            <span className="truncate">demo.briaspas.app/clinica-sorriso</span>
+            <span className="truncate">briaspas-scale.vercel.app/empresa/clinica-sorriso</span>
           </div>
         </div>
-        <p className="mt-3 text-xs leading-5 text-[var(--text-4)]">
+        <p className="mt-3 text-xs leading-5 text-[var(--text-3)]">
           Você revisa o conteúdo antes de publicar e enviar o link ao contato.
         </p>
       </div>
@@ -130,22 +143,23 @@ export function JourneyPanelPriorize() {
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
         {kanbanColumns.map((column) => (
           <div key={column.title} className="min-w-0 rounded-xl bg-[var(--neu-bg)] p-2.5">
-            <p className="text-[11px] font-bold uppercase tracking-wide text-[var(--text-4)]">{column.title}</p>
+            <p className="text-[11px] font-bold uppercase tracking-wide text-[var(--text-3)]">{column.title}</p>
             <ul className="mt-2 space-y-2">
               {column.cards.map((card) => (
                 <li
                   key={card.name}
                   className="rounded-lg border border-black/[0.06] bg-white p-2.5 shadow-sm"
                 >
+                  {card.chip ? <TierChip tier={card.chip} /> : null}
                   <p className="truncate text-xs font-semibold text-[var(--text)]">{card.name}</p>
-                  <p className="mt-0.5 truncate text-[10px] text-[var(--text-4)]">{card.meta}</p>
+                  <p className="mt-0.5 truncate text-[10px] text-[var(--text-3)]">{card.meta}</p>
                 </li>
               ))}
             </ul>
           </div>
         ))}
       </div>
-      <p className="mt-3 text-xs leading-5 text-[var(--text-4)]">
+      <p className="mt-3 text-xs leading-5 text-[var(--text-3)]">
         Organize retornos no CRM. Visitas ao link ajudam a priorizar, quando disponíveis.
       </p>
     </div>
