@@ -1,96 +1,107 @@
 # Briaspas Scale
 
-CRM de prospecção para negócios locais: importa empresas, gera um site-demo por lead, acompanha o funil de vendas e organiza os projetos vendidos.
+Portfólio de produto — CRM de prospecção para negócios locais.
 
-**Status:** MVP em construção. Já dá para subir localmente, autenticar com Supabase, importar leads (Foursquare, CSV ou manual), gerar/publicar sites e usar o CRM. Ainda não é o produto fechado do [blueprint](./plans/blueprint-briaspas-scale.md) — metas de equipe, domínio customizado e WhatsApp oficial ficam para depois.
+**Autor:** Wesley Luther
 
-## O que já roda
+## Problema
 
-- Login, cadastro e recuperação de senha (Supabase Auth)
-- Busca/importação de leads sem Google Places (Foursquare, CSV, cadastro manual)
-- Geração de site-demo por nicho, revisão e publicação em `/empresa/[slug]`
-- CRM e projetos vendidos no app autenticado
-- Testes unitários (Vitest) em sanitização, templates, zip e rate limit
+Equipes que vendem sites e serviços para empresas locais costumam espalhar o trabalho entre planilhas, ferramentas de geração de página, anotações soltas e follow-ups no WhatsApp. O contexto do lead se perde, a proposta demora a sair e o funil fica difícil de acompanhar.
+
+O **Briaspas Scale** concentra busca/importação de empresas, geração de **site-demo por lead**, CRM visual e publicação em link exclusivo — do primeiro contato até o projeto vendido, com dados isolados por workspace.
+
+## Demonstração
+
+**Produção:** https://briaspas-scale.vercel.app
+
+Ambiente público com **dados demonstrativos** (sem leads reais). Explore a landing, o CRM em `/demonstracao` e o fluxo descrito abaixo.
+
+| Visão | Captura |
+| --- | --- |
+| Hero e proposta de valor | ![Landing — hero](./docs/images/landing-hero.png) |
+| CRM demonstrativo (kanban) | ![Demonstração — kanban](./docs/images/demonstracao-kanban.png) |
+| Jornada comercial | ![Landing — jornada](./docs/images/landing-jornada.png) |
+| Recursos do produto | ![Landing — recursos](./docs/images/landing-cta.png) |
+
+## O que já funciona
+
+| Recurso | Status |
+| --- | --- |
+| Login, cadastro e recuperação de senha (Supabase Auth) | Disponível |
+| Busca/importação de leads (Foursquare, CSV, manual) | Disponível |
+| CRM visual, scores e follow-ups | Disponível |
+| Geração, revisão e publicação de site-demo (`/empresa/[slug]`) | Disponível |
+| Prévia privada antes de publicar | Disponível |
+| Registro de visitas ao link do site | Disponível |
+| **Projetos** e tarefas pós-venda | **Em evolução** |
+| **Agenda** e organização da equipe | **Em evolução / em breve** |
+| Integração **WhatsApp / Meta** oficial | **Adiado** (UI preparada; API oficial não conectada) |
+
+Documentação operacional: [`docs/importacao-de-leads.md`](./docs/importacao-de-leads.md), [`docs/geracao-de-sites.md`](./docs/geracao-de-sites.md), [`docs/modelo-completo-do-lead.md`](./docs/modelo-completo-do-lead.md).
 
 ## Stack
 
-- Next.js 16 com App Router
-- React 19
-- TypeScript
-- Tailwind CSS 4
-- Supabase (Auth + Postgres + RLS)
-- Vercel (hospedagem de produção)
-- Turbopack no desenvolvimento e Webpack no build de produção
+- **Next.js 16** (App Router)
+- **React 19**
+- **TypeScript**
+- **Tailwind CSS 4**
+- **Supabase** — Auth, Postgres e **RLS** por workspace
+- **Vercel** — hospedagem de produção
 
-## Produção (Vercel)
+Desenvolvimento com Turbopack; build de produção com Webpack (`npm run build`).
 
-URL: **https://briaspas-scale.vercel.app**
+## Decisões técnicas (segurança)
 
-Deploy só na Vercel. Passo a passo, variáveis de ambiente e como apagar o site Netlify antigo: [`docs/deploy-vercel.md`](./docs/deploy-vercel.md).
+- **Upload de site em ZIP:** limites de tamanho (arquivo e descompactado), número máximo de arquivos, lista fechada de extensões, exigência de `index.html` na raiz, detecção de **zip bomb** (taxa de compressão e tamanhos validados com `yauzl`) e bloqueio de **path traversal** (`..`, barras absolutas, extensões não permitidas). Ver [`src/lib/sites/uploaded-site-zip.ts`](./src/lib/sites/uploaded-site-zip.ts) e [`docs/geracao-de-sites.md`](./docs/geracao-de-sites.md).
+- **Prévia privada:** token aleatório com hash SHA-256 armazenado no banco, expiração (~30 min) e cookie de escopo por slug; comparação em tempo constante. Ver [`src/lib/sites/site-preview-token.ts`](./src/lib/sites/site-preview-token.ts).
+- **HTML gerado por IA:** sanitização com allowlist (`sanitize-html`) antes de persistir ou servir.
+- **Isolamento por workspace:** consultas autenticadas amarradas ao `workspace_id` do membro; políticas RLS no Supabase (auditoria em [`docs/auditoria-rls.sql`](./docs/auditoria-rls.sql)).
+- **Segredos:** chaves de provedor só em variáveis de ambiente do servidor; script `npm run security:secrets` impede vazamento no bundle cliente.
 
 ## Executar localmente
 
-Instale as dependências, caso ainda não estejam instaladas:
-
 ```bash
 npm install
-npm run hooks:install
-```
-
-O hook `commit-msg` remove trailers `Co-authored-by` de agentes (Cursor/cursoragent) para manter Contributors só com pessoas da equipe. `npm install` também roda `hooks:install` via `postinstall`.
-
-Inicie o servidor de desenvolvimento:
-
-```bash
 npm run dev
 ```
 
-Abra http://localhost:3000 no navegador.
+Abra http://localhost:3000.
 
-## Conectar ao Supabase
-
-1. Crie um projeto em https://supabase.com/dashboard.
-2. Abra o projeto e use o botão **Connect** para copiar a URL e a chave publicável.
-3. Crie um arquivo `.env.local` na raiz usando `.env.example` como modelo:
+Configure `.env.local` a partir de [`.env.example`](./.env.example):
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_sua-chave
 ```
 
-Não use a chave `service_role` nesses campos. Reinicie `npm run dev` depois de alterar o arquivo.
+Use apenas a chave **publicável** — nunca `service_role` no cliente. Esquema e migrations: [`supabase/README.md`](./supabase/README.md). Deploy: [`docs/deploy-vercel.md`](./docs/deploy-vercel.md).
 
-Para o primeiro acesso, crie um usuário em **Authentication > Users** no painel do Supabase e use o e-mail e a senha em http://localhost:3000/login.
+O hook `commit-msg` (via `npm run hooks:install`) remove trailers `Co-authored-by` de agentes automaticamente.
 
-O esquema inicial e as instruções para aplicá-lo estão em [`supabase/README.md`](./supabase/README.md).
-
-## Adicionar leads sem Google Places
-
-Enquanto o faturamento do Google Places estiver pausado, a aplicação usa o Foursquare como fonte automática e também aceita:
-
-- Busca automática por nicho e cidade, com salvamento individual ou em lote.
-- Importação de até 100 empresas por CSV do Maps2Sheets ou de outra planilha compatível.
-- Cadastro manual de uma empresa por vez.
-- Nome, telefone, endereço, nicho, cidade, site, link do mapa e avaliações.
-- Detecção de empresas duplicadas no servidor.
-
-O passo a passo e os nomes de colunas aceitos estão em [`docs/importacao-de-leads.md`](./docs/importacao-de-leads.md).
-
-A configuração da busca automática está em [`docs/busca-automatica.md`](./docs/busca-automatica.md).
-
-O schema completo do CRM e dos sites está em [`docs/modelo-completo-do-lead.md`](./docs/modelo-completo-do-lead.md).
-
-A configuração da geração e publicação de sites está em [`docs/geracao-de-sites.md`](./docs/geracao-de-sites.md).
-
-## Verificar o código
+## Testes
 
 ```bash
-npm test
+npm test              # Vitest — sanitização, ZIP, tokens de prévia, templates, rate limit
+npm run test:e2e      # Playwright — páginas públicas
 npm run lint
 npm run typecheck
 npm run build
 ```
 
-Ou tudo de uma vez: `npm run check`.
+Tudo junto: **`npm run check`** (lint, typecheck, testes unitários e verificação de segredos).
 
-O planejamento completo está em [`plans/blueprint-briaspas-scale.md`](./plans/blueprint-briaspas-scale.md).
+## Próximos passos (roadmap — não implementados)
+
+| Item | Descrição |
+| --- | --- |
+| **T7** | Galeria opcional de sites-demo na landing |
+| **T8** | Mensagem de outreach / copy comercial |
+| **T9** | Visitas de hot-lead e sinalização no CRM |
+
+Planejamento amplo: [`plans/blueprint-briaspas-scale.md`](./plans/blueprint-briaspas-scale.md) e [`docs/plano-de-evolucao-em-partes.md`](./docs/plano-de-evolucao-em-partes.md).
+
+## Repositório e licença
+
+Repositório **público** no GitHub: https://github.com/Asapx380/briaspas-scale
+
+Licença **MIT** — veja [`LICENSE`](./LICENSE). O produto continua em evolução; use a demonstração pública para avaliar e não inclua dados reais de clientes em issues ou PRs.
