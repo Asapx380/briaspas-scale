@@ -1,0 +1,188 @@
+.page {
+  --demo-accent: var(--brand);
+  --demo-accent-ink: var(--text);
+  --demo-hero-bg: color-mix(in oklab, var(--brand) 14%, var(--card));
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.25rem 3rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 0;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--brand);
+}
+
+.chip {
+  border-radius: 999px;
+  background: var(--neu-bg-well);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-3);
+}
+
+.hero {
+  border-radius: var(--radius-card);
+  background: var(--demo-hero-bg);
+  padding: 2.5rem 1.75rem;
+  border: 1px solid var(--border);
+}
+
+.kicker {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.heroTitle {
+  margin-top: 0.75rem;
+  font-size: clamp(1.65rem, 4vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.heroText {
+  margin-top: 1rem;
+  max-width: 38rem;
+  line-height: 1.65;
+  color: var(--text-3);
+}
+
+.stats {
+  margin-top: 2rem;
+  display: grid;
+  gap: 0.85rem;
+}
+
+@media (min-width: 640px) {
+  .stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.stats div {
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--card);
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.stats strong {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--brand);
+}
+
+.stats span {
+  font-size: 0.8125rem;
+  color: var(--text-3);
+  line-height: 1.45;
+}
+
+.services {
+  margin-top: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.list {
+  margin: 0.85rem 0 0;
+  padding-left: 1.25rem;
+  color: var(--text-2);
+  line-height: 1.65;
+}
+
+.contact {
+  margin-top: 2rem;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border);
+  background: var(--neu-bg-pop);
+  padding: 1.5rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .contact {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.contactText {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-3);
+  line-height: 1.55;
+}
+
+.form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.form label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.form input {
+  min-height: 2.75rem;
+  border-radius: var(--radius-ctl);
+  border: 1px solid var(--border-strong);
+  background: var(--card);
+  padding: 0 0.75rem;
+  font: inherit;
+  color: var(--text-3);
+}
+
+.submit {
+  margin-top: 0.25rem;
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--brand-solid, var(--brand));
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: default;
+}
+
+.footer {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.875rem;
+  color: var(--text-3);
+  line-height: 1.6;
+}
+
+.footerNote {
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+}

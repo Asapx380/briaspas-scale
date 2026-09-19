@@ -10,7 +10,7 @@ test("apresenta o produto e abre a demonstração", async ({ page }) => {
     page.locator("section").first().getByText("Dados demonstrativos"),
   ).toBeVisible();
 
-  await page.getByRole("link", { name: "Ver demonstração" }).click();
+  await page.getByRole("link", { name: "Ver demonstração" }).first().click();
   await expect(page).toHaveURL(/\/demonstracao$/);
   await expect(
     page.getByRole("heading", { name: "Veja como as oportunidades são organizadas." }),
@@ -21,9 +21,11 @@ test("apresenta o produto e abre a demonstração", async ({ page }) => {
 test("mini-demo lista leads por nicho e cidade", async ({ page }) => {
   await page.goto("/#mini-demo");
 
-  await page.getByLabel("Nicho").selectOption("dentista");
-  await page.getByLabel("Cidade").selectOption("sao-paulo");
-  await page.getByRole("button", { name: "Ver leads de exemplo" }).click();
+  const miniDemo = page.locator("#mini-demo");
+  await expect(miniDemo.getByLabel("Nicho")).toBeVisible();
+  await miniDemo.getByLabel("Nicho").selectOption("dentista");
+  await miniDemo.getByLabel("Cidade").selectOption("sao-paulo");
+  await miniDemo.getByRole("button", { name: "Ver leads de exemplo" }).click();
 
   await expect(
     page.getByRole("heading", { name: "3 leads demonstrativos de Dentista em São Paulo" }),

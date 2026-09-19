@@ -1,0 +1,156 @@
+.page {
+  --demo-accent: var(--hot);
+  --demo-accent-ink: var(--hot-ink);
+  --demo-hero-bg: color-mix(in oklab, var(--hot) 22%, var(--card));
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.25rem 3rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 0;
+}
+
+.logo {
+  font-weight: 900;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--demo-accent-ink);
+}
+
+.chip {
+  border-radius: 999px;
+  background: var(--neu-bg-well);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-3);
+}
+
+.hero {
+  border-radius: var(--radius-card);
+  background: linear-gradient(135deg, var(--demo-hero-bg), var(--card));
+  padding: 2.5rem 1.75rem;
+  border: 1px solid var(--border);
+}
+
+.kicker {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--demo-accent-ink);
+}
+
+.heroTitle {
+  margin-top: 0.75rem;
+  font-size: clamp(1.75rem, 4vw, 2.65rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}
+
+.heroText {
+  margin-top: 1rem;
+  max-width: 34rem;
+  line-height: 1.65;
+  color: var(--text-3);
+}
+
+.cta {
+  display: inline-flex;
+  margin-top: 1.5rem;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  background: var(--demo-accent);
+  color: var(--card);
+  padding: 0 1.35rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.sectionTitle {
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.modalities {
+  margin-top: 2.5rem;
+}
+
+.pills {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.pills li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  padding: 0.45rem 0.85rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.plans {
+  margin-top: 2rem;
+}
+
+.planGrid {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+@media (min-width: 640px) {
+  .planGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.planGrid li {
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--neu-bg-pop);
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.planGrid span {
+  font-size: 0.8125rem;
+  color: var(--text-3);
+  line-height: 1.45;
+}
+
+.footer {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.875rem;
+  color: var(--text-3);
+  line-height: 1.6;
+}
+
+.footerNote {
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+}
