@@ -284,15 +284,11 @@ body {
   transition: transform 180ms var(--ease-out);
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .marketing-button:hover {
-    transform: translateY(-2px);
-  }
-
+/* Color/contrast feedback — available whenever hover exists (not only fine pointers). */
+@media (hover: hover) {
   .marketing-button-primary:hover {
     background-color: var(--brand-hover);
     color: #ffffff;
-    filter: brightness(1.04);
   }
 
   .marketing-button-secondary:hover {
@@ -313,6 +309,17 @@ body {
     border-color: color-mix(in oklab, var(--brand) 22%, transparent);
     text-decoration-line: underline;
     text-decoration-color: color-mix(in oklab, var(--brand) 35%, transparent);
+  }
+}
+
+/* Motion polish — fine pointer only; skipped under reduced-motion. */
+@media (hover: hover) and (pointer: fine) {
+  .marketing-button:hover {
+    transform: translateY(-2px);
+  }
+
+  .marketing-button-primary:hover {
+    filter: brightness(1.04);
   }
 
   .marketing-button:hover .marketing-arrow,
