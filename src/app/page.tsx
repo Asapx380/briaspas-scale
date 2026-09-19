@@ -8,6 +8,7 @@ import {
   ShieldCheck,
 } from "@phosphor-icons/react/dist/ssr";
 import { JourneySection } from "@/components/marketing/journey-section";
+import MiniDemo from "@/components/marketing/mini-demo";
 import SonicWaveformHero from "@/components/ui/sonic-waveform";
 import { ScrollMotion } from "@/components/ui/scroll-motion";
 
@@ -28,6 +29,8 @@ export default function Home() {
       <SonicWaveformHero />
 
       <JourneySection />
+
+      <MiniDemo />
 
       <section id="recursos" className="marketing-section-ink">
         <div className="mx-auto grid w-full max-w-7xl gap-12 px-5 py-24 sm:px-8 lg:grid-cols-[0.78fr_1.22fr] lg:py-32">
