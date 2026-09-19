@@ -140,14 +140,14 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, sy
             href={`tel:${lead.phone.replace(/\D/g, "")}`}
             onClick={overlay ? undefined : stopDrag}
             onPointerDown={overlay ? undefined : stopDrag}
-            className={`inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-2 py-2 text-xs font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-well)] ${FOCUS}`}
+            className={`inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--neu-bg-pop)] px-2 py-2 text-xs font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-well)] ${FOCUS}`}
             aria-label={`Ligar para ${lead.company_name}`}
             title="Ligar"
           >
             <Phone size={14} aria-hidden /> Ligar
           </a>
         ) : (
-          <span className="inline-flex min-h-11 items-center justify-center rounded-xl border border-dashed border-black/8 px-2 py-2 text-xs text-[var(--text-4)]">
+          <span className="inline-flex min-h-11 items-center justify-center rounded-xl border border-dashed border-[var(--border)] px-2 py-2 text-xs text-[var(--text-4)]">
             Sem tel.
           </span>
         )}
@@ -163,14 +163,14 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, sy
                   }
             }
             onPointerDown={overlay ? undefined : stopDrag}
-            className={`inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-2 py-2 text-xs font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-well)] ${FOCUS}`}
+            className={`inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--neu-bg-pop)] px-2 py-2 text-xs font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-well)] ${FOCUS}`}
             aria-label={`Abrir chat WhatsApp de ${lead.company_name}`}
             title="Abrir conversa WhatsApp"
           >
             <ChatCircleDots size={14} aria-hidden /> WhatsApp
           </button>
         ) : (
-          <span className="inline-flex min-h-11 items-center justify-center rounded-xl border border-dashed border-black/8 px-2 py-2 text-xs text-[var(--text-4)]">
+          <span className="inline-flex min-h-11 items-center justify-center rounded-xl border border-dashed border-[var(--border)] px-2 py-2 text-xs text-[var(--text-4)]">
             Sem WA
           </span>
         )}
@@ -180,7 +180,7 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, sy
 
   if (overlay) {
     return (
-      <article className="rounded-2xl border border-black/[0.04] bg-white p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.06)]">
+      <article className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.06)]">
         {face}
       </article>
     );
@@ -192,7 +192,7 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, sy
       style={style}
       aria-busy={syncing}
       aria-label={`${lead.company_name}, score ${score}${syncing ? ", salvando status" : ""}`}
-      className={`rounded-2xl border border-black/[0.04] bg-white p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition-[box-shadow,transform,opacity] hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)] ${
+      className={`rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition-[box-shadow,transform,opacity] hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)] ${
         syncing ? "ring-1 ring-[var(--brand)]/25" : ""
       }`}
     >

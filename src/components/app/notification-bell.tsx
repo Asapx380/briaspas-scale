@@ -93,7 +93,7 @@ export function NotificationBell({ count = 0 }: NotificationBellProps) {
           aria-label="Painel de notificações"
           aria-busy={loading || marking}
         >
-          <div className="flex items-center justify-between border-b border-black/8 px-4 py-3">
+          <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
             <p className="font-semibold">Notificações</p>
             {badge > 0 && (
               <button
@@ -143,7 +143,7 @@ export function NotificationBell({ count = 0 }: NotificationBellProps) {
                     key={item.id}
                     className={`rounded-lg border px-3 py-2 ${
                       item.read_at
-                        ? "border-black/6 bg-white"
+                        ? "border-[var(--border)] bg-[var(--card)]"
                         : "border-[var(--brand)]/20 bg-[var(--brand-hover)]/8"
                     }`}
                   >
@@ -166,13 +166,13 @@ export function NotificationBell({ count = 0 }: NotificationBellProps) {
                 type="button"
                 disabled={loading}
                 onClick={() => void loadPage(page + 1, true)}
-                className="mt-3 w-full rounded-lg border border-black/8 py-2 text-xs font-semibold text-[var(--brand)] hover:bg-[var(--neu-bg-pop)] disabled:opacity-50"
+                className="mt-3 w-full rounded-lg border border-[var(--border)] py-2 text-xs font-semibold text-[var(--brand)] hover:bg-[var(--neu-bg-pop)] disabled:opacity-50"
               >
                 {loading ? "Carregando…" : "Carregar mais"}
               </button>
             )}
             {count > 0 && items.length > 0 && (
-              <p className="mt-3 border-t border-black/8 pt-3 text-xs text-[var(--text-3)]">
+              <p className="mt-3 border-t border-[var(--border)] pt-3 text-xs text-[var(--text-3)]">
                 Inclui follow-ups atrasados no funil quando aplicável.
               </p>
             )}
@@ -182,7 +182,7 @@ export function NotificationBell({ count = 0 }: NotificationBellProps) {
       <button
         type="button"
         onClick={toggleOpen}
-        className="relative grid size-12 place-items-center rounded-full bg-white text-[var(--text)] shadow-[0_10px_30px_rgba(15,23,42,0.12)] transition-transform hover:scale-[1.03] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+        className="relative grid size-12 place-items-center rounded-full bg-[var(--card)] text-[var(--text)] shadow-[0_10px_30px_rgba(15,23,42,0.12)] transition-transform hover:scale-[1.03] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
         aria-label={
           badge > 0
             ? `Notificações, ${badge} não lida${badge === 1 ? "" : "s"}`
@@ -194,7 +194,7 @@ export function NotificationBell({ count = 0 }: NotificationBellProps) {
         <Bell size={20} weight="regular" aria-hidden />
         {badge > 0 && (
           <span
-            className="absolute -top-0.5 -right-0.5 grid min-w-5 place-items-center rounded-full bg-[var(--brand)] px-1 text-[10px] font-bold text-white"
+            className="absolute -top-0.5 -right-0.5 grid min-w-5 place-items-center rounded-full bg-[var(--brand-solid)] px-1 text-[10px] font-bold text-white"
             aria-hidden
           >
             {badge > 9 ? "9+" : badge}

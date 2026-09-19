@@ -17,7 +17,7 @@ type ProjectTask = {
 };
 
 const fieldClass =
-  "rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-3 py-2.5 text-sm text-[var(--text)] placeholder:text-[var(--text-4)]";
+  "rounded-xl border border-[var(--border)] bg-[var(--neu-bg-pop)] px-3 py-2.5 text-sm text-[var(--text)] placeholder:text-[var(--text-4)]";
 
 const PROJECT_PAGE_SIZES = [6, 12, 24] as const;
 
@@ -87,7 +87,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
               ))}
             </select>
             <input name="value" inputMode="decimal" placeholder="Valor" className={fieldClass} />
-            <button className="rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90">
+            <button className="rounded-xl bg-[var(--brand-solid)] px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90">
               Criar projeto
             </button>
           </form>
@@ -190,7 +190,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
                           <option value="high">Alta</option>
                           <option value="urgent">Urgente</option>
                         </select>
-                        <button className="rounded-xl border border-[var(--brand)]/25 px-3 py-2 text-sm font-semibold text-[var(--brand)] hover:bg-[var(--brand)]/5">
+                        <button className="rounded-xl border border-[var(--brand)]/25 px-3 py-2 text-sm font-semibold text-[var(--brand)] hover:bg-[var(--brand-solid)]/5">
                           Adicionar
                         </button>
                       </form>

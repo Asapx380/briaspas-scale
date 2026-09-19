@@ -127,7 +127,7 @@ export default async function TeamPage({ searchParams }: EquipePageProps) {
       )}
 
       <section className="app-card mt-8 overflow-hidden p-0">
-        <div className="border-b border-black/5 px-5 py-4">
+        <div className="border-b border-[var(--border)] px-5 py-4">
           <h2 className="font-semibold">Carteira de leads</h2>
         </div>
         {leads.length === 0 ? (
@@ -136,7 +136,7 @@ export default async function TeamPage({ searchParams }: EquipePageProps) {
           </p>
         ) : (
           <>
-            <div className="divide-y divide-black/5">
+            <div className="divide-y divide-[var(--border)]">
               {leads.map((lead) => (
                 <div
                   key={lead.id}
@@ -155,7 +155,7 @@ export default async function TeamPage({ searchParams }: EquipePageProps) {
                         name="assigneeId"
                         defaultValue={lead.assigned_to ?? ""}
                         aria-label={`Responsável por ${lead.company_name}`}
-                        className="rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-3 py-2 text-sm"
+                        className="rounded-xl border border-[var(--border)] bg-[var(--neu-bg-pop)] px-3 py-2 text-sm"
                       >
                         <option value="">Sem responsável</option>
                         {members.map((member) => (
@@ -164,7 +164,7 @@ export default async function TeamPage({ searchParams }: EquipePageProps) {
                           </option>
                         ))}
                       </select>
-                      <button className="rounded-xl bg-[var(--brand)] px-3 py-2 text-sm font-semibold text-white hover:opacity-90">
+                      <button className="rounded-xl bg-[var(--brand-solid)] px-3 py-2 text-sm font-semibold text-white hover:opacity-90">
                         Salvar
                       </button>
                     </form>
@@ -172,7 +172,7 @@ export default async function TeamPage({ searchParams }: EquipePageProps) {
                 </div>
               ))}
             </div>
-            <div className="border-t border-black/5 px-5 py-4">
+            <div className="border-t border-[var(--border)] px-5 py-4">
               <ListPagination
                 meta={meta}
                 pathname="/app/equipe"

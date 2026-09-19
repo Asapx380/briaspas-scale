@@ -67,7 +67,7 @@ export function PeriodFilter({ period }: PeriodFilterProps) {
               }}
               className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] disabled:cursor-wait ${
                 active
-                  ? "bg-white text-[var(--text)] shadow-[0_4px_12px_rgba(15,23,42,0.08)]"
+                  ? "bg-[var(--card)] text-[var(--text)] shadow-[0_4px_12px_rgba(15,23,42,0.08)]"
                   : "text-[var(--text-3)] hover:text-[var(--text)]"
               } ${isPending && !active ? "opacity-50" : ""}`}
             >
@@ -213,14 +213,14 @@ export function EmptyDashboard({ period }: EmptyDashboardProps) {
         <div className="mt-5 flex flex-wrap gap-3">
           <Link
             href="/app/leads"
-            className="inline-flex items-center gap-2 rounded-full bg-[var(--brand)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_28px_rgba(0,113,227,0.28)] transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-full bg-[var(--brand-solid)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_28px_rgba(0,113,227,0.28)] transition-opacity hover:opacity-90"
           >
             Adicionar leads
             <ArrowRight size={16} weight="bold" />
           </Link>
           <Link
             href="/app/crm"
-            className="inline-flex items-center gap-2 rounded-full border border-black/8 bg-white px-5 py-2.5 text-sm font-semibold text-[var(--text)] transition-colors hover:bg-[var(--neu-bg-pop)]"
+            className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--card)] px-5 py-2.5 text-sm font-semibold text-[var(--text)] transition-colors hover:bg-[var(--neu-bg-pop)]"
           >
             Abrir CRM
           </Link>
@@ -256,7 +256,7 @@ export function OnboardingChecklist({ steps }: OnboardingChecklistProps) {
         </div>
         <div className="h-2 w-28 overflow-hidden rounded-full bg-[var(--neu-bg-well)]">
           <div
-            className="h-full rounded-full bg-[var(--brand)] transition-all"
+            className="h-full rounded-full bg-[var(--brand-solid)] transition-all"
             style={{ width: `${(doneCount / steps.length) * 100}%` }}
           />
         </div>
@@ -336,7 +336,7 @@ export function TrendChart({ points, period }: TrendChartProps) {
         </div>
         <div className="flex flex-wrap gap-4 text-xs font-medium">
           <span className="inline-flex items-center gap-1.5 text-[var(--text-2)]">
-            <span className="size-2 rounded-full bg-[var(--brand)]" /> Criados ({createdTotal})
+            <span className="size-2 rounded-full bg-[var(--brand-solid)]" /> Criados ({createdTotal})
           </span>
           <span className="inline-flex items-center gap-1.5 text-[var(--text-2)]">
             <span className="size-2 rounded-full bg-[var(--funnel-converted)]" /> Convertidos ({wonTotal})
@@ -486,7 +486,7 @@ export function ConversionFunnelCard({ stages, total }: ConversionFunnelCardProp
             </div>
 
             <motion.div
-              className="mx-auto grid size-36 shrink-0 place-items-center rounded-full border-[10px] border-[var(--neu-bg-well)] bg-white sm:mx-0"
+              className="mx-auto grid size-36 shrink-0 place-items-center rounded-full border-[10px] border-[var(--neu-bg-well)] bg-[var(--card)] sm:mx-0"
               initial={reduceMotion ? false : { scale: 0.85, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}

@@ -31,7 +31,7 @@ export default async function LeadSitePreviewPage({
 
   return (
     <main className="flex h-[calc(100dvh-5rem)] flex-col bg-[#07040d]">
-      <div className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-black/5 px-5 sm:px-8">
+      <div className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-[var(--border)] px-5 sm:px-8">
         <Link href="/app/crm" className="inline-flex items-center gap-2 text-sm text-[var(--text-3)] hover:text-[var(--text)]">
           <ArrowLeft size={17} /> Voltar ao CRM
         </Link>

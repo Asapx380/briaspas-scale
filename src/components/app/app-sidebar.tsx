@@ -17,6 +17,7 @@ import {
   X,
 } from "@phosphor-icons/react";
 import { logout } from "@/app/app/actions";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const FOCUS =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]";
@@ -142,7 +143,7 @@ export function AppSidebar({
           <div className={`flex items-center gap-1 ${collapsed ? "md:w-full md:justify-center" : ""}`}>
             <button
               type="button"
-              className={`grid size-11 shrink-0 place-items-center rounded-lg bg-black/[0.04] text-[var(--shell-muted)] transition-colors hover:bg-black/[0.07] hover:text-[var(--shell-text)] max-md:hidden ${FOCUS}`}
+              className={`grid size-11 shrink-0 place-items-center rounded-lg bg-[var(--surface-hover)] text-[var(--shell-muted)] transition-colors hover:bg-[var(--surface-hover)] hover:text-[var(--shell-text)] max-md:hidden ${FOCUS}`}
               onClick={onToggleCollapsed}
               aria-label={collapsed ? "Expandir barra lateral" : "Recolher barra lateral"}
               title={collapsed ? "Expandir barra lateral" : "Recolher barra lateral"}
@@ -158,7 +159,7 @@ export function AppSidebar({
 
             <button
               type="button"
-              className={`grid size-11 place-items-center rounded-full text-[var(--shell-muted)] hover:bg-black/[0.06] md:hidden ${FOCUS}`}
+              className={`grid size-11 place-items-center rounded-full text-[var(--shell-muted)] hover:bg-[var(--surface-hover)] md:hidden ${FOCUS}`}
               onClick={onClose}
               aria-label="Fechar menu de navegação"
               title="Fechar menu de navegação"
@@ -181,7 +182,7 @@ export function AppSidebar({
             } ${
               active
                 ? "bg-[var(--nav-active-bg)] text-[var(--nav-active-text)] shadow-[0_6px_16px_rgba(0,113,227,0.28)]"
-                : "text-[var(--shell-muted)] hover:bg-black/[0.04] hover:text-[var(--shell-text)]"
+                : "text-[var(--shell-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--shell-text)]"
             }`;
 
             const content = (
@@ -222,10 +223,11 @@ export function AppSidebar({
               collapsed ? "md:flex-col md:gap-2" : "justify-end gap-2 px-0.5"
             }`}
           >
+            <ThemeToggle />
             <Link
               href="/app/configuracoes/integracoes"
               onClick={onClose}
-              className={`grid size-11 place-items-center rounded-full text-[var(--shell-muted)] transition-colors hover:bg-black/[0.05] hover:text-[var(--shell-text)] ${FOCUS}`}
+              className={`grid size-11 place-items-center rounded-full text-[var(--shell-muted)] transition-colors hover:bg-[var(--surface-hover)] hover:text-[var(--shell-text)] ${FOCUS}`}
               aria-label="Abrir configurações e integrações"
               title="Abrir configurações e integrações"
             >
@@ -235,7 +237,7 @@ export function AppSidebar({
             <div className="relative" ref={accountRef}>
               <button
                 type="button"
-                className={`grid size-11 place-items-center rounded-full bg-[var(--brand)] text-xs font-bold text-white shadow-sm ${FOCUS}`}
+                className={`grid size-11 place-items-center rounded-full bg-[var(--brand-solid)] text-xs font-bold text-white shadow-sm ${FOCUS}`}
                 title={email ? `Conta: ${email}` : "Conta"}
                 aria-label={
                   email
@@ -264,7 +266,7 @@ export function AppSidebar({
                   <button
                     type="submit"
                     role="menuitem"
-                    className={`whitespace-nowrap rounded-lg bg-white px-3 py-2 text-[12px] font-medium text-[var(--text-2)] shadow-[0_4px_16px_rgba(15,23,42,0.12)] ring-1 ring-black/6 hover:text-[var(--text)] ${FOCUS}`}
+                    className={`whitespace-nowrap rounded-lg bg-[var(--card)] px-3 py-2 text-[12px] font-medium text-[var(--text-2)] shadow-[0_4px_16px_rgba(15,23,42,0.12)] ring-1 ring-[var(--border)] hover:text-[var(--text)] ${FOCUS}`}
                     title="Sair da conta"
                   >
                     Sair da conta

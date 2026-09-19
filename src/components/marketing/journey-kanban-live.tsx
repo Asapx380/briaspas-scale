@@ -121,7 +121,7 @@ function KanbanCard({
         layoutId={card.layoutId}
         style={{ opacity: fadeOpacity }}
         transition={{ layout: { duration: 0.45, ease: [0.16, 1, 0.3, 1] } }}
-        className="rounded-lg border border-black/[0.06] bg-white p-2.5 shadow-sm"
+        className="rounded-lg border border-[var(--border)] bg-[var(--card)] p-2.5 shadow-sm"
       >
         {card.chip ? <TierChip tier={card.chip} /> : null}
         <p className="truncate text-xs font-semibold text-[var(--text)]">{card.name}</p>
@@ -131,7 +131,7 @@ function KanbanCard({
   }
 
   return (
-    <li className="rounded-lg border border-black/[0.06] bg-white p-2.5 shadow-sm">
+    <li className="rounded-lg border border-[var(--border)] bg-[var(--card)] p-2.5 shadow-sm">
       {card.chip ? <TierChip tier={card.chip} /> : null}
       <p className="truncate text-xs font-semibold text-[var(--text)]">{card.name}</p>
       <p className="mt-0.5 truncate text-[10px] text-[var(--text-3)]">{card.meta}</p>

@@ -59,10 +59,10 @@ export function AppShell({ email, notificationCount = 0, children }: AppShellPro
       />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="sticky top-0 z-20 flex items-center gap-3 border-b border-black/5 bg-[var(--neu-bg)]/90 px-4 py-3 backdrop-blur md:hidden">
+        <div className="sticky top-0 z-20 flex items-center gap-3 border-b border-[var(--border)] bg-[var(--header-bg)] px-4 py-3 backdrop-blur md:hidden">
           <button
             type="button"
-            className={`grid size-11 place-items-center rounded-full bg-white/80 shadow-sm ring-1 ring-black/5 backdrop-blur ${FOCUS}`}
+            className={`grid size-11 place-items-center rounded-full bg-[var(--card)] shadow-sm ring-1 ring-[var(--border)] backdrop-blur ${FOCUS}`}
             onClick={() => setSidebarOpen(true)}
             aria-label="Abrir menu de navegação"
             title="Abrir navegação"

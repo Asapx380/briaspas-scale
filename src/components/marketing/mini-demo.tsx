@@ -147,7 +147,7 @@ export default function MiniDemo() {
       </div>
 
       <div
-        className="mt-12 rounded-[var(--radius-card)] border border-black/[0.06] bg-white p-6 shadow-[var(--shadow-card)] sm:p-8"
+        className="mt-12 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--card)] p-6 shadow-[var(--shadow-card)] sm:p-8"
         data-reveal
       >
         <form
@@ -167,7 +167,7 @@ export default function MiniDemo() {
               required
               value={niche}
               onChange={(event) => setNiche(event.target.value as NicheValue)}
-              className={`mt-2 min-h-11 w-full rounded-[var(--radius-ctl)] border border-black/[0.1] bg-[var(--neu-bg-pop)] px-3 py-2.5 text-sm font-medium text-[var(--text)] ${FOCUS}`}
+              className={`mt-2 min-h-11 w-full rounded-[var(--radius-ctl)] border border-[var(--border)] bg-[var(--neu-bg-pop)] px-3 py-2.5 text-sm font-medium text-[var(--text)] ${FOCUS}`}
             >
               {NICHES.map((item) => (
                 <option key={item.value} value={item.value}>
@@ -186,7 +186,7 @@ export default function MiniDemo() {
               required
               value={city}
               onChange={(event) => setCity(event.target.value as CityValue)}
-              className={`mt-2 min-h-11 w-full rounded-[var(--radius-ctl)] border border-black/[0.1] bg-[var(--neu-bg-pop)] px-3 py-2.5 text-sm font-medium text-[var(--text)] ${FOCUS}`}
+              className={`mt-2 min-h-11 w-full rounded-[var(--radius-ctl)] border border-[var(--border)] bg-[var(--neu-bg-pop)] px-3 py-2.5 text-sm font-medium text-[var(--text)] ${FOCUS}`}
             >
               {DEMO_CITIES.map((item) => (
                 <option key={item.value} value={item.value}>
@@ -219,7 +219,7 @@ export default function MiniDemo() {
               {leads.map((lead, index) => (
                 <motion.li
                   key={`${lead.name}-${lead.phone}`}
-                  className="list-none rounded-2xl border border-black/[0.06] bg-[var(--neu-bg-pop)] p-4"
+                  className="list-none rounded-2xl border border-[var(--border)] bg-[var(--neu-bg-pop)] p-4"
                   initial={
                     reduceMotion ? false : { opacity: 0, transform: "translateY(14px)" }
                   }
@@ -257,7 +257,7 @@ export default function MiniDemo() {
           </div>
         )}
 
-        <div className="mt-8 flex flex-col gap-4 border-t border-black/[0.07] pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 flex flex-col gap-4 border-t border-[var(--border)] pt-6 sm:flex-row sm:items-center sm:justify-between">
           <Link
             href="/cadastro"
             className={`marketing-link inline-flex min-h-11 items-center gap-2 font-semibold text-[var(--brand)] hover:text-[var(--brand-hover)] ${FOCUS}`}

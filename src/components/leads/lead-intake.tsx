@@ -36,7 +36,7 @@ type ImportResult = { imported: number; duplicates: number; received: number };
 type Mode = "manual" | "csv";
 
 const FIELD_CLASS =
-  "h-11 rounded-xl border border-black/8 bg-white px-3.5 text-base text-[var(--text)] outline-none transition-colors placeholder:text-[var(--text-4)] focus:border-[var(--brand)]/60 focus:ring-2 focus:ring-[var(--brand)]/15";
+  "h-11 rounded-xl border border-[var(--border)] bg-[var(--card)] px-3.5 text-base text-[var(--text)] outline-none transition-colors placeholder:text-[var(--text-4)] focus:border-[var(--brand)]/60 focus:ring-2 focus:ring-[var(--brand)]/15";
 
 const HEADER_ALIASES = {
   companyName: ["name", "place name", "business name", "company", "company name", "nome", "nome da empresa", "empresa", "title"],
@@ -312,12 +312,12 @@ function ManualLeadForm() {
       )}
 
       <div className="flex flex-wrap items-center gap-3">
-        <button type="submit" disabled={isSaving} className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[var(--brand)] px-5 text-sm font-semibold text-white transition-colors hover:bg-[var(--brand-hover)] active:translate-y-px disabled:cursor-wait disabled:bg-[var(--brand)]/50 disabled:text-white/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]">
+        <button type="submit" disabled={isSaving} className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[var(--brand-solid)] px-5 text-sm font-semibold text-white transition-colors hover:bg-[var(--brand-solid-hover)] active:translate-y-px disabled:cursor-wait disabled:bg-[var(--brand-solid)]/50 disabled:text-white/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]">
           <Plus size={18} weight="bold" />
           {isSaving ? "Salvando..." : "Adicionar ao CRM"}
         </button>
         {message?.type === "success" && (
-          <Link href="/app/crm" className="inline-flex h-11 items-center gap-2 rounded-xl border border-black/8 px-4 text-sm font-semibold text-[var(--text-2)] hover:border-[var(--brand)]/30 hover:bg-[var(--brand-hover)]/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]">
+          <Link href="/app/crm" className="inline-flex h-11 items-center gap-2 rounded-xl border border-[var(--border)] px-4 text-sm font-semibold text-[var(--text-2)] hover:border-[var(--brand)]/30 hover:bg-[var(--brand-solid-hover)]/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]">
             Ver no CRM <ArrowRight size={16} weight="bold" />
           </Link>
         )}
@@ -461,10 +461,10 @@ function CsvImporter() {
         </p>
         <input ref={inputRef} type="file" accept=".csv,text/csv" onChange={handleFileChange} className="sr-only" disabled={isParsing || isImporting} />
         <div className="mt-5 flex flex-wrap justify-center gap-3">
-          <button type="button" disabled={isParsing || isImporting} onClick={() => inputRef.current?.click()} className="inline-flex h-10 items-center gap-2 rounded-xl bg-[var(--brand)] px-4 text-sm font-semibold text-white hover:bg-[var(--brand-hover)] active:translate-y-px disabled:cursor-wait disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]">
+          <button type="button" disabled={isParsing || isImporting} onClick={() => inputRef.current?.click()} className="inline-flex h-10 items-center gap-2 rounded-xl bg-[var(--brand-solid)] px-4 text-sm font-semibold text-white hover:bg-[var(--brand-solid-hover)] active:translate-y-px disabled:cursor-wait disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]">
             <UploadSimple size={17} weight="bold" /> {isParsing ? "Lendo…" : "Selecionar CSV"}
           </button>
-          <button type="button" onClick={downloadTemplate} disabled={isParsing} className="inline-flex h-10 items-center gap-2 rounded-xl border border-black/8 px-4 text-sm font-semibold text-[var(--text-2)] hover:border-[var(--brand)]/30 hover:bg-[var(--brand-hover)]/10 disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]">
+          <button type="button" onClick={downloadTemplate} disabled={isParsing} className="inline-flex h-10 items-center gap-2 rounded-xl border border-[var(--border)] px-4 text-sm font-semibold text-[var(--text-2)] hover:border-[var(--brand)]/30 hover:bg-[var(--brand-solid-hover)]/10 disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]">
             <DownloadSimple size={17} /> Baixar modelo
           </button>
         </div>
@@ -482,12 +482,12 @@ function CsvImporter() {
 
       {leads.length > 0 && (
         <section className="mt-7" aria-labelledby="csv-preview-title">
-          <div className="flex flex-col gap-4 border-b border-black/8 pb-5 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex flex-col gap-4 border-b border-[var(--border)] pb-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h3 id="csv-preview-title" className="font-semibold text-[var(--text)]">Pré-visualização de {fileName}</h3>
               <p className="mt-1 text-sm text-[var(--text-4)]">{leads.length} empresas, {phoneCount} telefones, {websiteCount} sites. {mappingInfo}.{ignored > 0 ? ` ${ignored} linhas vazias ignoradas.` : ""}</p>
             </div>
-            <button type="button" onClick={importLeads} disabled={isImporting} className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[var(--brand)] px-5 text-sm font-semibold text-white hover:bg-[var(--brand-hover)] active:translate-y-px disabled:cursor-wait disabled:bg-[var(--brand)]/50 disabled:text-white/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]">
+            <button type="button" onClick={importLeads} disabled={isImporting} className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[var(--brand-solid)] px-5 text-sm font-semibold text-white hover:bg-[var(--brand-solid-hover)] active:translate-y-px disabled:cursor-wait disabled:bg-[var(--brand-solid)]/50 disabled:text-white/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]">
               <UploadSimple size={18} weight="bold" /> {isImporting ? "Importando..." : `Importar ${leads.length} empresas`}
             </button>
           </div>
@@ -521,15 +521,15 @@ export function LeadIntake() {
   const [mode, setMode] = useState<Mode>("csv");
 
   return (
-    <section className="mt-10 rounded-2xl border border-black/8 bg-white p-5 sm:p-7" aria-labelledby="lead-intake-title">
-      <div className="flex flex-col gap-5 border-b border-black/8 pb-6 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mt-10 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 sm:p-7" aria-labelledby="lead-intake-title">
+      <div className="flex flex-col gap-5 border-b border-[var(--border)] pb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 id="lead-intake-title" className="text-xl font-semibold text-[var(--text)]">Adicionar empresas</h2>
           <p className="mt-2 text-sm leading-6 text-[var(--text-3)]">Importe uma lista pronta ou cadastre uma empresa por vez.</p>
         </div>
-        <div className="grid grid-cols-2 rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] p-1" role="tablist" aria-label="Modo de cadastro">
-          <button type="button" role="tab" aria-selected={mode === "csv"} onClick={() => setMode("csv")} className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${mode === "csv" ? "bg-[var(--brand)] text-white" : "text-[var(--text-3)] hover:text-[var(--text-2)]"}`}>Importar CSV</button>
-          <button type="button" role="tab" aria-selected={mode === "manual"} onClick={() => setMode("manual")} className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${mode === "manual" ? "bg-[var(--brand)] text-white" : "text-[var(--text-3)] hover:text-[var(--text-2)]"}`}>Cadastro manual</button>
+        <div className="grid grid-cols-2 rounded-xl border border-[var(--border)] bg-[var(--neu-bg-pop)] p-1" role="tablist" aria-label="Modo de cadastro">
+          <button type="button" role="tab" aria-selected={mode === "csv"} onClick={() => setMode("csv")} className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${mode === "csv" ? "bg-[var(--brand-solid)] text-white" : "text-[var(--text-3)] hover:text-[var(--text-2)]"}`}>Importar CSV</button>
+          <button type="button" role="tab" aria-selected={mode === "manual"} onClick={() => setMode("manual")} className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${mode === "manual" ? "bg-[var(--brand-solid)] text-white" : "text-[var(--text-3)] hover:text-[var(--text-2)]"}`}>Cadastro manual</button>
         </div>
       </div>
 
@@ -540,7 +540,7 @@ export function LeadIntake() {
 
 export function GoogleSearchPausedNotice() {
   return (
-    <aside className="mt-8 flex items-start gap-4 border-t border-black/8 pt-7">
+    <aside className="mt-8 flex items-start gap-4 border-t border-[var(--border)] pt-7">
       <div className="grid size-11 shrink-0 place-items-center rounded-xl border border-[var(--brand)]/20 bg-[var(--brand-hover)]/10 text-[var(--brand)]"><Buildings size={21} /></div>
       <div><h2 className="font-semibold text-[var(--text-2)]">Busca automática preservada</h2><p className="mt-1 max-w-2xl text-sm leading-6 text-[var(--text-4)]">A integração com o Google Places continua no código e poderá ser reativada quando houver uma conta de faturamento disponível.</p></div>
     </aside>

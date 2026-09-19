@@ -4,23 +4,25 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, PlayCircle } from "@phosphor-icons/react";
 import { HeroMock } from "@/components/marketing/hero-mock";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default function SonicWaveformHero() {
   return (
-    <section className="relative min-h-[100dvh] overflow-hidden bg-[#f4f7fb] text-[var(--text)]">
+    <section className="relative min-h-[100dvh] overflow-hidden bg-[var(--marketing-hero-bg)] text-[var(--text)]">
       <div className="landing-ambient pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_22%,rgba(0,113,227,0.14),transparent_34%)]" />
       {/* Header stays fully opaque — landing-enter opacity must not wrap CTAs. */}
-      <header className="relative z-20 mx-auto flex h-20 w-full max-w-7xl items-center justify-between gap-5 px-5 sm:px-8">
+      <header className="relative z-20 mx-auto flex h-20 w-full max-w-7xl items-center justify-between gap-2 px-5 sm:gap-5 sm:px-8">
         <Link href="/" className="flex shrink-0 items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[var(--brand)]" aria-label="Briaspas Scale">
           <Image src="/brand/briaspas-scale-symbol.png?v=2" alt="" width={40} height={40} priority sizes="40px" className="size-10" />
-          <span className="text-sm font-semibold tracking-tight">Briaspas Scale</span>
+          <span className="hidden text-sm font-semibold tracking-tight sm:inline">Briaspas Scale</span>
         </Link>
-        <nav aria-label="Navegação da página" className="hidden items-center gap-5 whitespace-nowrap text-sm font-medium md:flex lg:gap-7">
+        <nav aria-label="Navegação da página" className="hidden items-center gap-5 whitespace-nowrap text-sm font-medium lg:flex lg:gap-7">
           <Link href="#como-funciona" className="marketing-nav-link marketing-touch-target inline-flex px-2">Como funciona</Link>
           <Link href="#recursos" className="marketing-nav-link marketing-touch-target inline-flex px-2">Recursos</Link>
           <Link href="#seguranca" className="marketing-nav-link marketing-touch-target inline-flex px-2">Segurança</Link>
         </nav>
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+          <ThemeToggle />
           <Link
             href="/login"
             className="marketing-ghost-cta marketing-touch-target inline-flex rounded-full px-3 text-sm font-medium sm:px-4"
@@ -59,7 +61,7 @@ export default function SonicWaveformHero() {
           </div>
         </div>
 
-        <div className="landing-preview-enter motion-delay-5 relative min-w-0 w-full rounded-[28px] border border-white/80 bg-white/55 p-3 shadow-[0_28px_80px_rgba(15,23,42,0.13)] backdrop-blur-sm sm:p-5">
+        <div className="landing-preview-enter motion-delay-5 relative min-w-0 w-full rounded-[28px] border border-[var(--border)] bg-[var(--hero-panel-bg)] p-3 shadow-[0_28px_80px_rgba(15,23,42,0.13)] backdrop-blur-sm sm:p-5">
           <div className="mb-3 flex items-center justify-between gap-2 px-2 text-xs font-medium text-[var(--text-3)]">
             <span className="truncate">Site-demo + lead</span>
             <span className="shrink-0">Dados demonstrativos</span>

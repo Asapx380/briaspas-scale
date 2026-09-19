@@ -39,7 +39,7 @@ export function SkeletonRows({ count = 3, className = "", label = "Carregando" }
   return (
     <div className={className} aria-busy="true" aria-label={label}>
       {Array.from({ length: count }, (_, index) => (
-        <div key={index} className="border-t border-black/8 py-6 first:border-t-0">
+        <div key={index} className="border-t border-[var(--border)] py-6 first:border-t-0">
           <SkeletonBar className="h-5 w-2/5" />
           <SkeletonBar className="mt-4 h-4 w-1/4" />
           <SkeletonBar className="mt-3 h-4 w-3/5" />
