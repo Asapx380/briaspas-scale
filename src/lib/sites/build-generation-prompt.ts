@@ -1,4 +1,5 @@
 import type { StockPhoto } from "@/lib/images/stock-photo";
+import { normalizeBrazilWhatsAppDigits } from "../crm/whatsapp-phone";
 import { buildDesignPlanPrompt } from "./design-plan";
 
 export type LeadSiteInput = {
@@ -16,10 +17,7 @@ export type LeadSiteInput = {
 };
 
 export function buildLeadWhatsAppUrl(phone: string | null) {
-  if (!phone) return null;
-
-  let digits = phone.replace(/\D/g, "");
-  if (digits.length === 10 || digits.length === 11) digits = `55${digits}`;
+  const digits = normalizeBrazilWhatsAppDigits(phone);
   if (!digits) return null;
 
   const message = encodeURIComponent("Olá, vi o site e quero saber mais.");
