@@ -8,8 +8,8 @@ export function HeroMock() {
           <span className="size-2.5 shrink-0 rounded-full bg-[#ff5f57]" />
           <span className="size-2.5 shrink-0 rounded-full bg-[#febc2e]" />
           <span className="size-2.5 shrink-0 rounded-full bg-[#28c840]" />
-          <div className="ml-1 min-w-0 flex-1 truncate rounded-md bg-white/90 px-2.5 py-1 text-[10px] font-medium text-[var(--text-4)] sm:text-[11px]">
-            demo.briaspas.app/clinica-sorriso
+          <div className="ml-1 min-w-0 flex-1 truncate rounded-md bg-white/90 px-2.5 py-1 text-[10px] font-medium text-[var(--text-3)] sm:text-[11px]">
+            briaspas-scale.vercel.app/empresa/clinica-sorriso
           </div>
         </div>
 
@@ -22,7 +22,7 @@ export function HeroMock() {
                 </span>
                 <div className="min-w-0">
                   <p className="truncate text-xs font-bold text-[var(--text)] sm:text-sm">Clínica Sorriso</p>
-                  <p className="truncate text-[10px] text-[var(--text-4)] sm:text-[11px]">Odontologia em Campinas</p>
+                  <p className="truncate text-[10px] text-[var(--text-3)] sm:text-[11px]">Odontologia em Campinas</p>
                 </div>
               </div>
               <span className="hidden rounded-full bg-[var(--brand-tint)] px-2 py-0.5 text-[10px] font-semibold text-[var(--brand)] sm:inline">
@@ -45,7 +45,7 @@ export function HeroMock() {
             </div>
           </div>
 
-          <div className="absolute right-2 bottom-2 left-2 max-w-[min(100%,18rem)] rounded-2xl border border-black/[0.08] bg-white p-3 shadow-[0_16px_40px_rgba(15,23,42,0.14)] sm:right-4 sm:left-auto sm:w-[15.5rem]">
+          <div className="mt-3 max-w-[min(100%,18rem)] rounded-2xl border border-black/[0.08] bg-white p-3 shadow-[0_16px_40px_rgba(15,23,42,0.14)] sm:absolute sm:right-4 sm:bottom-2 sm:mt-0 sm:w-[15.5rem]">
             <div className="flex items-start gap-2.5">
               <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[var(--neu-bg)] text-[var(--text-3)]">
                 <Buildings size={18} weight="duotone" />
@@ -56,7 +56,7 @@ export function HeroMock() {
                   <span className="rounded-full bg-[var(--neu-bg)] px-2 py-0.5 text-[10px] font-semibold text-[var(--text-3)]">Sem site</span>
                 </div>
                 <p className="mt-1.5 truncate text-sm font-semibold text-[var(--text)]">Clínica Sorriso</p>
-                <p className="truncate text-[11px] text-[var(--text-4)]">Campinas, SP</p>
+                <p className="truncate text-[11px] text-[var(--text-3)]">Campinas, SP</p>
               </div>
             </div>
           </div>

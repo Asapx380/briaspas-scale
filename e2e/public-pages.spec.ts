@@ -6,7 +6,9 @@ test("apresenta o produto e abre a demonstração", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Chegue ao lead com uma proposta concreta." }),
   ).toBeVisible();
-  await expect(page.getByText("Dados demonstrativos")).toBeVisible();
+  await expect(
+    page.locator("section").first().getByText("Dados demonstrativos"),
+  ).toBeVisible();
 
   await page.getByRole("link", { name: "Ver demonstração" }).click();
   await expect(page).toHaveURL(/\/demonstracao$/);
