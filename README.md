@@ -102,6 +102,6 @@ Planejamento amplo: [`plans/blueprint-briaspas-scale.md`](./plans/blueprint-bria
 
 ## Repositório e licença
 
-Código: https://github.com/Asapx380/briaspas-scale
+Repositório **público** no GitHub: https://github.com/Asapx380/briaspas-scale
 
-Projeto privado em evolução — use a demonstração pública para avaliar o produto; não inclua dados reais de clientes em issues ou PRs.
+Licença **MIT** — veja [`LICENSE`](./LICENSE). O produto continua em evolução; use a demonstração pública para avaliar e não inclua dados reais de clientes em issues ou PRs.
