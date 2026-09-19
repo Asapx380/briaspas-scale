@@ -599,4 +599,36 @@ body {
   .motion-safe\:animate-spin {
     animation: none !important;
   }
+
+  .demo-gallery-media img,
+  .demo-gallery-card-inner {
+    transition: none !important;
+  }
+}
+
+/* Landing — demo gallery (T7) */
+.demo-gallery-media img {
+  transform: scale(1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .demo-gallery-card-inner {
+    transition:
+      transform 220ms var(--ease-out),
+      box-shadow 220ms ease,
+      border-color 220ms ease;
+  }
+
+  .demo-gallery-card:hover .demo-gallery-card-inner {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1);
+  }
+
+  .demo-gallery-card:hover .demo-gallery-media img {
+    transform: scale(1.04);
+  }
+}
+
+[data-theme="dark"] .demo-gallery-card:hover .demo-gallery-card-inner {
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.35);
 }
