@@ -72,6 +72,25 @@ body {
   background-size: 180px 180px;
 }
 
+/* Auth card: transform-only enter — never opacity:0 (hides Entrar/submit on SSR). */
+@keyframes auth-card-enter {
+  from {
+    transform: translateY(12px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.auth-card-enter {
+  opacity: 1;
+  animation: auth-card-enter 450ms var(--ease-out) both;
+}
+
+.auth-submit:disabled {
+  opacity: 1;
+}
+
 .app-card {
   border-radius: var(--radius-card);
   background: var(--card);
@@ -497,7 +516,8 @@ body {
 
   .landing-enter,
   .landing-preview-enter,
-  .landing-ambient {
+  .landing-ambient,
+  .auth-card-enter {
     animation: none !important;
     opacity: 1;
     transform: none;

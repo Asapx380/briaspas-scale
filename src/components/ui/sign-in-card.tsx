@@ -60,17 +60,17 @@ export function SignInCard({ configured }: { configured: boolean }) {
           </p>
         )}
 
+        <div className="flex justify-end pt-0.5">
+          <Link
+            href="/recuperar-senha"
+            className="text-xs font-semibold text-[var(--brand)] underline decoration-[var(--brand)]/30 underline-offset-4 transition-colors hover:text-[var(--brand-hover)] focus-visible:outline-2 focus-visible:outline-[var(--brand)]"
+          >
+            Esqueci minha senha
+          </Link>
+        </div>
+
         <AuthSubmitButton configured={configured} label="Entrar" pendingLabel="Entrando..." />
       </form>
-
-      <div className="mt-4 text-center">
-        <Link
-          href="/recuperar-senha"
-          className="text-xs font-semibold text-[var(--brand)] underline decoration-[var(--brand)]/30 underline-offset-4 transition-colors hover:text-[var(--brand-hover)] focus-visible:outline-2 focus-visible:outline-[var(--brand)]"
-        >
-          Esqueci minha senha
-        </Link>
-      </div>
 
       <p className="mt-5 text-center text-xs text-[var(--text-3)]">
         Ainda não possui uma conta?{" "}
