@@ -46,6 +46,12 @@
   --funnel-followup: #ff9500;
   --funnel-lost: #ff3b30;
   --funnel-converted: #5856d6;
+  --ink: #12141a;
+  --ink-2: #1c1f28;
+  --on-ink: #f5f5f7;
+  --on-ink-muted: rgba(235, 235, 245, 0.72);
+  --hot: #ff9500;
+  --won: #34c759;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 }
@@ -284,6 +290,29 @@ body {
   transition: transform 180ms var(--ease-out);
 }
 
+.marketing-chip-hot {
+  background-color: color-mix(in oklab, var(--hot) 16%, white);
+  color: var(--hot);
+}
+
+.marketing-chip-won {
+  background-color: color-mix(in oklab, var(--won) 16%, white);
+  color: var(--won);
+}
+
+.marketing-section-ink {
+  background-color: var(--ink);
+  color: var(--on-ink);
+}
+
+.marketing-section-ink .marketing-nav-link {
+  color: var(--on-ink-muted);
+}
+
+.marketing-section-ink .marketing-nav-link:is(:hover, :focus-visible) {
+  color: var(--on-ink);
+}
+
 /*
   Color/contrast on :hover/:focus-visible — NOT gated by (hover: hover).
   PR #16 put these inside @media (hover: hover); many environments report
@@ -411,77 +440,6 @@ body {
   }
 }
 
-/* Soft aurora orbs — inspired by 21st.dev Background Gradient Glow (meghtrix) */
-.hero-glow-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(64px);
-  will-change: transform, opacity;
-}
-
-.hero-glow-orb-a {
-  top: -8%;
-  left: 28%;
-  width: min(58vw, 640px);
-  height: min(58vw, 640px);
-  background: radial-gradient(circle, rgba(0, 113, 227, 0.44) 0%, transparent 68%);
-  animation: hero-orb-drift-a 18s ease-in-out infinite;
-}
-
-.hero-glow-orb-b {
-  right: -6%;
-  bottom: 8%;
-  width: min(48vw, 520px);
-  height: min(48vw, 520px);
-  background: radial-gradient(circle, rgba(0, 122, 255, 0.32) 0%, transparent 70%);
-  animation: hero-orb-drift-b 24s ease-in-out infinite;
-}
-
-.hero-glow-orb-c {
-  bottom: 18%;
-  left: -4%;
-  width: min(42vw, 440px);
-  height: min(42vw, 440px);
-  background: radial-gradient(circle, rgba(120, 170, 230, 0.34) 0%, transparent 72%);
-  animation: hero-orb-drift-c 21s ease-in-out infinite;
-}
-
-@keyframes hero-orb-drift-a {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.9;
-  }
-  50% {
-    transform: translate3d(4%, 6%, 0) scale(1.06);
-    opacity: 1;
-  }
-}
-
-@keyframes hero-orb-drift-b {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.85;
-  }
-  50% {
-    transform: translate3d(-5%, -4%, 0) scale(1.08);
-    opacity: 1;
-  }
-}
-
-@keyframes hero-orb-drift-c {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.8;
-  }
-  50% {
-    transform: translate3d(6%, -5%, 0) scale(1.05);
-    opacity: 0.95;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .motion-fade-up,
   .funnel-stage-anim,
@@ -489,10 +447,6 @@ body {
   .app-card {
     animation: none !important;
     transition: none !important;
-  }
-
-  .hero-glow-orb {
-    animation: none !important;
   }
 
   .landing-enter,

@@ -3,17 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, PlayCircle } from "@phosphor-icons/react";
-import { TrendChart } from "@/components/app/dashboard-widgets";
-
-const previewPoints = [
-  { key: "1", label: "1", created: 3, won: 0 },
-  { key: "2", label: "5", created: 5, won: 1 },
-  { key: "3", label: "10", created: 4, won: 1 },
-  { key: "4", label: "15", created: 8, won: 2 },
-  { key: "5", label: "20", created: 6, won: 2 },
-  { key: "6", label: "25", created: 10, won: 3 },
-  { key: "7", label: "30", created: 9, won: 4 },
-];
+import { HeroMock } from "@/components/marketing/hero-mock";
 
 export default function SonicWaveformHero() {
   return (
@@ -69,9 +59,14 @@ export default function SonicWaveformHero() {
           </div>
         </div>
 
-        <div className="landing-preview-enter motion-delay-5 relative rounded-[28px] border border-white/80 bg-white/55 p-3 shadow-[0_28px_80px_rgba(15,23,42,0.13)] backdrop-blur-sm sm:p-5">
-          <div className="mb-3 flex items-center justify-between px-2 text-xs font-medium text-[var(--text-4)]"><span>Visão geral</span><span>Dados demonstrativos</span></div>
-          <div className="pointer-events-none overflow-hidden rounded-[22px] bg-[var(--neu-bg)]"><TrendChart points={previewPoints} period="30d" /></div>
+        <div className="landing-preview-enter motion-delay-5 relative min-w-0 w-full rounded-[28px] border border-white/80 bg-white/55 p-3 shadow-[0_28px_80px_rgba(15,23,42,0.13)] backdrop-blur-sm sm:p-5">
+          <div className="mb-3 flex items-center justify-between gap-2 px-2 text-xs font-medium text-[var(--text-4)]">
+            <span className="truncate">Site-demo + lead</span>
+            <span className="shrink-0">Dados demonstrativos</span>
+          </div>
+          <div className="pointer-events-none min-w-0 overflow-hidden">
+            <HeroMock />
+          </div>
         </div>
       </div>
     </section>
