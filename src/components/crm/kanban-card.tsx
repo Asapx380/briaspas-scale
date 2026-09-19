@@ -7,7 +7,11 @@ import { DotsSixVertical } from "@phosphor-icons/react/dist/csr/DotsSixVertical"
 import { Phone } from "@phosphor-icons/react/dist/csr/Phone";
 import { useRouter } from "next/navigation";
 import { memo, type CSSProperties, type KeyboardEvent, type MouseEvent } from "react";
-import { leadScore, leadTier, tierLabel, toBrazilianWhatsAppNumber } from "@/lib/crm/pipeline";
+import {
+  CommercialPotentialIndicator,
+  commercialPotentialAccentClass,
+} from "@/components/crm/commercial-potential-indicator";
+import { commercialPotentialAriaLabel, leadScore, toBrazilianWhatsAppNumber } from "@/lib/crm/pipeline";
 import type { CrmLead } from "@/lib/crm/types";
 
 const FOCUS =
@@ -49,8 +53,8 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, sy
   });
 
   const score = leadScore(lead);
-  const tier = leadTier(score);
   const whatsapp = toBrazilianWhatsAppNumber(lead.phone);
+  const accentClass = commercialPotentialAccentClass(score);
   const meta = [lead.niche, lead.city].filter(Boolean).join(" · ");
   const href = detailHref ?? `/app/crm/${lead.id}`;
 
@@ -99,26 +103,7 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, sy
           </button>
         )}
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <span
-              className={`inline-flex min-w-8 items-center justify-center rounded-md px-1.5 py-0.5 text-xs font-bold tabular-nums text-white ${
-                score >= 45 ? "bg-[var(--success)]" : "bg-[var(--text-4)]"
-              }`}
-            >
-              {score}
-            </span>
-            {(tier === "quente" || tier === "morno") && (
-              <span
-                className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
-                  tier === "quente"
-                    ? "bg-[color-mix(in_oklab,var(--success)_18%,white)] text-[var(--success-ink)]"
-                    : "marketing-chip-hot"
-                }`}
-              >
-                {tierLabel(tier)}
-              </span>
-            )}
-          </div>
+          <CommercialPotentialIndicator score={score} variant="compact" showTooltip />
 
           <button
             type="button"
@@ -180,7 +165,9 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, sy
 
   if (overlay) {
     return (
-      <article className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.06)]">
+      <article
+        className={`rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.06)] ${accentClass}`}
+      >
         {face}
       </article>
     );
@@ -191,8 +178,8 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, sy
       ref={setNodeRef}
       style={style}
       aria-busy={syncing}
-      aria-label={`${lead.company_name}, score ${score}${syncing ? ", salvando status" : ""}`}
-      className={`rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition-[box-shadow,transform,opacity] hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)] ${
+      aria-label={`${lead.company_name}, ${commercialPotentialAriaLabel(score)}${syncing ? ", salvando status" : ""}`}
+      className={`${accentClass} rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition-[box-shadow,transform,opacity] hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)] ${
         syncing ? "ring-1 ring-[var(--brand)]/25" : ""
       }`}
     >
