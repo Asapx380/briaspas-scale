@@ -26,7 +26,7 @@ export function HeroMock() {
                   <p className="truncate text-[10px] text-[var(--text-3)] sm:text-[11px]">Odontologia em Campinas</p>
                 </div>
               </div>
-              <span className="hidden rounded-full bg-[var(--brand-tint)] px-2 py-0.5 text-[10px] font-semibold text-[var(--brand)] sm:inline">
+              <span className="hidden rounded-full bg-[var(--brand-tint)] px-2 py-0.5 text-[10px] font-semibold text-[var(--brand-hover)] sm:inline">
                 Agendar
               </span>
             </div>
@@ -40,7 +40,7 @@ export function HeroMock() {
                 <p className="mt-1 text-[11px] font-bold text-[var(--text)]">Sessão guiada</p>
               </div>
               <div className="col-span-1 rounded-xl bg-[var(--brand-tint)] p-2.5 sm:col-span-1">
-                <p className="text-[10px] font-semibold text-[var(--brand)]">Contato</p>
+                <p className="text-[10px] font-semibold text-[var(--brand-hover)]">Contato</p>
                 <p className="mt-1 text-[11px] font-bold text-[var(--text)]">WhatsApp</p>
               </div>
             </div>

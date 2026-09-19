@@ -22,7 +22,7 @@ const secondaryChipByPhase: Record<
     key: "site-demo",
     label: "Site-demo publicado",
     className:
-      "rounded-full bg-[var(--brand-tint)] px-2 py-0.5 text-[10px] font-semibold text-[var(--brand)]",
+      "rounded-full bg-[var(--brand-tint)] px-2 py-0.5 text-[10px] font-semibold text-[var(--brand-hover)]",
   },
   3: {
     key: "abordado",
@@ -108,11 +108,11 @@ export function HeroLeadCard() {
   return (
     <div
       ref={rootRef}
-      className="relative mt-3 max-w-[min(100%,18rem)] sm:absolute sm:right-4 sm:bottom-2 sm:mt-0 sm:w-[15.5rem]"
+      className="mt-2 w-full max-w-[min(100%,18rem)] sm:ml-auto sm:w-[15.5rem]"
     >
       <motion.p
         aria-hidden="true"
-        className="pointer-events-none absolute right-0 -top-7 left-0 z-10 truncate text-right text-[10px] font-medium text-[var(--brand)] sm:-top-6 sm:max-w-none"
+        className="pointer-events-none mb-1 block h-4 truncate text-right text-[10px] text-[var(--brand-hover)]"
         initial={false}
         animate={
           noticeVisible && showVisits && !staticReduced
