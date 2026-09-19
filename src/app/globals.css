@@ -284,32 +284,46 @@ body {
   transition: transform 180ms var(--ease-out);
 }
 
-/* Color/contrast feedback — available whenever hover exists (not only fine pointers). */
-@media (hover: hover) {
-  .marketing-button-primary:hover {
-    background-color: var(--brand-hover);
-    color: #ffffff;
-  }
+/*
+  Color/contrast on :hover/:focus-visible — NOT gated by (hover: hover).
+  PR #16 put these inside @media (hover: hover); many environments report
+  hover:none (headless, RDP, hybrid touch) while :hover still matches on mouse,
+  so Entrar/CTAs looked unchanged. Motion stays pointer-gated below.
+  Ghost CTA uses opaque white chip + dark text so brand-tint/blue ambient glow
+  cannot wash out the label.
+*/
+.marketing-button-primary:is(:hover, :focus-visible) {
+  background-color: var(--brand-hover);
+  color: #ffffff;
+}
 
-  .marketing-button-secondary:hover {
-    border-color: rgba(0, 0, 0, 0.16);
-    background-color: var(--neu-bg-pop);
-    color: var(--text);
-  }
+.marketing-button-secondary:is(:hover, :focus-visible) {
+  border-color: rgba(0, 0, 0, 0.16);
+  background-color: var(--neu-bg-pop);
+  color: var(--text);
+}
 
-  .marketing-nav-link:hover {
-    color: var(--brand);
-    text-decoration-line: underline;
-    text-decoration-color: color-mix(in oklab, var(--brand) 40%, transparent);
-  }
+.marketing-nav-link:is(:hover, :focus-visible) {
+  color: var(--brand);
+  text-decoration-line: underline;
+  text-decoration-color: color-mix(in oklab, var(--brand) 55%, transparent);
+}
 
-  .marketing-ghost-cta:hover {
-    color: var(--brand);
-    background-color: var(--brand-tint);
-    border-color: color-mix(in oklab, var(--brand) 22%, transparent);
-    text-decoration-line: underline;
-    text-decoration-color: color-mix(in oklab, var(--brand) 35%, transparent);
-  }
+.marketing-ghost-cta:is(:hover, :focus-visible) {
+  color: var(--text);
+  background-color: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  text-decoration-line: underline;
+  text-decoration-color: var(--brand);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.marketing-ghost-cta:focus-visible,
+.marketing-nav-link:focus-visible,
+.marketing-button-primary:focus-visible,
+.marketing-button-secondary:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
 }
 
 /* Motion polish — fine pointer only; skipped under reduced-motion. */
