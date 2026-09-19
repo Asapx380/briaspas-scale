@@ -80,7 +80,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
           <PeriodFilter period={period} />
           <Link
             href="/app/leads"
-            className="inline-flex items-center gap-2 rounded-full bg-[var(--brand)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_28px_rgba(0,113,227,0.3)] transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-full bg-[var(--brand-solid)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_28px_rgba(0,113,227,0.3)] transition-opacity hover:opacity-90"
           >
             Adicionar leads
             <ArrowRight size={16} weight="bold" />

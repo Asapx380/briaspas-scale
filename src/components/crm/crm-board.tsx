@@ -40,7 +40,7 @@ const CrmKanbanBoard = dynamic(
               <span className="size-2.5 rounded-full" style={{ backgroundColor: column.color }} />
               <span className="text-sm font-semibold text-[var(--text)]">{column.title}</span>
             </div>
-            <div className="mt-2 flex-1 animate-pulse rounded-2xl bg-white/50" />
+            <div className="mt-2 flex-1 animate-pulse rounded-2xl bg-[color-mix(in_oklab,var(--card)_50%,transparent)]" />
           </div>
         ))}
       </div>
@@ -229,7 +229,7 @@ export function CrmBoard({
           <button
             type="button"
             onClick={() => setCreateOpen(true)}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--brand)] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[var(--brand-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--brand-solid)] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[var(--brand-solid-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
           >
             <Plus size={16} weight="bold" aria-hidden /> Criar lead
           </button>
@@ -238,7 +238,7 @@ export function CrmBoard({
             disabled
             title="Exportar leads — disponível no plano superior"
             aria-label="Exportar leads (disponível no plano superior)"
-            className="inline-flex items-center gap-1.5 rounded-xl border border-black/8 bg-white px-3.5 py-2.5 text-sm font-semibold text-[var(--text-4)]"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--card)] px-3.5 py-2.5 text-sm font-semibold text-[var(--text-4)]"
           >
             <LockSimple size={15} weight="fill" aria-hidden /> Exportar
           </button>
@@ -251,7 +251,7 @@ export function CrmBoard({
                 setSort(next);
                 pushListState({ sort: next === "recent" ? null : next, page: null });
               }}
-              className="appearance-none rounded-xl border border-black/8 bg-white py-2.5 pr-9 pl-3.5 text-sm font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-pop)]"
+              className="appearance-none rounded-xl border border-[var(--border)] bg-[var(--card)] py-2.5 pr-9 pl-3.5 text-sm font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-pop)]"
             >
               {SORT_OPTIONS.map((option) => (
                 <option key={option.id} value={option.id}>
@@ -278,7 +278,7 @@ export function CrmBoard({
             placeholder="Buscar por nome, categoria, cidade ou telefone..."
             aria-label="Buscar leads"
             title="Buscar leads no CRM"
-            className="w-full rounded-2xl border border-black/8 bg-white py-2.5 pr-4 pl-11 text-sm text-[var(--text)] placeholder:text-[var(--text-4)] shadow-sm focus:border-[var(--brand)]/35 focus:outline-none focus:ring-2 focus:ring-[rgba(0,113,227,0.18)]"
+            className="w-full rounded-2xl border border-[var(--border)] bg-[var(--card)] py-2.5 pr-4 pl-11 text-sm text-[var(--text)] placeholder:text-[var(--text-4)] shadow-sm focus:border-[var(--brand)]/35 focus:outline-none focus:ring-2 focus:ring-[rgba(0,113,227,0.18)]"
           />
         </label>
 
@@ -297,8 +297,8 @@ export function CrmBoard({
                 className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] ${
 
                   active
-                    ? "bg-[var(--brand)] text-white shadow-sm"
-                    : "border border-black/8 bg-white text-[var(--text-3)] hover:bg-[var(--neu-bg-pop)]"
+                    ? "bg-[var(--brand-solid)] text-white shadow-sm"
+                    : "border border-[var(--border)] bg-[var(--card)] text-[var(--text-3)] hover:bg-[var(--neu-bg-pop)]"
                 }`}
               >
                 {chip.label}
@@ -347,7 +347,7 @@ export function CrmBoard({
             <button
               type="button"
               onClick={() => setCreateOpen(true)}
-              className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-[var(--brand)] px-3.5 py-2 text-sm font-semibold text-white"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-[var(--brand-solid)] px-3.5 py-2 text-sm font-semibold text-white"
             >
               <Plus size={15} weight="bold" /> Criar lead
             </button>

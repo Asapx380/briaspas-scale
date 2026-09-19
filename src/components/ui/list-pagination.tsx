@@ -73,7 +73,7 @@ export function ListPagination({
         <label className="inline-flex items-center gap-2 text-sm text-[var(--text-3)]">
           <span>Por página</span>
           <select
-            className="rounded-xl border border-black/8 bg-white px-2.5 py-1.5 text-sm font-medium text-[var(--text-2)]"
+            className="rounded-xl border border-[var(--border)] bg-[var(--card)] px-2.5 py-1.5 text-sm font-medium text-[var(--text-2)]"
             aria-label="Itens por página"
             defaultValue={meta.pageSize}
             onChange={(event) => {
@@ -98,7 +98,7 @@ export function ListPagination({
           aria-label="Página anterior"
           aria-disabled={!meta.hasPrev}
           tabIndex={meta.hasPrev ? 0 : -1}
-          className={`rounded-xl border border-black/8 bg-white px-3 py-1.5 text-sm font-semibold ${
+          className={`rounded-xl border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-sm font-semibold ${
             meta.hasPrev
               ? "text-[var(--text-2)] hover:bg-[var(--neu-bg-pop)]"
               : "pointer-events-none text-[var(--text-4)] opacity-50"
@@ -114,7 +114,7 @@ export function ListPagination({
           aria-label="Próxima página"
           aria-disabled={!meta.hasNext}
           tabIndex={meta.hasNext ? 0 : -1}
-          className={`rounded-xl border border-black/8 bg-white px-3 py-1.5 text-sm font-semibold ${
+          className={`rounded-xl border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-sm font-semibold ${
             meta.hasNext
               ? "text-[var(--text-2)] hover:bg-[var(--neu-bg-pop)]"
               : "pointer-events-none text-[var(--text-4)] opacity-50"

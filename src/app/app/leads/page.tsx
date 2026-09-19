@@ -17,7 +17,7 @@ export default function LeadsPage() {
 
       <LeadSearch />
 
-      <div className="mt-14 border-t border-black/5 pt-10">
+      <div className="mt-14 border-t border-[var(--border)] pt-10">
         <p className="text-sm font-medium text-[var(--text-4)]">Outras formas de entrada</p>
         <LeadIntake />
       </div>

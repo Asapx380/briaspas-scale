@@ -24,25 +24,25 @@ function DemoLabel() {
 
 export function JourneyPanelEncontre() {
   return (
-    <div className="journey-panel-card rounded-[22px] border border-black/[0.08] bg-white p-4 shadow-[var(--shadow-card)] sm:p-5">
+    <div className="journey-panel-card rounded-[22px] border border-[var(--border)] bg-[var(--card)] p-4 shadow-[var(--shadow-card)] sm:p-5">
       <DemoLabel />
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <label className="block">
           <span className="text-xs font-semibold text-[var(--text-3)]">Nicho</span>
-          <span className="mt-1.5 flex items-center gap-2 rounded-xl border border-black/[0.08] bg-[var(--neu-bg)] px-3 py-2.5 text-sm text-[var(--text-2)]">
+          <span className="mt-1.5 flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--neu-bg)] px-3 py-2.5 text-sm text-[var(--text-2)]">
             <MagnifyingGlass size={16} className="shrink-0 text-[var(--text-3)]" aria-hidden="true" />
             Odontologia
           </span>
         </label>
         <label className="block">
           <span className="text-xs font-semibold text-[var(--text-3)]">Cidade</span>
-          <span className="mt-1.5 flex items-center gap-2 rounded-xl border border-black/[0.08] bg-[var(--neu-bg)] px-3 py-2.5 text-sm text-[var(--text-2)]">
+          <span className="mt-1.5 flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--neu-bg)] px-3 py-2.5 text-sm text-[var(--text-2)]">
             <MapPin size={16} className="shrink-0 text-[var(--text-3)]" aria-hidden="true" />
             Campinas, SP
           </span>
         </label>
       </div>
-      <ul className="mt-4 divide-y divide-black/[0.06] rounded-xl border border-black/[0.06]">
+      <ul className="mt-4 divide-y divide-[var(--border)] rounded-xl border border-[var(--border)]">
         {demoCompanies.map((company) => (
           <li key={company.name} className="flex items-center gap-3 px-3 py-3">
             <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[var(--brand-tint)] text-[var(--brand)]">
@@ -64,19 +64,19 @@ export function JourneyPanelEncontre() {
 
 export function JourneyPanelApresente() {
   return (
-    <div className="journey-panel-card overflow-hidden rounded-[22px] border border-black/[0.08] bg-white shadow-[var(--shadow-card)]">
-      <div className="flex items-center justify-between gap-2 border-b border-black/[0.06] bg-[var(--neu-bg-pop)] px-4 py-3">
+    <div className="journey-panel-card overflow-hidden rounded-[22px] border border-[var(--border)] bg-[var(--card)] shadow-[var(--shadow-card)]">
+      <div className="flex items-center justify-between gap-2 border-b border-[var(--border)] bg-[var(--neu-bg-pop)] px-4 py-3">
         <DemoLabel />
         <span
-          className="marketing-button inline-flex items-center gap-1.5 rounded-full border border-black/[0.08] bg-white px-3 py-1.5 text-xs font-semibold text-[var(--text-2)]"
+          className="marketing-button inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-xs font-semibold text-[var(--text-2)]"
         >
           <Copy size={14} weight="bold" aria-hidden="true" />
           Copiar link
         </span>
       </div>
-      <div className="bg-[linear-gradient(180deg,#f8fbff_0%,#eef4fb_100%)] p-4">
-        <div className="rounded-2xl border border-black/[0.05] bg-white p-3 shadow-sm">
-          <div className="flex items-center gap-2 border-b border-black/[0.06] pb-3">
+      <div className="bg-[image:var(--preview-canvas-bg)] p-4">
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3 shadow-sm">
+          <div className="flex items-center gap-2 border-b border-[var(--border)] pb-3">
             <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-[var(--brand-tint)] text-[var(--brand)]">
               <Tooth size={18} weight="duotone" aria-hidden="true" />
             </span>
@@ -100,7 +100,7 @@ export function JourneyPanelApresente() {
 
 export function JourneyPanelPriorize() {
   return (
-    <div className="journey-panel-card rounded-[22px] border border-black/[0.08] bg-white p-4 shadow-[var(--shadow-card)] sm:p-5">
+    <div className="journey-panel-card rounded-[22px] border border-[var(--border)] bg-[var(--card)] p-4 shadow-[var(--shadow-card)] sm:p-5">
       <DemoLabel />
       <JourneyKanbanLive />
       <p className="mt-3 text-xs leading-5 text-[var(--text-3)]">

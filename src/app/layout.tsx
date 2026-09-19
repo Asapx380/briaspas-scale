@@ -16,19 +16,6 @@ export const metadata: Metadata = {
   },
   description: "Encontre negócios locais, apresente sites personalizados e acompanhe cada oportunidade até o fechamento.",
   applicationName: "Briaspas Scale",
-  openGraph: {
-    title: "Briaspas Scale | Prospecção com sites-demo e CRM",
-    description: "Da busca de empresas ao fechamento, sem perder o contexto comercial.",
-    url: "/",
-    siteName: "Briaspas Scale",
-    locale: "pt_BR",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Briaspas Scale | Prospecção com sites-demo e CRM",
-    description: "Encontre empresas, apresente sites personalizados e avance no CRM.",
-  },
 };
 
 type RootLayoutProps = Readonly<{
@@ -37,7 +24,21 @@ type RootLayoutProps = Readonly<{
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="pt-BR" className={`${dmSans.variable} h-full antialiased`}>
+    <html
+      lang="pt-BR"
+      data-theme="light"
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+      className={`${dmSans.variable} h-full antialiased`}
+    >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              '(function(){try{var s=localStorage.getItem("briaspas.theme"),t=s==="dark"?"dark":"light";document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t}catch(e){document.documentElement.dataset.theme="light"}})()',
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col font-sans">{children}</body>
     </html>
   );

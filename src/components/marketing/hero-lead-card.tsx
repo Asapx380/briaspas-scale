@@ -124,7 +124,7 @@ export function HeroLeadCard() {
         Visita registrada no link da Clínica Sorriso
       </motion.p>
 
-      <div className="rounded-2xl border border-black/[0.08] bg-white p-3 shadow-[0_16px_40px_rgba(15,23,42,0.14)]">
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3 shadow-[0_16px_40px_rgba(15,23,42,0.14)]">
         <div className="flex items-start gap-2.5">
           <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[var(--neu-bg)] text-[var(--text-3)]">
             <Buildings size={18} weight="duotone" />

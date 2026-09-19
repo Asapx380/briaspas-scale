@@ -78,7 +78,7 @@ export default async function OperationsPage() {
           ) : (
             <div className="mt-5 space-y-3">
               {sourceCounts.map(([source, count]) => (
-                <div key={source} className="flex justify-between border-b border-black/5 pb-2 text-sm">
+                <div key={source} className="flex justify-between border-b border-[var(--border)] pb-2 text-sm">
                   <span className="text-[var(--text-3)]">{source}</span>
                   <strong className="tabular-nums">{count}</strong>
                 </div>

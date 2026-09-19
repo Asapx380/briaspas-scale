@@ -32,7 +32,7 @@ type CalendarView = "month" | "week" | "day";
 const WEEKDAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"] as const;
 
 const fieldClass =
-  "w-full rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-3 py-2.5 text-sm text-[var(--text)] placeholder:text-[var(--text-4)]";
+  "w-full rounded-xl border border-[var(--border)] bg-[var(--neu-bg-pop)] px-3 py-2.5 text-sm text-[var(--text)] placeholder:text-[var(--text-4)]";
 
 function startOfDay(date: Date) {
   const next = new Date(date);
@@ -267,7 +267,7 @@ export function AppointmentsPanel({
         <button
           type="button"
           onClick={() => openCreate()}
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brand)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(0,113,227,0.28)] transition-opacity hover:opacity-90"
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brand-solid)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(0,113,227,0.28)] transition-opacity hover:opacity-90"
         >
           <Plus size={16} weight="bold" />
           Novo agendamento
@@ -368,7 +368,7 @@ export function AppointmentsPanel({
                   }}
                   className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
                     active
-                      ? "bg-[var(--brand)] text-white shadow-[0_4px_12px_rgba(0,113,227,0.28)]"
+                      ? "bg-[var(--brand-solid)] text-white shadow-[0_4px_12px_rgba(0,113,227,0.28)]"
                       : "text-[var(--text-3)] hover:text-[var(--text)]"
                   }`}
                 >
@@ -380,12 +380,12 @@ export function AppointmentsPanel({
         </div>
 
         {view === "month" && (
-          <div className="mt-5 overflow-hidden rounded-2xl border border-black/6">
-            <div className="grid grid-cols-7 border-b border-black/6 bg-[var(--neu-bg-pop)]">
+          <div className="mt-5 overflow-hidden rounded-2xl border border-[var(--border)]">
+            <div className="grid grid-cols-7 border-b border-[var(--border)] bg-[var(--neu-bg-pop)]">
               {WEEKDAYS.map((day) => (
                 <div
                   key={day}
-                  className="border-r border-black/6 px-2 py-3 text-center text-xs font-semibold tracking-wide text-[var(--text-4)] uppercase last:border-r-0"
+                  className="border-r border-[var(--border)] px-2 py-3 text-center text-xs font-semibold tracking-wide text-[var(--text-4)] uppercase last:border-r-0"
                 >
                   {day}
                 </div>
@@ -409,14 +409,14 @@ export function AppointmentsPanel({
                     onDoubleClick={() => openCreate(day)}
                     aria-label={dayAccessibleLabel(day, dayItems.length)}
                     title={dayAccessibleLabel(day, dayItems.length)}
-                    className={`min-h-[5.5rem] border-r border-b border-black/6 p-2 text-left transition-colors last:border-r-0 hover:bg-[var(--brand-tint)]/40 sm:min-h-[6.5rem] ${FOCUS} ${
-                      inMonth ? "bg-white" : "bg-[var(--neu-bg-pop)]/70"
+                    className={`min-h-[5.5rem] border-r border-b border-[var(--border)] p-2 text-left transition-colors last:border-r-0 hover:bg-[var(--brand-tint)]/40 sm:min-h-[6.5rem] ${FOCUS} ${
+                      inMonth ? "bg-[var(--card)]" : "bg-[var(--neu-bg-pop)]/70"
                     }`}
                   >
                     <span
                       className={`inline-grid size-7 place-items-center rounded-full text-sm font-medium ${
                         isToday
-                          ? "bg-[var(--brand)] font-semibold text-white"
+                          ? "bg-[var(--brand-solid)] font-semibold text-white"
                           : inMonth
                             ? "text-[var(--text)]"
                             : "text-[var(--text-5)]"
@@ -446,18 +446,18 @@ export function AppointmentsPanel({
         )}
 
         {view === "week" && (
-          <div className="mt-5 overflow-hidden rounded-2xl border border-black/6">
-            <div className="grid grid-cols-7 border-b border-black/6 bg-[var(--neu-bg-pop)]">
+          <div className="mt-5 overflow-hidden rounded-2xl border border-[var(--border)]">
+            <div className="grid grid-cols-7 border-b border-[var(--border)] bg-[var(--neu-bg-pop)]">
               {weekDays.map((day) => {
                 const isToday = sameDay(day, today);
                 return (
-                  <div key={day.toISOString()} className="border-r border-black/6 px-2 py-3 text-center last:border-r-0">
+                  <div key={day.toISOString()} className="border-r border-[var(--border)] px-2 py-3 text-center last:border-r-0">
                     <p className="text-xs font-semibold tracking-wide text-[var(--text-4)] uppercase">
                       {WEEKDAYS[day.getDay()]}
                     </p>
                     <p
                       className={`mx-auto mt-1 inline-grid size-8 place-items-center rounded-full text-sm font-semibold ${
-                        isToday ? "bg-[var(--brand)] text-white" : "text-[var(--text)]"
+                        isToday ? "bg-[var(--brand-solid)] text-white" : "text-[var(--text)]"
                       }`}
                     >
                       {day.getDate()}
@@ -480,7 +480,7 @@ export function AppointmentsPanel({
                     }}
                     aria-label={dayAccessibleLabel(day, dayItems.length)}
                     title={dayAccessibleLabel(day, dayItems.length)}
-                    className={`min-h-[12rem] border-r border-black/6 p-2 text-left align-top last:border-r-0 hover:bg-[var(--brand-tint)]/30 ${FOCUS}`}
+                    className={`min-h-[12rem] border-r border-[var(--border)] p-2 text-left align-top last:border-r-0 hover:bg-[var(--brand-tint)]/30 ${FOCUS}`}
                   >
                     <div className="space-y-1.5">
                       {dayItems.map((item) => (
@@ -501,7 +501,7 @@ export function AppointmentsPanel({
         )}
 
         {view === "day" && (
-          <div className="mt-5 rounded-2xl border border-black/6 bg-white p-4 sm:p-5">
+          <div className="mt-5 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 sm:p-5">
             {visibleAppointments.length === 0 ? (
               <div className="py-12 text-center">
                 <p className="text-sm font-medium text-[var(--text-3)]">Nenhum agendamento neste dia</p>
@@ -669,7 +669,7 @@ export function AppointmentsPanel({
                 <button
                   type="submit"
                   disabled={pending}
-                  className="inline-flex items-center gap-2 rounded-full bg-[var(--brand)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
+                  className="inline-flex items-center gap-2 rounded-full bg-[var(--brand-solid)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
                 >
                   {pending ? "Salvando…" : "Salvar"}
                 </button>

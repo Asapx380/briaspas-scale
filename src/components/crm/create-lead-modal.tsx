@@ -7,7 +7,7 @@ import type { CrmLead } from "@/lib/crm/types";
 import { Spinner } from "@/components/ui/async-feedback";
 
 const FIELD =
-  "mt-1.5 w-full rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-3 py-2.5 text-sm text-[var(--text)] placeholder:text-[var(--text-4)] focus:border-[var(--brand)]/40 focus:outline-none focus:ring-2 focus:ring-[rgba(0,113,227,0.2)] disabled:opacity-60";
+  "mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--neu-bg-pop)] px-3 py-2.5 text-sm text-[var(--text)] placeholder:text-[var(--text-4)] focus:border-[var(--brand)]/40 focus:outline-none focus:ring-2 focus:ring-[rgba(0,113,227,0.2)] disabled:opacity-60";
 
 type CreateLeadModalProps = {
   open: boolean;
@@ -169,14 +169,14 @@ export function CreateLeadModal({ open, onClose, onCreated }: CreateLeadModalPro
               type="button"
               onClick={requestClose}
               disabled={busy}
-              className="rounded-xl border border-black/8 px-4 py-2.5 text-sm font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-well)] disabled:opacity-50"
+              className="rounded-xl border border-[var(--border)] px-4 py-2.5 text-sm font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-well)] disabled:opacity-50"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={busy}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--brand-hover)] disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--brand-solid)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--brand-solid-hover)] disabled:opacity-60"
             >
               {busy ? <Spinner className="size-4" /> : <Plus size={16} weight="bold" />}
               {busy ? "Salvando..." : "Criar lead"}

@@ -70,7 +70,7 @@ function LeadRow({
   const isSaved = saveState === "saved" || saveState === "duplicate";
 
   return (
-    <article className="grid gap-5 border-t border-black/8 py-6 first:border-t-0 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+    <article className="grid gap-5 border-t border-[var(--border)] py-6 first:border-t-0 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <h2 className="truncate text-lg font-semibold text-[var(--text)]">
@@ -108,7 +108,7 @@ function LeadRow({
           type="button"
           onClick={() => onSave(lead)}
           disabled={saveState === "saving" || isSaved}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--brand)] px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--brand-hover)] active:translate-y-px disabled:cursor-default disabled:bg-[var(--brand)]/35 disabled:text-white/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--brand-solid)] px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--brand-solid-hover)] active:translate-y-px disabled:cursor-default disabled:bg-[var(--brand-solid)]/35 disabled:text-white/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
         >
           {isSaved ? (
             <Check size={16} weight="bold" aria-hidden="true" />
@@ -128,7 +128,7 @@ function LeadRow({
             href={lead.websiteUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-black/8 px-3 py-2 text-sm font-medium text-[var(--text-2)] transition-colors hover:border-[var(--brand)]/30 hover:bg-[var(--brand-hover)]/10 hover:text-[var(--text)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border)] px-3 py-2 text-sm font-medium text-[var(--text-2)] transition-colors hover:border-[var(--brand)]/30 hover:bg-[var(--brand-solid-hover)]/10 hover:text-[var(--text)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
           >
             Site
             <ArrowSquareOut size={15} aria-hidden="true" />
@@ -139,7 +139,7 @@ function LeadRow({
             href={lead.googleMapsUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-black/8 px-3 py-2 text-sm font-medium text-[var(--text-2)] transition-colors hover:border-[var(--brand)]/30 hover:bg-[var(--brand-hover)]/10 hover:text-[var(--text)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border)] px-3 py-2 text-sm font-medium text-[var(--text-2)] transition-colors hover:border-[var(--brand)]/30 hover:bg-[var(--brand-solid-hover)]/10 hover:text-[var(--text)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
           >
             Mapa
             <ArrowSquareOut size={15} aria-hidden="true" />
@@ -345,7 +345,7 @@ export function LeadSearch() {
 
       <form
         onSubmit={handleSearch}
-        className="grid gap-4 rounded-2xl border border-black/8 bg-[var(--neu-bg-pop)] p-5 sm:p-6 lg:grid-cols-[1fr_1fr_minmax(8.5rem,10rem)_auto] lg:items-end"
+        className="grid gap-4 rounded-2xl border border-[var(--border)] bg-[var(--neu-bg-pop)] p-5 sm:p-6 lg:grid-cols-[1fr_1fr_minmax(8.5rem,10rem)_auto] lg:items-end"
       >
         <label className="grid gap-2 text-sm font-medium text-[var(--text-2)]">
           Nicho
@@ -358,7 +358,7 @@ export function LeadSearch() {
             minLength={2}
             maxLength={80}
             required
-            className="h-11 rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-3.5 text-base text-[var(--text)] outline-none transition-colors placeholder:text-[var(--text-4)] focus:border-[var(--brand)]/60 focus:ring-2 focus:ring-[var(--brand)]/15"
+            className="h-11 rounded-xl border border-[var(--border)] bg-[var(--neu-bg-pop)] px-3.5 text-base text-[var(--text)] outline-none transition-colors placeholder:text-[var(--text-4)] focus:border-[var(--brand)]/60 focus:ring-2 focus:ring-[var(--brand)]/15"
           />
         </label>
 
@@ -373,7 +373,7 @@ export function LeadSearch() {
             minLength={2}
             maxLength={100}
             required
-            className="h-11 rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-3.5 text-base text-[var(--text)] outline-none transition-colors placeholder:text-[var(--text-4)] focus:border-[var(--brand)]/60 focus:ring-2 focus:ring-[var(--brand)]/15"
+            className="h-11 rounded-xl border border-[var(--border)] bg-[var(--neu-bg-pop)] px-3.5 text-base text-[var(--text)] outline-none transition-colors placeholder:text-[var(--text-4)] focus:border-[var(--brand)]/60 focus:ring-2 focus:ring-[var(--brand)]/15"
           />
         </label>
 
@@ -386,7 +386,7 @@ export function LeadSearch() {
             onChange={(event) =>
               setLimit(Number(event.target.value) as LeadSearchLimitOption)
             }
-            className="h-11 rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-3.5 text-base text-[var(--text)] outline-none transition-colors focus:border-[var(--brand)]/60 focus:ring-2 focus:ring-[var(--brand)]/15"
+            className="h-11 rounded-xl border border-[var(--border)] bg-[var(--neu-bg-pop)] px-3.5 text-base text-[var(--text)] outline-none transition-colors focus:border-[var(--brand)]/60 focus:ring-2 focus:ring-[var(--brand)]/15"
           >
             {LEAD_SEARCH_LIMIT_OPTIONS.map((option) => (
               <option key={option} value={option}>
@@ -399,7 +399,7 @@ export function LeadSearch() {
         <button
           type="submit"
           disabled={isLoading}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[var(--brand)] px-5 text-sm font-semibold text-white transition-colors hover:bg-[var(--brand-hover)] active:translate-y-px disabled:cursor-wait disabled:bg-[var(--brand)]/50 disabled:text-white/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+          className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[var(--brand-solid)] px-5 text-sm font-semibold text-white transition-colors hover:bg-[var(--brand-solid-hover)] active:translate-y-px disabled:cursor-wait disabled:bg-[var(--brand-solid)]/50 disabled:text-white/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
         >
           {isLoading ? <Spinner className="size-4" /> : <MagnifyingGlass size={18} weight="bold" aria-hidden="true" />}
           {isLoading ? "Buscando..." : "Buscar empresas"}
@@ -421,7 +421,7 @@ export function LeadSearch() {
 
       {searchedFor && !isLoading && leads.length === 0 && !error && (
         <div className="mt-12 flex max-w-xl items-start gap-4">
-          <div className="grid size-11 shrink-0 place-items-center rounded-xl border border-black/8 bg-[var(--neu-bg-well)] text-[var(--text-3)]">
+          <div className="grid size-11 shrink-0 place-items-center rounded-xl border border-[var(--border)] bg-[var(--neu-bg-well)] text-[var(--text-3)]">
             <Buildings size={22} aria-hidden="true" />
           </div>
           <div>
@@ -451,7 +451,7 @@ export function LeadSearch() {
               type="button"
               onClick={handleSaveAll}
               disabled={isSavingAll}
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[var(--brand)] px-4 text-sm font-semibold text-white transition-colors hover:bg-[var(--brand-hover)] active:translate-y-px disabled:cursor-wait disabled:bg-[var(--brand)]/50 disabled:text-white/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[var(--brand-solid)] px-4 text-sm font-semibold text-white transition-colors hover:bg-[var(--brand-solid-hover)] active:translate-y-px disabled:cursor-wait disabled:bg-[var(--brand-solid)]/50 disabled:text-white/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
             >
               <FloppyDisk size={17} weight="bold" aria-hidden="true" />
               {isSavingAll ? "Salvando..." : "Salvar todas no CRM"}
@@ -459,7 +459,7 @@ export function LeadSearch() {
           </div>
 
           {bulkMessage && (
-            <p role="status" className="mt-4 rounded-xl border border-black/8 bg-[var(--neu-bg-pop)] px-4 py-3 text-sm text-[var(--text-2)]">
+            <p role="status" className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--neu-bg-pop)] px-4 py-3 text-sm text-[var(--text-2)]">
               {bulkMessage}
             </p>
           )}
@@ -480,7 +480,7 @@ export function LeadSearch() {
               type="button"
               onClick={handleLoadMore}
               disabled={isLoading}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-black/8 px-4 py-2.5 text-sm font-semibold text-[var(--text-2)] transition-colors hover:border-[var(--brand)]/30 hover:bg-[var(--brand-hover)]/10 active:translate-y-px disabled:cursor-wait disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-[var(--border)] px-4 py-2.5 text-sm font-semibold text-[var(--text-2)] transition-colors hover:border-[var(--brand)]/30 hover:bg-[var(--brand-solid-hover)]/10 active:translate-y-px disabled:cursor-wait disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
             >
               {isLoading && <Spinner className="size-3.5" />}
               {isLoading ? "Carregando..." : "Carregar mais empresas"}

@@ -101,7 +101,7 @@ async function patchLead(
 
 function InfoRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="grid gap-1 border-b border-black/[0.06] py-4 sm:grid-cols-[180px_1fr] sm:items-start sm:gap-6">
+    <div className="grid gap-1 border-b border-[var(--border)] py-4 sm:grid-cols-[180px_1fr] sm:items-start sm:gap-6">
       <dt className="text-sm text-[var(--text-4)]">{label}</dt>
       <dd className="text-sm font-medium text-[var(--text)]">{children}</dd>
     </div>
@@ -110,7 +110,7 @@ function InfoRow({ label, children }: { label: string; children: React.ReactNode
 
 function EmptyTab({ title, body }: { title: string; body: string }) {
   return (
-    <div className="rounded-2xl border border-dashed border-black/10 bg-[var(--neu-bg-pop)] px-5 py-12 text-center">
+    <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--neu-bg-pop)] px-5 py-12 text-center">
       <p className="font-semibold text-[var(--text-2)]">{title}</p>
       <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[var(--text-4)]">{body}</p>
     </div>
@@ -442,7 +442,7 @@ export function LeadDetailView({
             type="button"
             onClick={() => goSibling(-1)}
             disabled={neighbors ? neighbors.prevId == null : !canNavigate}
-            className="grid size-11 place-items-center rounded-xl border border-black/8 bg-white text-[var(--text-2)] hover:bg-[var(--neu-bg-pop)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] disabled:opacity-40"
+            className="grid size-11 place-items-center rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--text-2)] hover:bg-[var(--neu-bg-pop)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] disabled:opacity-40"
             aria-label="Lead anterior"
             title="Lead anterior"
           >
@@ -452,7 +452,7 @@ export function LeadDetailView({
             type="button"
             onClick={() => goSibling(1)}
             disabled={neighbors ? neighbors.nextId == null : !canNavigate}
-            className="grid size-11 place-items-center rounded-xl border border-black/8 bg-white text-[var(--text-2)] hover:bg-[var(--neu-bg-pop)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] disabled:opacity-40"
+            className="grid size-11 place-items-center rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--text-2)] hover:bg-[var(--neu-bg-pop)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] disabled:opacity-40"
             aria-label="Próximo lead"
             title="Próximo lead"
           >
@@ -485,7 +485,7 @@ export function LeadDetailView({
 
       <section className="app-card mt-6 overflow-hidden p-0">
         <div
-          className="flex gap-1 overflow-x-auto border-b border-black/[0.06] px-3 pt-2 sm:px-5"
+          className="flex gap-1 overflow-x-auto border-b border-[var(--border)] px-3 pt-2 sm:px-5"
           role="tablist"
           aria-label="Seções do lead"
         >
@@ -507,7 +507,7 @@ export function LeadDetailView({
               >
                 {item.label}
                 {active && (
-                  <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-[var(--brand)]" aria-hidden />
+                  <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-[var(--brand-solid)]" aria-hidden />
                 )}
               </button>
             );
@@ -580,7 +580,7 @@ export function LeadDetailView({
                         title={`Definir etapa: ${item.title}`}
                         className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] ${
                           active
-                            ? "bg-[var(--brand)] text-white"
+                            ? "bg-[var(--brand-solid)] text-white"
                             : "bg-[var(--neu-bg-well)] text-[var(--text-3)] hover:bg-[var(--neu-bg-pop)]"
                         }`}
                       >
@@ -596,7 +596,7 @@ export function LeadDetailView({
                     href={lead.google_maps_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-black/8 px-3 py-2 text-sm font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-pop)]"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] px-3 py-2 text-sm font-semibold text-[var(--text-2)] hover:bg-[var(--neu-bg-pop)]"
                   >
                     Ver no Google <ArrowSquareOut size={14} />
                   </a>
@@ -652,13 +652,13 @@ export function LeadDetailView({
                   rows={8}
                   maxLength={10000}
                   placeholder="O que foi conversado com este lead?"
-                  className="mt-2 w-full resize-y rounded-2xl border border-black/8 bg-[var(--neu-bg-pop)] px-4 py-3 text-sm leading-6 text-[var(--text)]"
+                  className="mt-2 w-full resize-y rounded-2xl border border-[var(--border)] bg-[var(--neu-bg-pop)] px-4 py-3 text-sm leading-6 text-[var(--text)]"
                 />
               </label>
               <button
                 type="submit"
                 disabled={saving}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--brand-hover)] disabled:opacity-60"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--brand-solid)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--brand-solid-hover)] disabled:opacity-60"
               >
                 <Check size={15} weight="bold" /> {saving ? "Salvando..." : "Salvar notas"}
               </button>
@@ -690,7 +690,7 @@ export function LeadDetailView({
                       setOutreachCopied(true);
                       window.setTimeout(() => setOutreachCopied(false), 1800);
                     }}
-                    className="rounded-xl border border-black/8 px-3 py-2 text-sm font-semibold text-[var(--text-2)]"
+                    className="rounded-xl border border-[var(--border)] px-3 py-2 text-sm font-semibold text-[var(--text-2)]"
                   >
                     {outreachCopied ? "Copiado" : "Copiar abordagem"}
                   </button>
@@ -760,7 +760,7 @@ export function LeadDetailView({
                     {siteAction === "brief" ? "Gerando…" : brief ? "Regenerar briefing" : "Gerar briefing"}
                   </button>
                   <label
-                    className={`inline-flex items-center gap-1.5 rounded-xl border border-black/8 px-3 py-2 text-xs font-semibold text-[var(--text-2)] ${
+                    className={`inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] px-3 py-2 text-xs font-semibold text-[var(--text-2)] ${
                       siteBusy || demoMode ? "cursor-not-allowed opacity-60" : "cursor-pointer"
                     }`}
                   >
@@ -806,7 +806,7 @@ export function LeadDetailView({
                         type="button"
                         disabled={siteBusy}
                         onClick={() => void changePublication("unpublish")}
-                        className="rounded-xl border border-black/8 px-3 py-2 text-xs font-semibold text-[var(--text-3)] disabled:opacity-60"
+                        className="rounded-xl border border-[var(--border)] px-3 py-2 text-xs font-semibold text-[var(--text-3)] disabled:opacity-60"
                       >
                         {siteAction === "unpublish" ? "Despublicando…" : "Despublicar"}
                       </button>
@@ -848,7 +848,7 @@ export function LeadDetailView({
                   onChange={(event) => setEstimatedValue(event.target.value)}
                   inputMode="decimal"
                   placeholder="Ex.: 600,00"
-                  className="mt-2 w-full rounded-2xl border border-black/8 bg-[var(--neu-bg-pop)] px-4 py-3 text-sm"
+                  className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--neu-bg-pop)] px-4 py-3 text-sm"
                 />
               </label>
               {formatMoney(lead.estimated_value) && (
@@ -859,7 +859,7 @@ export function LeadDetailView({
               <button
                 type="submit"
                 disabled={saving}
-                className="rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+                className="rounded-xl bg-[var(--brand-solid)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
               >
                 {saving ? "Salvando..." : "Salvar valor"}
               </button>
@@ -875,7 +875,7 @@ export function LeadDetailView({
                     type="datetime-local"
                     value={followUpAt}
                     onChange={(event) => setFollowUpAt(event.target.value)}
-                    className="mt-2 w-full rounded-2xl border border-black/8 bg-[var(--neu-bg-pop)] px-4 py-3 text-sm"
+                    className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--neu-bg-pop)] px-4 py-3 text-sm"
                   />
                 </label>
                 {lead.follow_up_at && (
@@ -886,7 +886,7 @@ export function LeadDetailView({
                 <button
                   type="submit"
                   disabled={saving}
-                  className="rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+                  className="rounded-xl bg-[var(--brand-solid)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
                 >
                   {saving ? "Salvando..." : "Salvar retorno"}
                 </button>
