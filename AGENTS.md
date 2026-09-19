@@ -8,6 +8,27 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
+# AGENTS.md — Briaspas Scale (landing / marketing)
+
+## Modelos
+- Evitar Other Models (Claude/GPT premium). Preferir Cursor Models / Composer.
+
+## Escopo
+- Só mexer em landing, `/demonstracao` e componentes de marketing, a menos que a tarefa diga o contrário.
+- Não alterar área logada, auth, Supabase ou migrations sem pedir.
+
+## Design
+- Tokens só em `src/app/globals.css`. Cor nova = token no `:root`, nunca hex solto no JSX.
+- Ícones: `@phosphor-icons/react`. Animações: `motion` ou CSS. Sem deps pesadas sem avisar.
+- Todo movimento respeita `prefers-reduced-motion` (sem animação; conteúdo visível).
+- A11y: contraste AA, foco visível, alt/aria-label, HTML semântico; nada essencial só em hover.
+- Dados de exemplo fictícios e rotulados "Dados demonstrativos". Nunca leads reais.
+- Sem emojis em código, UI, comentários ou README.
+- Textos em pt-BR. Não prometer recurso inexistente.
+
+## Entrega
+- Ao terminar: `npm run check` e listar o que mudou, o que não mudou e decisões pendentes.
+
 ## Economia de créditos
 
 - Responda em português, de forma compacta. Remova saudações, elogios, transições e texto de preenchimento.
