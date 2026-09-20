@@ -75,9 +75,9 @@ function PotentialTooltip({ id }: { id: string }) {
       role="tooltip"
       className="fixed inset-x-4 bottom-4 z-50 mx-auto max-h-[calc(100dvh-2rem)] w-auto max-w-sm overflow-y-auto rounded-xl border border-[var(--border)] bg-[var(--card)] p-3 text-left shadow-[var(--shadow-card)]"
     >
-      <p className="text-sm font-semibold text-[var(--text)]">Como este potencial foi calculado</p>
+      <p className="text-sm font-semibold text-[var(--text)]">Como a oportunidade de site foi calculada</p>
       <p className="mt-1 text-xs leading-5 text-[var(--text-4)]">
-        Soma heurística (0 a 100) com base nos dados do lead:
+        Escala heurística (0 a 100) para priorizar quem precisa de um site:
       </p>
       <ul className="mt-2 list-disc space-y-1 pl-4 text-xs leading-5 text-[var(--text-3)]">
         {factors.map((factor) => (
@@ -134,7 +134,7 @@ export function CommercialPotentialIndicator({
         aria-label={aria}
       >
         {variant === "detail" && (
-          <p className="w-full text-sm font-semibold text-[var(--text)]">Potencial comercial</p>
+          <p className="w-full text-sm font-semibold text-[var(--text)]">Oportunidade de site</p>
         )}
         <span
           data-potential-badge
@@ -150,7 +150,7 @@ export function CommercialPotentialIndicator({
             <button
               type="button"
               className={`grid size-8 place-items-center rounded-lg text-[var(--text-4)] hover:bg-[var(--neu-bg-well)] hover:text-[var(--text-2)] ${FOCUS}`}
-              aria-label="Como este potencial foi calculado"
+              aria-label="Como a oportunidade de site foi calculada"
               aria-expanded={tooltipOpen}
               aria-controls={tooltipId}
               aria-describedby={tooltipOpen ? tooltipId : undefined}

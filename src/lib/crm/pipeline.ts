@@ -70,6 +70,175 @@ export function columnForStatus(status: LeadStatus): PipelineColumn {
   return PIPELINE_COLUMNS.find((column) => column.statuses.includes(status)) ?? PIPELINE_COLUMNS[0];
 }
 
+const WEAK_DIGITAL_PRESENCE_HOST_PATTERNS: readonly RegExp[] = [
+  /(^|\.)linktr\.ee$/i,
+  /(^|\.)linktree\.com$/i,
+  /(^|\.)beacons\.ai$/i,
+  /(^|\.)bio\.site$/i,
+  /(^|\.)campsite\.bio$/i,
+  /(^|\.)instagram\.com$/i,
+  /(^|\.)facebook\.com$/i,
+  /(^|\.)fb\.com$/i,
+  /(^|\.)wa\.me$/i,
+  /(^|\.)tiktok\.com$/i,
+  /(^|\.)youtube\.com$/i,
+  /(^|\.)youtu\.be$/i,
+  /(^|\.)threads\.net$/i,
+  /(^|\.)x\.com$/i,
+  /(^|\.)twitter\.com$/i,
+];
+
+const COMPLETE_COMMERCIAL_MARKERS = [
+  "páginas relevantes",
+  "paginas relevantes",
+  "serviços claros",
+  "servicos claros",
+  "cta",
+  "whatsapp",
+  "contato",
+  "endereço",
+  "endereco",
+  "responsiv",
+  "estrutura comercial",
+  "site completo",
+] as const;
+
+const WEAK_SITE_MARKERS = [
+  "página única",
+  "pagina unica",
+  "site básico",
+  "site basico",
+  "site com falha",
+  "sem cta",
+  "sem whatsapp",
+  "sem serviços",
+  "sem servicos",
+  "sem endereço",
+  "sem endereco",
+  "sem estrutura comercial",
+] as const;
+
+export type SiteOpportunityKind =
+  | "no_own_site"
+  | "weak_social"
+  | "weak_website"
+  | "unanalyzed_own"
+  | "complete_own";
+
+type SiteOpportunityLead = Pick<
+  CrmLead,
+  "website_url" | "site_status" | "ai_diagnosis" | "phone" | "email" | "address" | "google_maps_url"
+>;
+
+function diagnosisHaystack(diagnosis: CrmLead["ai_diagnosis"]): string {
+  if (!diagnosis) return "";
+  return [
+    diagnosis.resumo,
+    diagnosis.dorPrincipal,
+    ...(diagnosis.doresSecundarias ?? []),
+    ...(diagnosis.oportunidades ?? []),
+    ...(diagnosis.sinaisObservados ?? []),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLocaleLowerCase("pt-BR");
+}
+
+function countCommercialCompletenessMarkers(diagnosis: CrmLead["ai_diagnosis"]): number {
+  const haystack = diagnosisHaystack(diagnosis);
+  if (!haystack) return 0;
+  return COMPLETE_COMMERCIAL_MARKERS.filter((marker) => haystack.includes(marker)).length;
+}
+
+export function hasCompleteCommercialSiteEvidence(lead: SiteOpportunityLead): boolean {
+  if (lead.site_status === "ready" || lead.site_status === "published") return true;
+  return countCommercialCompletenessMarkers(lead.ai_diagnosis) >= 4;
+}
+
+export function hasWeakWebsiteEvidence(lead: SiteOpportunityLead): boolean {
+  if (lead.site_status === "failed") return true;
+  const haystack = diagnosisHaystack(lead.ai_diagnosis);
+  if (!haystack) return false;
+  return WEAK_SITE_MARKERS.some((marker) => haystack.includes(marker));
+}
+
+function briaspasDeliveredSite(siteStatus: CrmLead["site_status"]): boolean {
+  return siteStatus === "ready" || siteStatus === "published";
+}
+
+function completeSiteBaseScore(lead: SiteOpportunityLead): number {
+  const markers = countCommercialCompletenessMarkers(lead.ai_diagnosis);
+  if (lead.site_status === "published") return 14;
+  if (lead.site_status === "ready") return 22;
+  const raw = 38 - markers * 5;
+  return Math.max(10, Math.min(35, raw));
+}
+
+/** Classificação da oportunidade de vender site (independente dos complementos). */
+export function classifySiteOpportunity(lead: SiteOpportunityLead): SiteOpportunityKind {
+  const url = lead.website_url?.trim() ?? "";
+  const liveOnPlatform = briaspasDeliveredSite(lead.site_status);
+
+  if (url && isWeakDigitalPresenceUrl(url)) return "weak_social";
+  if (!url && !liveOnPlatform) return "no_own_site";
+  if (hasCompleteCommercialSiteEvidence(lead)) return "complete_own";
+  if (lead.site_status === "failed" || hasWeakWebsiteEvidence(lead)) return "weak_website";
+  if (url) return "unanalyzed_own";
+  return "no_own_site";
+}
+
+/** Pontuação base de oportunidade (antes dos complementos de contato/funil). */
+export function siteOpportunityBaseScore(lead: SiteOpportunityLead): number {
+  const kind = classifySiteOpportunity(lead);
+  if (kind === "no_own_site") return 100;
+  if (kind === "weak_social") return 90;
+  if (kind === "weak_website") return 75;
+  if (kind === "unanalyzed_own") return 70;
+  return completeSiteBaseScore(lead);
+}
+
+/** @deprecated Use `siteOpportunityBaseScore`. Mantido para testes legados. */
+export function siteOpportunityPoints(lead: SiteOpportunityLead): number {
+  return siteOpportunityBaseScore(lead);
+}
+
+function leadComplementBonus(
+  lead: Pick<
+    CrmLead,
+    "rating" | "review_count" | "phone" | "email" | "google_maps_url" | "status"
+  >,
+): number {
+  let bonus = 0;
+  if (lead.phone?.replace(/\D/g, "")) bonus += 2;
+  if (lead.email?.trim()) bonus += 1;
+  if (lead.google_maps_url?.trim()) bonus += 1;
+  if (lead.rating != null) bonus += Math.round((lead.rating / 5) * 2);
+  if (lead.review_count != null) bonus += Math.min(2, Math.round(lead.review_count / 50));
+  if (lead.status === "hot" || lead.status === "proposal") bonus += 1;
+  return bonus;
+}
+
+/** Presença digital fraca (Linktree, redes, wa.me) — não é site próprio. */
+export function isWeakDigitalPresenceUrl(websiteUrl: string | null | undefined): boolean {
+  if (!websiteUrl?.trim()) return false;
+  try {
+    const host = new URL(websiteUrl.trim()).hostname.replace(/^www\./i, "");
+    return WEAK_DIGITAL_PRESENCE_HOST_PATTERNS.some((pattern) => pattern.test(host));
+  } catch {
+    const lower = websiteUrl.toLocaleLowerCase("pt-BR");
+    return (
+      lower.includes("linktr.ee") ||
+      lower.includes("linktree") ||
+      lower.includes("beacons") ||
+      lower.includes("bio.site") ||
+      lower.includes("campsite") ||
+      lower.includes("instagram.com") ||
+      lower.includes("facebook.com") ||
+      lower.includes("wa.me")
+    );
+  }
+}
+
 export function leadScore(lead: Pick<
   CrmLead,
   | "rating"
@@ -80,16 +249,27 @@ export function leadScore(lead: Pick<
   | "status"
   | "email"
   | "google_maps_url"
+  | "ai_diagnosis"
+  | "address"
 >): number {
-  let score = 18;
-  if (lead.rating != null) score += Math.round((lead.rating / 5) * 36);
-  if (lead.review_count != null) score += Math.min(18, Math.round(lead.review_count / 12));
-  if (lead.phone) score += 12;
-  if (!lead.website_url && (!lead.site_status || lead.site_status === "not_generated")) score += 10;
-  if (lead.email) score += 4;
-  if (lead.google_maps_url) score += 3;
-  if (lead.status === "hot" || lead.status === "proposal") score += 5;
-  return Math.min(100, Math.max(0, score));
+  const kind = classifySiteOpportunity(lead);
+  const bonus = leadComplementBonus(lead);
+
+  if (kind === "complete_own") {
+    const base = completeSiteBaseScore(lead);
+    return Math.min(35, Math.max(10, base + bonus));
+  }
+
+  const floor =
+    kind === "no_own_site"
+      ? 100
+      : kind === "weak_social"
+        ? 90
+        : kind === "weak_website"
+          ? 75
+          : 70;
+
+  return Math.min(100, floor + bonus);
 }
 
 export type CommercialPotentialBand = "low" | "medium" | "high";
@@ -108,25 +288,24 @@ export function commercialPotentialClassLabel(band: CommercialPotentialBand): st
 
 export function commercialPotentialAriaLabel(score: number): string {
   const band = commercialPotentialBand(score);
-  return `Potencial comercial ${score}%, ${commercialPotentialClassLabel(band)}`;
+  return `Oportunidade de site ${score}%, ${commercialPotentialClassLabel(band)}`;
 }
 
 /** Fatores espelhando `leadScore` — atualizar junto se a fórmula mudar. */
 export function commercialPotentialScoreFactors(): readonly string[] {
   return [
-    "Pontuação base inicial",
-    "Avaliação no Google (até 5 estrelas)",
-    "Quantidade de avaliações",
-    "Telefone cadastrado",
-    "Sem site cadastrado (oportunidade)",
-    "E-mail cadastrado",
-    "Link do Google Maps",
-    "Etapa agendada ou em follow up no funil",
+    "Oportunidade de site (não é probabilidade de fechamento)",
+    "Sem site próprio: pontuação máxima",
+    "Linktree, Beacons, Bio.site, Campsite, wa.me ou rede social como presença principal",
+    "Site básico, com falha ou sem estrutura comercial: alta oportunidade",
+    "Domínio próprio sem análise de qualidade: alto até haver evidência de site completo",
+    "Site completo e funcional (páginas, serviços, CTA, contato, endereço, responsivo): baixa oportunidade",
+    "Telefone, e-mail, Google Maps, avaliações e etapa do funil só refinam a ordem entre leads",
   ];
 }
 
 export const COMMERCIAL_POTENTIAL_DISCLAIMER =
-  "Indicador estimado, não representa garantia de venda.";
+  "Estimativa de oportunidade para vender um site, não probabilidade de fechamento.";
 
 export function leadTier(score: number): LeadTier {
   if (score >= 70) return "quente";
