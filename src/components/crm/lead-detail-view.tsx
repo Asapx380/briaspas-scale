@@ -36,6 +36,7 @@ import {
 } from "@/lib/crm/pipeline";
 import type { CrmLead, LeadStatus } from "@/lib/crm/types";
 import type { LeadNeighbors } from "@/lib/pagination/lead-neighbors";
+import { LeadOutreachPanel } from "@/components/crm/lead-outreach-panel";
 
 type TabId =
   | "info"
@@ -598,6 +599,7 @@ export function LeadDetailView({
                   showTooltip
                 />
               </section>
+              <LeadOutreachPanel lead={lead} demoMode={demoMode} />
               <dl>
               <InfoRow label="Categoria">{lead.niche ?? "—"}</InfoRow>
               <InfoRow label="Cidade">{lead.city ?? "—"}</InfoRow>
