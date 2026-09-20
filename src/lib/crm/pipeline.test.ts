@@ -4,11 +4,12 @@ import {
   columnForStatus,
   commercialPotentialBand,
   commercialPotentialClassLabel,
+  classifySiteOpportunity,
   isWeakDigitalPresenceUrl,
   leadScore,
   leadTier,
   matchesFilter,
-  siteOpportunityPoints,
+  siteOpportunityBaseScore,
 } from "./pipeline";
 import type { CrmLead } from "./types";
 import { CRM_DEMO_LEADS } from "./fixtures";
@@ -43,6 +44,8 @@ describe("crm pipeline", () => {
     | "status"
     | "email"
     | "google_maps_url"
+    | "ai_diagnosis"
+    | "address"
   > => ({
     rating: null,
     review_count: null,
@@ -52,39 +55,108 @@ describe("crm pipeline", () => {
     status: "new",
     email: null,
     google_maps_url: null,
+    ai_diagnosis: null,
+    address: null,
   });
 
-  it("lead sem site e sem outros dados é potencial alto", () => {
+  const completeSiteDiagnosis: CrmLead["ai_diagnosis"] = {
+    resumo: "Site com páginas relevantes e estrutura comercial.",
+    dorPrincipal: "Manutenção",
+    sinaisObservados: [
+      "páginas relevantes",
+      "serviços claros",
+      "cta no hero",
+      "whatsapp visível",
+      "endereço no rodapé",
+      "layout responsivo",
+    ],
+    oportunidades: ["estrutura comercial completa"],
+  };
+
+  it("sem site próprio = 100 e faixa alta (verde)", () => {
     const score = leadScore(minimalLead());
-    expect(score).toBeGreaterThanOrEqual(70);
-    expect(leadTier(score)).toBe("quente");
+    expect(score).toBe(100);
     expect(commercialPotentialBand(score)).toBe("high");
-    expect(siteOpportunityPoints(minimalLead())).toBe(65);
+    expect(classifySiteOpportunity(minimalLead())).toBe("no_own_site");
+    expect(siteOpportunityBaseScore(minimalLead())).toBe(100);
   });
 
-  it("Linktree e Instagram são presença digital fraca (médio)", () => {
-    expect(isWeakDigitalPresenceUrl("https://linktr.ee/empresa")).toBe(true);
-    expect(isWeakDigitalPresenceUrl("https://www.instagram.com/empresa")).toBe(true);
-    const linktreeScore = leadScore({ ...minimalLead(), website_url: "https://linktr.ee/empresa" });
-    const instaScore = leadScore({
+  it("Linktree = 90 e faixa alta (verde)", () => {
+    const lead = { ...minimalLead(), website_url: "https://linktr.ee/empresa" };
+    expect(isWeakDigitalPresenceUrl(lead.website_url)).toBe(true);
+    expect(classifySiteOpportunity(lead)).toBe("weak_social");
+    expect(leadScore(lead)).toBe(90);
+    expect(commercialPotentialBand(leadScore(lead))).toBe("high");
+  });
+
+  it("Instagram e Facebook = 90 e faixa alta (verde)", () => {
+    const instagram = leadScore({
       ...minimalLead(),
       website_url: "https://instagram.com/empresa",
     });
-    expect(siteOpportunityPoints({ website_url: "https://linktr.ee/x", site_status: "not_generated" })).toBe(
-      50,
-    );
-    expect(linktreeScore).toBeGreaterThanOrEqual(45);
-    expect(linktreeScore).toBeLessThan(70);
-    expect(instaScore).toBeGreaterThanOrEqual(45);
-    expect(instaScore).toBeLessThan(70);
+    const facebook = leadScore({
+      ...minimalLead(),
+      website_url: "https://www.facebook.com/empresa",
+    });
+    expect(instagram).toBe(90);
+    expect(facebook).toBe(90);
+    expect(commercialPotentialBand(instagram)).toBe("high");
   });
 
-  it("site próprio não é classificado como Linktree", () => {
+  it("site básico ou com falha = 75+ e faixa alta (verde)", () => {
+    const failed = leadScore({ ...minimalLead(), site_status: "failed" });
+    const basic = leadScore({
+      ...minimalLead(),
+      website_url: "https://empresa-basica.example",
+      ai_diagnosis: {
+        resumo: "Presença digital limitada",
+        dorPrincipal: "Site básico sem estrutura",
+        sinaisObservados: ["página única", "sem cta", "sem whatsapp"],
+      },
+    });
+    expect(failed).toBeGreaterThanOrEqual(75);
+    expect(basic).toBeGreaterThanOrEqual(75);
+    expect(commercialPotentialBand(failed)).toBe("high");
+    expect(commercialPotentialBand(basic)).toBe("high");
+  });
+
+  it("site completo com evidência = 10–35 e faixa baixa (vermelho)", () => {
+    const score = leadScore({
+      ...minimalLead(),
+      website_url: "https://clinica-completa.com.br",
+      ai_diagnosis: completeSiteDiagnosis,
+    });
+    expect(score).toBeGreaterThanOrEqual(10);
+    expect(score).toBeLessThanOrEqual(35);
+    expect(commercialPotentialBand(score)).toBe("low");
+    expect(classifySiteOpportunity({
+      ...minimalLead(),
+      website_url: "https://clinica-completa.com.br",
+      ai_diagnosis: completeSiteDiagnosis,
+    })).toBe("complete_own");
+  });
+
+  it("domínio próprio sem análise = 70 e faixa alta (verde)", () => {
     const url = "https://minhaempresa.com.br";
     expect(isWeakDigitalPresenceUrl(url)).toBe(false);
-    expect(siteOpportunityPoints({ website_url: url, site_status: "not_generated" })).toBe(0);
-    const score = leadScore({ ...minimalLead(), website_url: url });
-    expect(score).toBeLessThan(70);
+    const lead = { ...minimalLead(), website_url: url };
+    expect(classifySiteOpportunity(lead)).toBe("unanalyzed_own");
+    expect(leadScore(lead)).toBe(70);
+    expect(commercialPotentialBand(leadScore(lead))).toBe("high");
+  });
+
+  it("complementos não reduzem lead sem site para amarelo ou vermelho", () => {
+    const score = leadScore({
+      ...minimalLead(),
+      phone: null,
+      email: null,
+      google_maps_url: null,
+      rating: 2,
+      review_count: 1,
+      status: "lost",
+    });
+    expect(score).toBe(100);
+    expect(commercialPotentialBand(score)).toBe("high");
   });
 
   it("mapeia faixas de potencial comercial nos limites", () => {

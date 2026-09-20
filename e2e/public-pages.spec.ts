@@ -74,7 +74,7 @@ test("exibe potencial comercial acessível no kanban mobile", async ({ page }) =
 
   const indicators = page.locator("[data-commercial-potential]");
   await expect(indicators.first()).toBeVisible();
-  await expect(page.getByRole("progressbar", { name: /Potencial comercial/ }).first()).toBeVisible();
+  await expect(page.getByRole("progressbar", { name: /Oportunidade de site/ }).first()).toBeVisible();
 
   const colors = await page.locator("[data-potential-badge]").evaluateAll((badges) =>
     badges.map((badge) => {
@@ -87,7 +87,7 @@ test("exibe potencial comercial acessível no kanban mobile", async ({ page }) =
     expect(contrastRatio(color.foreground, color.background)).toBeGreaterThanOrEqual(4.5);
   }
 
-  await page.getByRole("button", { name: "Como este potencial foi calculado" }).first().click();
+  await page.getByRole("button", { name: "Como a oportunidade de site foi calculada" }).first().click();
   const tooltip = page.getByRole("tooltip");
   await expect(tooltip).toBeVisible();
   const bounds = await tooltip.boundingBox();
