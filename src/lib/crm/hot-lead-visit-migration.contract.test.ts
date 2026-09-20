@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 const migrationPath = path.join(
   process.cwd(),
-  "supabase/migrations/202609200001_hot_lead_visit_threshold.sql",
+  "supabase/migrations/202609200002_hot_lead_visit_threshold.sql",
 );
 
 describe("track_public_lead_site_visit migration (contrato SQL)", () => {
