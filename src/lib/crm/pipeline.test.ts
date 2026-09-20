@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   PIPELINE_COLUMNS,
   columnForStatus,
+  commercialPotentialBand,
+  commercialPotentialClassLabel,
   leadScore,
   leadTier,
   matchesFilter,
@@ -26,5 +28,17 @@ describe("crm pipeline", () => {
     expect(leadTier(score)).toBe("quente");
     expect(matchesFilter(berg, "no_site")).toBe(true);
     expect(matchesFilter(berg, "with_phone")).toBe(true);
+  });
+
+  it("mapeia faixas de potencial comercial nos limites", () => {
+    expect(commercialPotentialBand(0)).toBe("low");
+    expect(commercialPotentialBand(44)).toBe("low");
+    expect(commercialPotentialBand(45)).toBe("medium");
+    expect(commercialPotentialBand(69)).toBe("medium");
+    expect(commercialPotentialBand(70)).toBe("high");
+    expect(commercialPotentialBand(100)).toBe("high");
+    expect(commercialPotentialClassLabel("low")).toBe("Baixo");
+    expect(commercialPotentialClassLabel("medium")).toBe("Médio");
+    expect(commercialPotentialClassLabel("high")).toBe("Alto");
   });
 });

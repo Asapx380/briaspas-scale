@@ -308,7 +308,7 @@ export function CrmBoard({
         </div>
         {scoreFilterActive && pagination && pagination.total > pagination.pageSize ? (
           <p className="text-xs text-[var(--text-4)]">
-            Filtros de score/tier e ordenação por score aplicam-se à página carregada. Use a busca
+            Filtros de potencial/tier e ordenação por potencial aplicam-se à página carregada. Use a busca
             ou aumente o tamanho da página para ampliar o recorte.
           </p>
         ) : null}
