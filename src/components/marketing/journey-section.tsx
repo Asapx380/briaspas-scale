@@ -37,7 +37,6 @@ export function JourneySection() {
         className="journey-root mt-14"
         data-journey-root
         data-active-step="0"
-        data-reveal="clip"
       >
         <JourneyScrollSync />
         <div className="journey-layout lg:grid lg:grid-cols-2 lg:gap-10 xl:gap-14">
@@ -54,7 +53,7 @@ export function JourneySection() {
                     aria-labelledby={`journey-step-title-${step.id}`}
                     className="journey-step scroll-mt-28 lg:min-h-[70vh] lg:flex lg:flex-col lg:justify-center lg:py-10"
                   >
-                    <div className="journey-step-copy max-w-xl">
+                    <div className="journey-step-copy max-w-xl" data-reveal>
                       <div className="journey-icon grid size-12 place-items-center rounded-[14px] bg-[var(--brand-tint)] text-[var(--brand)]">
                         <Icon size={23} weight="duotone" aria-hidden="true" />
                       </div>
@@ -66,7 +65,12 @@ export function JourneySection() {
                       </h3>
                       <p className="mt-3 text-base leading-7 text-[var(--text-3)]">{step.text}</p>
                     </div>
-                    <div className="journey-step-inline-panel mt-8 lg:hidden" aria-hidden="true" inert>
+                    <div
+                      className="journey-step-inline-panel reveal-delay-1 mt-8 lg:hidden"
+                      data-reveal
+                      aria-hidden="true"
+                      inert
+                    >
                       <Panel />
                     </div>
                   </article>
