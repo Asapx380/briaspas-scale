@@ -70,6 +70,58 @@ export function columnForStatus(status: LeadStatus): PipelineColumn {
   return PIPELINE_COLUMNS.find((column) => column.statuses.includes(status)) ?? PIPELINE_COLUMNS[0];
 }
 
+const WEAK_DIGITAL_PRESENCE_HOST_PATTERNS: readonly RegExp[] = [
+  /(^|\.)linktr\.ee$/i,
+  /(^|\.)linktree\.com$/i,
+  /(^|\.)beacons\.ai$/i,
+  /(^|\.)bio\.site$/i,
+  /(^|\.)campsite\.bio$/i,
+  /(^|\.)instagram\.com$/i,
+  /(^|\.)facebook\.com$/i,
+  /(^|\.)fb\.com$/i,
+  /(^|\.)wa\.me$/i,
+];
+
+/** Presença digital fraca (Linktree, redes, wa.me) — não é site próprio. */
+export function isWeakDigitalPresenceUrl(websiteUrl: string | null | undefined): boolean {
+  if (!websiteUrl?.trim()) return false;
+  try {
+    const host = new URL(websiteUrl.trim()).hostname.replace(/^www\./i, "");
+    return WEAK_DIGITAL_PRESENCE_HOST_PATTERNS.some((pattern) => pattern.test(host));
+  } catch {
+    const lower = websiteUrl.toLocaleLowerCase("pt-BR");
+    return (
+      lower.includes("linktr.ee") ||
+      lower.includes("linktree") ||
+      lower.includes("beacons") ||
+      lower.includes("bio.site") ||
+      lower.includes("campsite") ||
+      lower.includes("instagram.com") ||
+      lower.includes("facebook.com") ||
+      lower.includes("wa.me")
+    );
+  }
+}
+
+function hasOwnPublishedSite(
+  lead: Pick<CrmLead, "website_url" | "site_status">,
+): boolean {
+  if (lead.site_status === "ready" || lead.site_status === "published") return true;
+  if (lead.website_url?.trim() && !isWeakDigitalPresenceUrl(lead.website_url)) return true;
+  return false;
+}
+
+/** Pontos por oportunidade de vender site (mutuamente exclusivos por prioridade). */
+export function siteOpportunityPoints(
+  lead: Pick<CrmLead, "website_url" | "site_status">,
+): number {
+  if (lead.site_status === "failed") return 35;
+  if (hasOwnPublishedSite(lead)) return 0;
+  if (isWeakDigitalPresenceUrl(lead.website_url)) return 50;
+  if (!lead.website_url?.trim()) return 65;
+  return 0;
+}
+
 export function leadScore(lead: Pick<
   CrmLead,
   | "rating"
@@ -81,14 +133,14 @@ export function leadScore(lead: Pick<
   | "email"
   | "google_maps_url"
 >): number {
-  let score = 18;
-  if (lead.rating != null) score += Math.round((lead.rating / 5) * 36);
-  if (lead.review_count != null) score += Math.min(18, Math.round(lead.review_count / 12));
-  if (lead.phone) score += 12;
-  if (!lead.website_url && (!lead.site_status || lead.site_status === "not_generated")) score += 10;
-  if (lead.email) score += 4;
-  if (lead.google_maps_url) score += 3;
-  if (lead.status === "hot" || lead.status === "proposal") score += 5;
+  let score = 5;
+  score += siteOpportunityPoints(lead);
+  if (lead.phone?.replace(/\D/g, "")) score += 6;
+  if (lead.email?.trim()) score += 4;
+  if (lead.google_maps_url?.trim()) score += 3;
+  if (lead.rating != null) score += Math.round((lead.rating / 5) * 8);
+  if (lead.review_count != null) score += Math.min(8, Math.round(lead.review_count / 15));
+  if (lead.status === "hot" || lead.status === "proposal") score += 4;
   return Math.min(100, Math.max(0, score));
 }
 
@@ -114,14 +166,13 @@ export function commercialPotentialAriaLabel(score: number): string {
 /** Fatores espelhando `leadScore` — atualizar junto se a fórmula mudar. */
 export function commercialPotentialScoreFactors(): readonly string[] {
   return [
-    "Pontuação base inicial",
-    "Avaliação no Google (até 5 estrelas)",
-    "Quantidade de avaliações",
-    "Telefone cadastrado",
-    "Sem site cadastrado (oportunidade)",
-    "E-mail cadastrado",
-    "Link do Google Maps",
-    "Etapa agendada ou em follow up no funil",
+    "Base de oportunidade",
+    "Sem site próprio (maior peso)",
+    "Linktree ou rede social como presença principal",
+    "Site com falha na geração",
+    "Telefone e e-mail de contato",
+    "Google Maps, avaliação e volume de avaliações",
+    "Etapa agendada ou proposta no funil (refino)",
   ];
 }
 
