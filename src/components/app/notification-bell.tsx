@@ -151,10 +151,10 @@ export function NotificationBell({ count = 0 }: NotificationBellProps) {
                     <p className="mt-1 text-xs leading-5 text-[var(--text-3)]">{item.body}</p>
                     {item.lead_id && (
                       <Link
-                        href="/app/crm"
+                        href={`/app/crm/${item.lead_id}`}
                         className="mt-2 inline-block text-xs font-semibold text-[var(--brand)]"
                       >
-                        Abrir CRM
+                        Ver lead no CRM
                       </Link>
                     )}
                   </li>
