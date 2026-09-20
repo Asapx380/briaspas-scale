@@ -1,6 +1,12 @@
-import { z } from "zod";
 import type { BusinessDiagnosis } from "@/lib/ai/business-analyzer";
 import { generateAiText, isAiTextConfigured, parseJsonObject } from "@/lib/ai/text-provider";
+import {
+  OUTREACH_HOOK_MIN_CHARACTERS,
+  outreachCopySchema,
+  type OutreachCopy,
+} from "./outreach-schema";
+
+export { OUTREACH_HOOK_MIN_CHARACTERS, outreachCopySchema } from "./outreach-schema";
 
 export type OutreachInput = {
   companyName: string;
@@ -13,19 +19,6 @@ export type OutreachInput = {
   channel: "whatsapp" | "email" | "sms";
 };
 
-export const outreachCopySchema = z.object({
-  assunto: z.string().min(5).max(120).nullable(),
-  mensagem: z.string().min(40).max(1200),
-  gancho: z.string().min(10).max(240),
-  cta: z.string().min(5).max(200),
-  objecoesAntecipadas: z.array(z.object({
-    objecao: z.string().min(3).max(160),
-    resposta: z.string().min(10).max(320),
-  })).min(1).max(4),
-});
-
-export type OutreachCopy = z.infer<typeof outreachCopySchema>;
-
 function heuristicOutreach(input: OutreachInput): OutreachCopy {
   const niche = input.niche?.trim() || "seu segmento";
   const city = input.city?.trim() || "sua região";
@@ -35,16 +28,17 @@ function heuristicOutreach(input: OutreachInput): OutreachCopy {
   const demo = input.demoSiteUrl
     ? ` Preparei uma prévia visual em ${input.demoSiteUrl} só para vocês avaliarem com calma.`
     : "";
+  const gancho =
+    `Uma oportunidade clara para ${input.companyName}: ${input.diagnosis.dorPrincipal}`;
   const mensagem =
-    `${greeting} Vi que a ${input.companyName} atua com ${niche} em ${city}. ` +
-    `Notei um ponto que costuma travar novos clientes: ${input.diagnosis.dorPrincipal} ` +
-    `Posso te mostrar uma forma simples de melhorar essa presença digital, sem compromisso e sem inventar preços.${demo} ` +
-    `Faz sentido conversarmos 5 minutos esta semana?`;
+    `${gancho} ${greeting} Vi que vocês atuam com ${niche} em ${city}. ` +
+    `Posso mostrar uma ideia prática para tornar essa presença digital mais fácil de encontrar e contatar, sem compromisso.${demo} ` +
+    `Faz sentido separar 5 minutos esta semana?`;
 
   return {
     assunto: input.channel === "email" ? `Ideia rápida para ${input.companyName}` : null,
     mensagem,
-    gancho: input.diagnosis.dorPrincipal,
+    gancho,
     cta: "Combinar uma conversa rápida de 5 minutos",
     objecoesAntecipadas: [
       {
@@ -85,6 +79,8 @@ export async function generateOutreach(input: OutreachInput): Promise<{
           role: "user",
           content: `Gere copy de outreach para o canal ${input.channel}.
 JSON: assunto (null se não for email), mensagem, gancho, cta, objecoesAntecipadas[{objecao,resposta}].
+
+Regra obrigatória: gancho tem no mínimo ${OUTREACH_HOOK_MIN_CHARACTERS} caracteres, deve ser personalizado com uma observação real do diagnóstico e deve ser exatamente o início da mensagem. Os primeiros ${OUTREACH_HOOK_MIN_CHARACTERS} caracteres precisam comunicar a oportunidade antes de qualquer saudação. Não prometa resultados, preço, desconto ou dado não observado.
 
 Lead: ${JSON.stringify({
   companyName: input.companyName,

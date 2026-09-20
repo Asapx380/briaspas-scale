@@ -27,10 +27,18 @@ export type CrmLead = {
   ai_diagnosis: {
     resumo?: string;
     dorPrincipal?: string;
-    prioridade?: string;
+    doresSecundarias?: string[];
+    oportunidades?: string[];
+    tomSugerido?: string;
+    prioridade?: "baixa" | "media" | "alta" | string;
+    sinaisObservados?: string[];
   } | null;
   ai_outreach: {
+    assunto?: string | null;
     mensagem?: string;
+    gancho?: string;
+    cta?: string;
+    objecoesAntecipadas?: Array<{ objecao: string; resposta: string }>;
     canal?: string;
     channel?: string;
   } | null;

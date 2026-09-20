@@ -97,6 +97,24 @@ test("exibe potencial comercial acessível no kanban mobile", async ({ page }) =
   expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(900);
 });
 
+test("central do lead organiza ações, abas e objeções", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/preview/crm/1");
+
+  await expect(page.getByRole("heading", { name: "Berg Barbearia" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Ligar" }).first()).toBeVisible();
+  await expect(page.getByRole("button", { name: "WhatsApp", exact: true })).toBeVisible();
+
+  const infoTab = page.getByRole("tab", { name: "Informações" });
+  await infoTab.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByRole("tab", { name: "Notas" })).toHaveAttribute("aria-selected", "true");
+
+  await page.getByRole("tab", { name: "Objeções" }).click();
+  await expect(page.getByRole("heading", { name: "Respostas para objeções" })).toBeVisible();
+  await expect(page.getByText(/Está caro ou não tenho orçamento agora/)).toBeVisible();
+});
+
 test("mantém a jornada visível durante o scroll narrativo", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/#como-funciona");
