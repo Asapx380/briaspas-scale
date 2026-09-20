@@ -1,10 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
-import {
-  buildPlacesEnrichmentPatch,
-  buildPlacesLookupQuery,
-} from "@/lib/crm/places-enrichment";
+import { buildPlacesLookupQuery } from "@/lib/crm/places-enrichment";
 import { isGooglePlacesConfigured } from "@/lib/google-places/env";
-import { lookupPlaceByTextQuery } from "@/lib/google-places/lookup-place";
+import { lookupPlacesByTextQuery } from "@/lib/google-places/lookup-place";
+import { checkRateLimit, rateLimitResponse } from "@/lib/security/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -31,11 +29,14 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
   if (claimsError || typeof claimsData?.claims?.sub !== "string") {
     return errorResponse("unauthorized", "Entre na sua conta para enriquecer este lead.", 401);
   }
+  const userId = claimsData.claims.sub;
+  const rateLimit = checkRateLimit(`places-lookup:${userId}`, { limit: 12, windowMs: 10 * 60_000 });
+  if (!rateLimit.allowed) return rateLimitResponse(rateLimit.retryAfterSeconds);
 
   const { data: lead, error: leadError } = await supabase
     .from("leads")
     .select(
-      "id, company_name, city, phone, address, niche, website_url, google_maps_url, rating, review_count, google_place_id",
+      "id, company_name, city",
     )
     .eq("id", id)
     .is("deleted_at", null)
@@ -50,9 +51,9 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
 
   const query = buildPlacesLookupQuery(String(lead.company_name), (lead.city as string | null) ?? null);
 
-  let discovered;
+  let places;
   try {
-    discovered = await lookupPlaceByTextQuery(query);
+    places = await lookupPlacesByTextQuery(query);
   } catch {
     return errorResponse(
       "places_request_failed",
@@ -61,7 +62,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
     );
   }
 
-  if (!discovered) {
+  if (places.length === 0) {
     return errorResponse(
       "places_no_match",
       "Nenhum estabelecimento correspondente foi encontrado no Google Maps.",
@@ -69,56 +70,16 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
     );
   }
 
-  const patch = buildPlacesEnrichmentPatch(
-    {
-      phone: (lead.phone as string | null) ?? null,
-      address: (lead.address as string | null) ?? null,
-      niche: (lead.niche as string | null) ?? null,
-      website_url: (lead.website_url as string | null) ?? null,
-      google_maps_url: (lead.google_maps_url as string | null) ?? null,
-      rating: (lead.rating as number | null) ?? null,
-      review_count: (lead.review_count as number | null) ?? null,
-    },
-    discovered,
-  );
-
-  if (!patch) {
-    return Response.json({
-      lead,
-      enriched: false,
-      message: "Os dados do lead já estão completos; nada foi alterado.",
-      matchedPlace: discovered.companyName,
-    });
-  }
-
-  const updatePayload: Record<string, unknown> = { ...patch };
-  if (lead.google_place_id && patch.google_place_id) {
-    delete updatePayload.google_place_id;
-    delete updatePayload.source;
-    delete updatePayload.source_ref;
-  }
-
-  const { data: updated, error: updateError } = await supabase
-    .from("leads")
-    .update(updatePayload)
-    .eq("id", id)
-    .is("deleted_at", null)
-    .select(
-      "id, company_name, phone, email, address, niche, city, website_url, google_maps_url, rating, review_count, updated_at",
-    )
-    .maybeSingle();
-
-  if (updateError) {
-    return errorResponse("lead_update_failed", "Não foi possível salvar os dados enriquecidos.", 500);
-  }
-  if (!updated) {
-    return errorResponse("lead_not_found", "Lead não encontrado neste espaço de trabalho.", 404);
-  }
-
   return Response.json({
-    lead: updated,
-    enriched: true,
-    fields: Object.keys(patch),
-    matchedPlace: discovered.companyName,
+    places: places.map((place) => ({
+      name: place.companyName,
+      category: place.category,
+      address: place.address,
+      phone: place.phone,
+      websiteUrl: place.websiteUrl,
+      googleMapsUrl: place.googleMapsUrl,
+      rating: place.rating,
+      reviewCount: place.reviewCount,
+    })),
   });
 }

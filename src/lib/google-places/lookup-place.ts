@@ -74,9 +74,9 @@ function normalizePlace(place: GooglePlace): DiscoveredLead | null {
   };
 }
 
-export async function lookupPlaceByTextQuery(textQuery: string): Promise<DiscoveredLead | null> {
+export async function lookupPlacesByTextQuery(textQuery: string): Promise<DiscoveredLead[]> {
   const query = textQuery.trim();
-  if (!query) return null;
+  if (!query) return [];
 
   const response = await fetch(TEXT_SEARCH_URL, {
     method: "POST",
@@ -104,5 +104,5 @@ export async function lookupPlaceByTextQuery(textQuery: string): Promise<Discove
     .map(normalizePlace)
     .filter((lead): lead is DiscoveredLead => lead !== null);
 
-  return leads[0] ?? null;
+  return leads;
 }

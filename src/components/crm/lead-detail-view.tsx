@@ -616,7 +616,6 @@ export function LeadDetailView({
                 <LeadMapsEnrichPanel
                   lead={lead}
                   demoMode={demoMode}
-                  onLeadUpdated={(patch) => setLead((current) => ({ ...current, ...patch }))}
                   onTimelineChange={() => setTimelineRefreshKey((key) => key + 1)}
                 />
               </div>

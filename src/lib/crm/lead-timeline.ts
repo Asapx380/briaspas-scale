@@ -6,7 +6,7 @@ export type LeadTimelineKind =
   | "outreach_whatsapp"
   | "follow_up_scheduled"
   | "follow_up_task_done"
-  | "maps_enriched";
+  | "maps_consulted";
 
 export type LeadTimelineEntry = {
   id: string;

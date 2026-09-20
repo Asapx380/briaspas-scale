@@ -3,7 +3,7 @@
 import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
 import { Circle } from "@phosphor-icons/react/dist/csr/Circle";
 import { ClockCounterClockwise } from "@phosphor-icons/react/dist/csr/ClockCounterClockwise";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   listFollowUpTasksForLead,
   listTimelineForLead,
@@ -28,8 +28,8 @@ function timelineLabel(entry: LeadTimelineEntry) {
       return "Follow-up agendado";
     case "follow_up_task_done":
       return "Tarefa concluída";
-    case "maps_enriched":
-      return "Dados do Google Maps";
+    case "maps_consulted":
+      return "Google Maps consultado";
     default:
       return entry.title;
   }
@@ -37,15 +37,10 @@ function timelineLabel(entry: LeadTimelineEntry) {
 
 export function LeadFollowUpPanel({ leadId, followUpAt, refreshKey = 0 }: LeadFollowUpPanelProps) {
   const [taskTick, setTaskTick] = useState(0);
+  void refreshKey;
 
-  const tasks = useMemo(
-    () => (taskTick >= 0 ? listFollowUpTasksForLead(leadId) : []),
-    [leadId, taskTick, refreshKey],
-  );
-  const timeline = useMemo(
-    () => (taskTick >= 0 ? listTimelineForLead(leadId) : []),
-    [leadId, taskTick, refreshKey],
-  );
+  const tasks = taskTick >= 0 ? listFollowUpTasksForLead(leadId) : [];
+  const timeline = taskTick >= 0 ? listTimelineForLead(leadId) : [];
 
   return (
     <section
