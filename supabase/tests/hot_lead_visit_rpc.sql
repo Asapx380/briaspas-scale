@@ -2,8 +2,6 @@
 -- Requer migrations aplicadas (incl. 202609200001) e ao menos um workspace_member.
 -- Uso: psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/tests/hot_lead_visit_rpc.sql
 
-\set ON_ERROR_STOP on
-
 begin;
 
 do $$

@@ -6,9 +6,22 @@ import { fileURLToPath } from "node:url";
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const sqlPath = path.join(root, "supabase/tests/hot_lead_visit_rpc.sql");
 const databaseUrl = process.env.DATABASE_URL;
+const integrationOn = process.env.HOT_LEAD_PG_INTEGRATION === "1";
 
-if (!databaseUrl) {
-  console.log("test:sql:hot-lead — ignorado (defina DATABASE_URL com migrations T9 aplicadas)");
+function isLocalOrStaging(url) {
+  const lower = url.toLowerCase();
+  return (
+    lower.includes("localhost") ||
+    lower.includes("127.0.0.1") ||
+    lower.includes("staging") ||
+    /:54322\//.test(lower)
+  );
+}
+
+if (!integrationOn || !databaseUrl || !isLocalOrStaging(databaseUrl)) {
+  console.log(
+    "test:sql:hot-lead — ignorado (HOT_LEAD_PG_INTEGRATION=1 e DATABASE_URL local/staging)",
+  );
   process.exit(0);
 }
 

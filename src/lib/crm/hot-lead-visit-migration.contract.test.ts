@@ -13,6 +13,7 @@ describe("track_public_lead_site_visit migration (contrato SQL)", () => {
   it("serializa e deduplica notificações por lead", () => {
     expect(sql).toContain("pg_advisory_xact_lock");
     expect(sql).toContain("workspace_notifications_hot_lead_one_per_lead_day_idx");
+    expect(sql).toContain("metadata ? 'visitCount24h'");
     expect(sql).toMatch(/on conflict do nothing/i);
   });
 

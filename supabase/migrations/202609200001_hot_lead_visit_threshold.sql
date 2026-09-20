@@ -8,7 +8,10 @@ create unique index if not exists workspace_notifications_hot_lead_one_per_lead_
     lead_id,
     ((timezone('America/Sao_Paulo', created_at))::date)
   )
-  where kind = 'hot_lead_visit' and lead_id is not null;
+  where
+    kind = 'hot_lead_visit'
+    and lead_id is not null
+    and metadata ? 'visitCount24h';
 
 create or replace function public.track_public_lead_site_visit(
   target_slug text,
