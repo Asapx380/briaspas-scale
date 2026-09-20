@@ -16,20 +16,23 @@ export async function resolveLeadNeighbors(
   lead: { id: number; created_at: string },
 ): Promise<LeadNeighbors> {
   const [{ count: total }, { count: newerCount }, newerResult, olderResult] = await Promise.all([
-    supabase.from("leads").select("id", { count: "exact", head: true }),
+    supabase.from("leads").select("id", { count: "exact", head: true }).is("deleted_at", null),
     supabase
       .from("leads")
       .select("id", { count: "exact", head: true })
+      .is("deleted_at", null)
       .gt("created_at", lead.created_at),
     supabase
       .from("leads")
       .select("id")
+      .is("deleted_at", null)
       .gt("created_at", lead.created_at)
       .order("created_at", { ascending: true })
       .limit(1),
     supabase
       .from("leads")
       .select("id")
+      .is("deleted_at", null)
       .lt("created_at", lead.created_at)
       .order("created_at", { ascending: false })
       .limit(1),

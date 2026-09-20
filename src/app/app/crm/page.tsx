@@ -74,7 +74,7 @@ export default async function CrmPage({ searchParams }: CrmPageProps) {
   const { from, to } = rangeFromPage(page, pageSize);
 
   const supabase = await createClient();
-  let query = supabase.from("leads").select(CRM_LEAD_COLUMNS, { count: "exact" });
+  let query = supabase.from("leads").select(CRM_LEAD_COLUMNS, { count: "exact" }).is("deleted_at", null);
 
   if (q) {
     const escaped = q.replace(/[%_,]/g, "");
