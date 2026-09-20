@@ -32,21 +32,21 @@ const BAND_STYLE: Record<
   }
 > = {
   low: {
-    badge: "bg-[var(--potential-low-fill)] text-white",
+    badge: "bg-[var(--potential-low-badge)] text-white",
     chip: "bg-[var(--potential-low-bg)] text-[var(--potential-low-ink)] border border-[var(--potential-low-border)]/25",
     barTrack: "bg-[var(--potential-low-bg)]",
     barFill: "bg-[var(--potential-low-fill)]",
     accent: "border-l-[var(--potential-low-border)]",
   },
   medium: {
-    badge: "bg-[var(--potential-medium-fill)] text-white",
+    badge: "bg-[var(--potential-medium-badge)] text-white",
     chip: "bg-[var(--potential-medium-bg)] text-[var(--potential-medium-ink)] border border-[var(--potential-medium-border)]/25",
     barTrack: "bg-[var(--potential-medium-bg)]",
     barFill: "bg-[var(--potential-medium-fill)]",
     accent: "border-l-[var(--potential-medium-border)]",
   },
   high: {
-    badge: "bg-[var(--potential-high-fill)] text-white",
+    badge: "bg-[var(--potential-high-badge)] text-white",
     chip: "bg-[var(--potential-high-bg)] text-[var(--potential-high-ink)] border border-[var(--potential-high-border)]/25",
     barTrack: "bg-[var(--potential-high-bg)]",
     barFill: "bg-[var(--potential-high-fill)]",
@@ -73,7 +73,7 @@ function PotentialTooltip({ id }: { id: string }) {
     <div
       id={id}
       role="tooltip"
-      className="absolute right-0 top-full z-30 mt-2 w-[min(100vw-2rem,20rem)] rounded-xl border border-[var(--border)] bg-[var(--card)] p-3 text-left shadow-[var(--shadow-card)]"
+      className="fixed inset-x-4 bottom-4 z-50 mx-auto max-h-[calc(100dvh-2rem)] w-auto max-w-sm overflow-y-auto rounded-xl border border-[var(--border)] bg-[var(--card)] p-3 text-left shadow-[var(--shadow-card)]"
     >
       <p className="text-sm font-semibold text-[var(--text)]">Como este potencial foi calculado</p>
       <p className="mt-1 text-xs leading-5 text-[var(--text-4)]">
@@ -128,7 +128,7 @@ export function CommercialPotentialIndicator({
   const barVisible = showBar || variant === "detail";
 
   return (
-    <div ref={rootRef} className={className}>
+    <div ref={rootRef} className={className} data-commercial-potential={band}>
       <div
         className={`flex flex-wrap items-center gap-2 ${variant === "detail" ? "gap-3" : ""}`}
         aria-label={aria}
@@ -137,6 +137,7 @@ export function CommercialPotentialIndicator({
           <p className="w-full text-sm font-semibold text-[var(--text)]">Potencial comercial</p>
         )}
         <span
+          data-potential-badge
           className={`inline-flex min-w-9 items-center justify-center rounded-md px-1.5 py-0.5 text-xs font-bold tabular-nums ${styles.badge}`}
         >
           {percent}

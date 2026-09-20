@@ -103,7 +103,7 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, sy
           </button>
         )}
         <div className="min-w-0 flex-1">
-          <CommercialPotentialIndicator score={score} variant="compact" showTooltip />
+          <CommercialPotentialIndicator score={score} variant="compact" showBar showTooltip />
 
           <button
             type="button"

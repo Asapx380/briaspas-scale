@@ -2,6 +2,26 @@ import { expect, test } from "@playwright/test";
 
 import { DEMO_GALLERY_ITEMS } from "../src/lib/marketing/demo-gallery";
 
+function relativeLuminance(color: string) {
+  const [red = 0, green = 0, blue = 0] = color.match(/[\d.]+/g)?.slice(0, 3).map(Number) ?? [];
+  const channels = [red, green, blue].map((value) => {
+    const normalized = value / 255;
+    return normalized <= 0.04045
+      ? normalized / 12.92
+      : ((normalized + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+}
+
+function contrastRatio(foreground: string, background: string) {
+  const foregroundLuminance = relativeLuminance(foreground);
+  const backgroundLuminance = relativeLuminance(background);
+  return (
+    (Math.max(foregroundLuminance, backgroundLuminance) + 0.05) /
+    (Math.min(foregroundLuminance, backgroundLuminance) + 0.05)
+  );
+}
+
 test("galeria sites-demo revela cartões e abre as três prévias", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 900 });
   await page.goto("/#sites-demo");
@@ -46,6 +66,35 @@ test("apresenta o produto e abre a demonstração", async ({ page }) => {
     page.getByRole("heading", { name: "Veja como as oportunidades são organizadas." }),
   ).toBeVisible();
   await expect(page.getByText("Os dados abaixo são fictícios")).toBeVisible();
+});
+
+test("exibe potencial comercial acessível no kanban mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 900 });
+  await page.goto("/preview/crm");
+
+  const indicators = page.locator("[data-commercial-potential]");
+  await expect(indicators.first()).toBeVisible();
+  await expect(page.getByRole("progressbar", { name: /Potencial comercial/ }).first()).toBeVisible();
+
+  const colors = await page.locator("[data-potential-badge]").evaluateAll((badges) =>
+    badges.map((badge) => {
+      const styles = window.getComputedStyle(badge);
+      return { foreground: styles.color, background: styles.backgroundColor };
+    }),
+  );
+  expect(colors.length).toBeGreaterThan(0);
+  for (const color of colors) {
+    expect(contrastRatio(color.foreground, color.background)).toBeGreaterThanOrEqual(4.5);
+  }
+
+  await page.getByRole("button", { name: "Como este potencial foi calculado" }).first().click();
+  const tooltip = page.getByRole("tooltip");
+  await expect(tooltip).toBeVisible();
+  const bounds = await tooltip.boundingBox();
+  expect(bounds).not.toBeNull();
+  expect(bounds!.x).toBeGreaterThanOrEqual(0);
+  expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(375);
+  expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(900);
 });
 
 test("mini-demo lista leads por nicho e cidade", async ({ page }) => {

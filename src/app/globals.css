@@ -66,16 +66,19 @@
   --potential-low-text: #b42318;
   --potential-low-ink: #7a1a12;
   --potential-low-border: #ff3b30;
+  --potential-low-badge: #b42318;
   --potential-low-fill: #ff3b30;
   --potential-medium-bg: #fff4e5;
   --potential-medium-text: #b25e00;
   --potential-medium-ink: #8a4700;
   --potential-medium-border: #ff9500;
+  --potential-medium-badge: #8a4700;
   --potential-medium-fill: #ff9500;
   --potential-high-bg: #e8f8ee;
   --potential-high-text: #1a7e3a;
   --potential-high-ink: #145a2a;
   --potential-high-border: #1a7e3a;
+  --potential-high-badge: #145a2a;
   --potential-high-fill: #34c759;
   --ink: #12141a;
   --ink-2: #1c1f28;
@@ -144,16 +147,19 @@
   --potential-low-text: #ff8a82;
   --potential-low-ink: #ffc9c5;
   --potential-low-border: #ff6b63;
+  --potential-low-badge: #b42318;
   --potential-low-fill: #ff453a;
   --potential-medium-bg: rgba(255, 149, 0, 0.16);
   --potential-medium-text: #ffb340;
   --potential-medium-ink: #ffd08a;
   --potential-medium-border: #ff9f0a;
+  --potential-medium-badge: #8a4700;
   --potential-medium-fill: #ff9f0a;
   --potential-high-bg: rgba(52, 199, 89, 0.14);
   --potential-high-text: #6ee7a0;
   --potential-high-ink: #9ae6b4;
   --potential-high-border: #34c759;
+  --potential-high-badge: #145a2a;
   --potential-high-fill: #30d158;
 }
 
