@@ -3,6 +3,13 @@
 create index if not exists site_visit_sessions_lead_first_seen_idx
   on public.site_visit_sessions (lead_id, first_seen_at desc);
 
+create unique index if not exists workspace_notifications_hot_lead_one_per_lead_day_idx
+  on public.workspace_notifications (
+    lead_id,
+    ((timezone('America/Sao_Paulo', created_at))::date)
+  )
+  where kind = 'hot_lead_visit' and lead_id is not null;
+
 create or replace function public.track_public_lead_site_visit(
   target_slug text,
   target_session_hash text,
@@ -21,13 +28,16 @@ declare
   target_lead public.leads%rowtype;
   inserted_id bigint;
   visits_24h integer;
-  visits_today integer;
+  visit_day date;
   day_start timestamptz;
   min_visits constant integer := 2;
+  lock_key constant integer := 947291;
 begin
   if target_session_hash !~ '^[0-9a-f]{64}$' then
     return false;
   end if;
+
+  visit_day := (timezone('America/Sao_Paulo', now()))::date;
 
   if target_is_preview then
     select * into target_lead
@@ -48,10 +58,17 @@ begin
   end if;
 
   insert into public.site_visit_sessions (
-    lead_id, session_hash, referrer_host, utm_source, utm_medium, utm_campaign
+    lead_id,
+    session_hash,
+    viewed_on,
+    referrer_host,
+    utm_source,
+    utm_medium,
+    utm_campaign
   ) values (
     target_lead.id,
     target_session_hash,
+    visit_day,
     left(target_referrer_host, 255),
     left(target_utm_source, 120),
     left(target_utm_medium, 120),
@@ -64,6 +81,15 @@ begin
     return false;
   end if;
 
+  if target_is_preview then
+    update public.leads
+    set
+      visit_count = visit_count + 1,
+      last_visited_at = now()
+    where id = target_lead.id;
+    return true;
+  end if;
+
   update public.leads
   set
     visit_count = visit_count + 1,
@@ -73,6 +99,11 @@ begin
       else 'hot'
     end
   where id = target_lead.id;
+
+  perform pg_advisory_xact_lock(
+    lock_key,
+    (target_lead.id % 2147483647)::integer
+  );
 
   select count(*)::integer into visits_24h
   from public.site_visit_sessions
@@ -100,27 +131,26 @@ begin
     return true;
   end if;
 
-  select count(*)::integer into visits_today
-  from public.site_visit_sessions
-  where lead_id = target_lead.id
-    and viewed_on = (timezone('America/Sao_Paulo', now()))::date;
-
   insert into public.workspace_notifications (
     workspace_id, lead_id, kind, title, body, metadata
   ) values (
     target_lead.workspace_id,
     target_lead.id,
     'hot_lead_visit',
-    format('Lead %s abriu seu site %s vezes hoje', target_lead.company_name, visits_today),
+    format(
+      'Lead %s abriu seu site %s vezes nas últimas 24 horas',
+      target_lead.company_name,
+      visits_24h
+    ),
     'Priorize o contato — interesse repetido no site demonstrativo nas últimas 24 horas.',
     jsonb_build_object(
       'slug', target_slug,
-      'isPreview', target_is_preview,
+      'isPreview', false,
       'visitCount24h', visits_24h,
-      'visitCountToday', visits_today,
       'companyName', target_lead.company_name
     )
-  );
+  )
+  on conflict do nothing;
 
   return true;
 end;

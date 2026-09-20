@@ -1,3 +1,4 @@
+drop index if exists public.workspace_notifications_hot_lead_one_per_lead_day_idx;
 drop index if exists public.site_visit_sessions_lead_first_seen_idx;
 
 create or replace function public.track_public_lead_site_visit(
