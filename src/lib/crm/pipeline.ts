@@ -70,6 +70,40 @@ export function columnForStatus(status: LeadStatus): PipelineColumn {
   return PIPELINE_COLUMNS.find((column) => column.statuses.includes(status)) ?? PIPELINE_COLUMNS[0];
 }
 
+const THIN_DIGITAL_PRESENCE_HOSTS = [
+  "linktr.ee",
+  "linktree.com",
+  "beacons.ai",
+  "bio.site",
+  "campsite.bio",
+  "instagram.com",
+  "facebook.com",
+  "wa.me",
+] as const;
+
+/** URL que funciona como cartão de links ou rede social, não como site próprio. */
+export function isThinDigitalPresence(url: string | null): boolean {
+  if (!url) return false;
+  try {
+    const hostname = new URL(url).hostname.replace(/^www\./, "").toLowerCase();
+    return THIN_DIGITAL_PRESENCE_HOSTS.some((host) => hostname === host || hostname.endsWith(`.${host}`));
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Prioriza oportunidade de vender site, não uma previsão genérica de fechar negócio.
+ * A falta de site próprio é suficiente para a faixa alta; dados de contato refinam a ordem.
+ */
+export function digitalOpportunityPoints(lead: Pick<CrmLead, "website_url" | "site_status">): number {
+  const hasBriaspasSite = lead.site_status === "ready" || lead.site_status === "published";
+  if (!lead.website_url && !hasBriaspasSite) return 65;
+  if (isThinDigitalPresence(lead.website_url)) return 50;
+  if (lead.site_status === "failed") return 35;
+  return 0;
+}
+
 export function leadScore(lead: Pick<
   CrmLead,
   | "rating"
@@ -81,14 +115,14 @@ export function leadScore(lead: Pick<
   | "email"
   | "google_maps_url"
 >): number {
-  let score = 18;
-  if (lead.rating != null) score += Math.round((lead.rating / 5) * 36);
-  if (lead.review_count != null) score += Math.min(18, Math.round(lead.review_count / 12));
-  if (lead.phone) score += 12;
-  if (!lead.website_url && (!lead.site_status || lead.site_status === "not_generated")) score += 10;
-  if (lead.email) score += 4;
-  if (lead.google_maps_url) score += 3;
-  if (lead.status === "hot" || lead.status === "proposal") score += 5;
+  let score = 8;
+  score += digitalOpportunityPoints(lead);
+  if (lead.phone) score += 8;
+  if (lead.email) score += 3;
+  if (lead.google_maps_url) score += 4;
+  if (lead.rating != null) score += Math.min(6, Math.round((lead.rating / 5) * 6));
+  if (lead.review_count != null) score += Math.min(6, Math.round(lead.review_count / 40));
+  if (lead.status === "hot" || lead.status === "proposal") score += 7;
   return Math.min(100, Math.max(0, score));
 }
 
@@ -114,13 +148,12 @@ export function commercialPotentialAriaLabel(score: number): string {
 /** Fatores espelhando `leadScore` — atualizar junto se a fórmula mudar. */
 export function commercialPotentialScoreFactors(): readonly string[] {
   return [
-    "Pontuação base inicial",
-    "Avaliação no Google (até 5 estrelas)",
-    "Quantidade de avaliações",
-    "Telefone cadastrado",
-    "Sem site cadastrado (oportunidade)",
-    "E-mail cadastrado",
-    "Link do Google Maps",
+    "Base de oportunidade",
+    "Sem site próprio (prioridade máxima)",
+    "Linktree, rede social ou página de links como presença principal",
+    "Site que falhou ao ser publicado",
+    "Telefone e e-mail disponíveis para contato",
+    "Google Maps, avaliação e quantidade de avaliações",
     "Etapa agendada ou em follow up no funil",
   ];
 }

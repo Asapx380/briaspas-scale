@@ -4,6 +4,8 @@ import {
   columnForStatus,
   commercialPotentialBand,
   commercialPotentialClassLabel,
+  digitalOpportunityPoints,
+  isThinDigitalPresence,
   leadScore,
   leadTier,
   matchesFilter,
@@ -28,6 +30,30 @@ describe("crm pipeline", () => {
     expect(leadTier(score)).toBe("quente");
     expect(matchesFilter(berg, "no_site")).toBe(true);
     expect(matchesFilter(berg, "with_phone")).toBe(true);
+  });
+
+  it("prioriza negócios sem site próprio como oportunidade alta", () => {
+    const score = leadScore({
+      ...CRM_DEMO_LEADS[0],
+      website_url: null,
+      site_status: "not_generated",
+      phone: null,
+      email: null,
+      google_maps_url: null,
+      rating: null,
+      review_count: null,
+      status: "new",
+    });
+    expect(digitalOpportunityPoints({ website_url: null, site_status: "not_generated" })).toBe(65);
+    expect(score).toBeGreaterThanOrEqual(70);
+    expect(commercialPotentialBand(score)).toBe("high");
+  });
+
+  it("prioriza páginas de links e redes sociais acima de um site próprio", () => {
+    expect(isThinDigitalPresence("https://linktr.ee/clinica-exemplo")).toBe(true);
+    expect(isThinDigitalPresence("https://www.instagram.com/clinica.exemplo")).toBe(true);
+    expect(isThinDigitalPresence("https://www.clinicaexemplo.com.br")).toBe(false);
+    expect(digitalOpportunityPoints({ website_url: "https://linktr.ee/clinica-exemplo", site_status: "not_generated" })).toBe(50);
   });
 
   it("mapeia faixas de potencial comercial nos limites", () => {
