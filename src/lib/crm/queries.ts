@@ -2,11 +2,11 @@ import type { CrmLead } from "@/lib/crm/types";
 
 /** Colunas do Kanban — sem JSON pesado (site_brief / AI) nem campos só do detalhe. */
 export const CRM_BOARD_LEAD_COLUMNS =
-  "id, company_name, phone, email, address, niche, city, status, website_url, google_maps_url, rating, review_count, source, slug, visit_count, site_status, created_at, updated_at" as const;
+  "id, company_name, phone, email, address, niche, city, status, website_url, google_maps_url, rating, review_count, source, slug, visit_count, site_status, deleted_at, created_at, updated_at" as const;
 
 /** Detalhe: um select com AI + brief (antes eram 2 queries na mesma row). */
 export const CRM_DETAIL_LEAD_COLUMNS =
-  "id, company_name, phone, email, address, niche, city, status, notes, estimated_value, follow_up_at, website_url, google_maps_url, rating, review_count, source, slug, visit_count, site_status, site_source, site_brief, ai_diagnosis, ai_outreach, created_at, updated_at" as const;
+  "id, company_name, phone, email, address, niche, city, status, notes, estimated_value, follow_up_at, website_url, google_maps_url, rating, review_count, source, slug, visit_count, site_status, site_source, site_brief, ai_diagnosis, ai_outreach, deleted_at, created_at, updated_at" as const;
 
 export const CRM_WHATSAPP_CONVERSATION_COLUMNS =
   "id, lead_id, contact_name, contact_phone, agent_enabled, last_message_at" as const;
@@ -62,6 +62,7 @@ function asLeadRow(row: Record<string, unknown>): CrmLead {
     site_brief: (row.site_brief as CrmLead["site_brief"]) ?? null,
     ai_diagnosis: (row.ai_diagnosis as CrmLead["ai_diagnosis"]) ?? null,
     ai_outreach: (row.ai_outreach as CrmLead["ai_outreach"]) ?? null,
+    deleted_at: (row.deleted_at as string | null) ?? null,
     created_at: row.created_at as string,
     updated_at: (row.updated_at as string | null) ?? null,
   };
@@ -76,6 +77,7 @@ export async function loadCrmBoardData(supabase: CrmQueryClient): Promise<CrmBoa
     return supabase
       .from("leads")
       .select(CRM_BOARD_LEAD_COLUMNS)
+      .is("deleted_at", null)
       .order("created_at", { ascending: false });
   })();
 
@@ -124,8 +126,9 @@ export async function loadCrmBoardDataLegacy(supabase: CrmQueryClient): Promise<
   const { data, error } = await supabase
     .from("leads")
     .select(
-      "id, company_name, phone, email, address, niche, city, status, notes, estimated_value, follow_up_at, website_url, google_maps_url, rating, review_count, source, slug, visit_count, site_status, site_source, site_brief, created_at, updated_at",
+      "id, company_name, phone, email, address, niche, city, status, notes, estimated_value, follow_up_at, website_url, google_maps_url, rating, review_count, source, slug, visit_count, site_status, site_source, site_brief, deleted_at, created_at, updated_at",
     )
+    .is("deleted_at", null)
     .order("created_at", { ascending: false });
 
   queryCount += 1;
@@ -170,12 +173,12 @@ export async function loadCrmLeadDetail(
 
   const leadPromise = (async () => {
     queryCount += 1;
-    return supabase.from("leads").select(CRM_DETAIL_LEAD_COLUMNS).eq("id", id).maybeSingle();
+    return supabase.from("leads").select(CRM_DETAIL_LEAD_COLUMNS).eq("id", id).is("deleted_at", null).maybeSingle();
   })();
 
   const siblingsPromise = (async () => {
     queryCount += 1;
-    return supabase.from("leads").select("id").order("created_at", { ascending: false });
+    return supabase.from("leads").select("id").is("deleted_at", null).order("created_at", { ascending: false });
   })();
 
   const [leadResult, siblingsResult] = await Promise.all([leadPromise, siblingsPromise]);
@@ -203,9 +206,10 @@ export async function loadCrmLeadDetailLegacy(
   const { data, error } = await supabase
     .from("leads")
     .select(
-      "id, company_name, phone, email, address, niche, city, status, notes, estimated_value, follow_up_at, website_url, google_maps_url, rating, review_count, source, slug, visit_count, site_status, site_source, site_brief, created_at, updated_at",
+      "id, company_name, phone, email, address, niche, city, status, notes, estimated_value, follow_up_at, website_url, google_maps_url, rating, review_count, source, slug, visit_count, site_status, site_source, site_brief, deleted_at, created_at, updated_at",
     )
     .eq("id", id)
+    .is("deleted_at", null)
     .maybeSingle();
 
   if (error || !data) {
@@ -223,6 +227,7 @@ export async function loadCrmLeadDetailLegacy(
   const { data: siblings } = await supabase
     .from("leads")
     .select("id")
+    .is("deleted_at", null)
     .order("created_at", { ascending: false });
 
   return {

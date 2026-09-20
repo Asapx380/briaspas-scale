@@ -92,6 +92,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     .from("leads")
     .update(update)
     .eq("id", id)
+    .is("deleted_at", null)
     .select("id, status, notes, estimated_value, follow_up_at, updated_at")
     .maybeSingle();
 
@@ -108,8 +109,14 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
   if (claimsError || typeof claimsData?.claims?.sub !== "string") {
     return errorResponse("unauthorized", "Entre na sua conta para remover este lead.", 401);
   }
-  const { data, error } = await supabase.from("leads").delete().eq("id", id).select("id").maybeSingle();
-  if (error) return errorResponse("lead_delete_failed", "Não foi possível remover o lead.", 500);
+  const { data, error } = await supabase
+    .from("leads")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("id", id)
+    .is("deleted_at", null)
+    .select("id")
+    .maybeSingle();
+  if (error) return errorResponse("lead_delete_failed", "Não foi possível mover o lead para a lixeira.", 500);
   if (!data) return errorResponse("lead_not_found", "Lead não encontrado neste espaço de trabalho.", 404);
   return new Response(null, { status: 204 });
 }

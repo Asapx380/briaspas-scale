@@ -81,6 +81,7 @@ export function CreateLeadModal({ open, onClose, onCreated }: CreateLeadModalPro
         site_brief: null,
         ai_diagnosis: null,
         ai_outreach: null,
+        deleted_at: null,
         created_at: new Date().toISOString(),
         updated_at: null,
       });

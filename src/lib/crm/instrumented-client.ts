@@ -67,6 +67,7 @@ export function createInstrumentedClient(
   function selectBuilder(table: string, columns: string) {
     let eqColumn: string | null = null;
     let eqValue: string | number | null = null;
+    let isNullColumn: string | null = null;
     let limitCount: number | null = null;
     let ordered = false;
 
@@ -82,6 +83,7 @@ export function createInstrumentedClient(
       if (eqColumn != null) {
         rows = rows.filter((row) => row[eqColumn!] === eqValue || String(row[eqColumn!]) === String(eqValue));
       }
+      if (isNullColumn != null) rows = rows.filter((row) => row[isNullColumn!] == null);
       if (ordered && table === "leads") {
         rows = [...rows].sort(
           (a, b) =>
@@ -107,6 +109,10 @@ export function createInstrumentedClient(
       eq(column: string, value: string | number) {
         eqColumn = column;
         eqValue = value;
+        return builder;
+      },
+      is(column: string, value: null) {
+        if (value === null) isNullColumn = column;
         return builder;
       },
       order(..._args: unknown[]) {

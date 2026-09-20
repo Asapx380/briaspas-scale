@@ -415,7 +415,7 @@ export function LeadDetailView({
   }
 
   async function deleteLead() {
-    if (!window.confirm("Remover este lead e todos os dados e sites vinculados?")) return;
+    if (!window.confirm("Mover este lead para a lixeira? Você poderá restaurá-lo depois.")) return;
     if (demoMode) {
       router.push("/preview/crm");
       return;
@@ -424,7 +424,7 @@ export function LeadDetailView({
     const response = await fetch(`/api/v1/leads/${lead.id}`, { method: "DELETE" });
     if (response.ok) router.push("/app/crm");
     else {
-      setError("Não foi possível remover este lead.");
+      setError("Não foi possível mover este lead para a lixeira.");
       setDeleting(false);
     }
   }
@@ -1028,7 +1028,7 @@ export function LeadDetailView({
           onClick={() => void deleteLead()}
           className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-400/10 disabled:opacity-60"
         >
-          <Trash size={15} /> {deleting ? "Removendo…" : "Remover lead"}
+          <Trash size={15} /> {deleting ? "Movendo…" : "Mover para lixeira"}
         </button>
       </div>
 

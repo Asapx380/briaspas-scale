@@ -115,6 +115,28 @@ test("central do lead organiza ações, abas e objeções", async ({ page }) => 
   await expect(page.getByText(/Está caro ou não tenho orçamento agora/)).toBeVisible();
 });
 
+test("move um lead pelo puxador sem perder o cartão no kanban", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/preview/crm");
+
+  const handle = page.getByRole("button", { name: "Arrastar Berg Barbearia no funil" });
+  const destination = page.getByRole("heading", { name: "Agendado" }).locator("..").locator("..");
+  await expect(handle).toBeVisible();
+  await expect(destination).toBeVisible();
+
+  const start = await handle.boundingBox();
+  const end = await destination.boundingBox();
+  expect(start).not.toBeNull();
+  expect(end).not.toBeNull();
+
+  await page.mouse.move(start!.x + start!.width / 2, start!.y + start!.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(end!.x + end!.width / 2, end!.y + 130, { steps: 12 });
+  await page.mouse.up();
+
+  await expect(destination.getByText("Berg Barbearia", { exact: true })).toBeVisible();
+});
+
 test("mantém a jornada visível durante o scroll narrativo", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/#como-funciona");

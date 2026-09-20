@@ -5,7 +5,9 @@ import { CaretDown } from "@phosphor-icons/react/dist/csr/CaretDown";
 import { LockSimple } from "@phosphor-icons/react/dist/csr/LockSimple";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
+import { Trash } from "@phosphor-icons/react/dist/csr/Trash";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import {
@@ -242,6 +244,14 @@ export function CrmBoard({
           >
             <LockSimple size={15} weight="fill" aria-hidden /> Exportar
           </button>
+          {!demoMode && (
+            <Link
+              href="/app/crm/lixeira"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--card)] px-3.5 py-2.5 text-sm font-semibold text-[var(--text-3)] transition-[background-color,transform] duration-150 hover:bg-[var(--neu-bg-pop)] hover:text-[var(--text)] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+            >
+              <Trash size={15} aria-hidden /> Lixeira
+            </Link>
+          )}
           <label className="relative inline-flex items-center">
             <span className="sr-only">Ordenar</span>
             <select
