@@ -21,14 +21,13 @@ const WhatsAppChatModal = dynamic(
   () => import("@/components/crm/whatsapp-chat").then((mod) => mod.WhatsAppChatModal),
   { ssr: false },
 );
+import { CommercialPotentialIndicator } from "@/components/crm/commercial-potential-indicator";
 import {
   PIPELINE_COLUMNS,
   columnForStatus,
   formatDate,
   formatMoney,
   leadScore,
-  leadTier,
-  tierLabel,
   toBrazilianWhatsAppNumber,
   toLocalDateTime,
 } from "@/lib/crm/pipeline";
@@ -153,7 +152,6 @@ export function LeadDetailView({
   const [chatOpen, setChatOpen] = useState(false);
 
   const score = leadScore(lead);
-  const tier = leadTier(score);
   const column = columnForStatus(lead.status);
   const whatsapp = toBrazilianWhatsAppNumber(lead.phone);
   const siblingIndex = siblingIds?.indexOf(lead.id) ?? -1;
@@ -461,23 +459,7 @@ export function LeadDetailView({
         </div>
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center gap-3">
-        <span
-          className={`grid size-12 place-items-center rounded-full text-base font-bold text-white ${
-            score >= 70 ? "bg-[#1A7E3A]" : score >= 45 ? "bg-[#34C759]" : "bg-[#8E8E93]"
-          }`}
-        >
-          {score}
-        </span>
-        {(tier === "quente" || tier === "morno") && (
-          <span
-            className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-              tier === "quente" ? "bg-[#E8F8EE] text-[#1A7E3A]" : "bg-[#FFF4E5] text-[#B25E00]"
-            }`}
-          >
-            {tierLabel(tier)}
-          </span>
-        )}
+      <div className="mt-5">
         <h1 className="text-2xl font-bold tracking-tight text-[var(--text)] sm:text-3xl">
           {lead.company_name}
         </h1>
@@ -527,7 +509,23 @@ export function LeadDetailView({
           )}
 
           {tab === "info" && (
-            <dl>
+            <>
+              <section
+                className="mb-6 rounded-2xl border border-[var(--border)] bg-[var(--neu-bg-pop)] p-4 sm:p-5"
+                aria-labelledby="lead-resumo-heading"
+              >
+                <h2 id="lead-resumo-heading" className="text-base font-semibold text-[var(--text)]">
+                  Resumo
+                </h2>
+                <CommercialPotentialIndicator
+                  className="mt-3"
+                  score={score}
+                  variant="detail"
+                  showBar
+                  showTooltip
+                />
+              </section>
+              <dl>
               <InfoRow label="Categoria">{lead.niche ?? "—"}</InfoRow>
               <InfoRow label="Cidade">{lead.city ?? "—"}</InfoRow>
               <InfoRow label="Telefone">
@@ -640,6 +638,7 @@ export function LeadDetailView({
                 </span>
               </InfoRow>
             </dl>
+            </>
           )}
 
           {tab === "notes" && (

@@ -17,38 +17,50 @@ export type PipelineColumn = {
 
 /** Mapeamento exclusivo LeadSite → schema `leads.status`. */
 export const PIPELINE_COLUMNS: PipelineColumn[] = [
-  { id: "base", title: "Base", color: "#8E8E93", statuses: ["new"], dropStatus: "new" },
+  { id: "base", title: "Base", color: "var(--funnel-total)", statuses: ["new"], dropStatus: "new" },
   {
     id: "abordado",
     title: "Abordado",
-    color: "#0071E3",
+    color: "var(--funnel-approached)",
     statuses: ["contacted", "replied"],
     dropStatus: "contacted",
   },
-  { id: "agendado", title: "Agendado", color: "#34C759", statuses: ["hot"], dropStatus: "hot" },
+  {
+    id: "agendado",
+    title: "Agendado",
+    color: "var(--funnel-scheduled)",
+    statuses: ["hot"],
+    dropStatus: "hot",
+  },
   {
     id: "followup",
     title: "Follow Up",
-    color: "#FF9500",
+    color: "var(--funnel-followup)",
     statuses: ["proposal"],
     dropStatus: "proposal",
   },
-  { id: "convertido", title: "Convertido", color: "#5856D6", statuses: ["won"], dropStatus: "won" },
-  { id: "perdido", title: "Perdido", color: "#FF3B30", statuses: ["lost"], dropStatus: "lost" },
+  {
+    id: "convertido",
+    title: "Convertido",
+    color: "var(--funnel-converted)",
+    statuses: ["won"],
+    dropStatus: "won",
+  },
+  { id: "perdido", title: "Perdido", color: "var(--funnel-lost)", statuses: ["lost"], dropStatus: "lost" },
 ];
 
 export const FILTER_CHIPS: { id: CrmFilterId; label: string }[] = [
   { id: "all", label: "Todos" },
   { id: "no_site", label: "Sem site" },
-  { id: "tier_quente", label: "Tier 3 (Quente)" },
-  { id: "tier_morno", label: "Tier 2 (Morno)" },
-  { id: "score_50", label: "Score 50+" },
+  { id: "tier_quente", label: "Potencial alto" },
+  { id: "tier_morno", label: "Potencial médio" },
+  { id: "score_50", label: "Potencial 50+" },
   { id: "with_phone", label: "Com telefone" },
 ];
 
 export const SORT_OPTIONS: { id: CrmSortId; label: string }[] = [
   { id: "recent", label: "Mais recentes" },
-  { id: "score_desc", label: "Maior score" },
+  { id: "score_desc", label: "Maior potencial" },
   { id: "name_asc", label: "Nome A–Z" },
   { id: "rating_desc", label: "Melhor avaliação" },
 ];
@@ -78,6 +90,42 @@ export function leadScore(lead: Pick<
   if (lead.status === "hot" || lead.status === "proposal") score += 5;
   return Math.min(100, Math.max(0, score));
 }
+
+export type CommercialPotentialBand = "low" | "medium" | "high";
+
+export function commercialPotentialBand(score: number): CommercialPotentialBand {
+  if (score >= 70) return "high";
+  if (score >= 45) return "medium";
+  return "low";
+}
+
+export function commercialPotentialClassLabel(band: CommercialPotentialBand): string {
+  if (band === "high") return "Alto";
+  if (band === "medium") return "Médio";
+  return "Baixo";
+}
+
+export function commercialPotentialAriaLabel(score: number): string {
+  const band = commercialPotentialBand(score);
+  return `Potencial comercial ${score}%, ${commercialPotentialClassLabel(band)}`;
+}
+
+/** Fatores espelhando `leadScore` — atualizar junto se a fórmula mudar. */
+export function commercialPotentialScoreFactors(): readonly string[] {
+  return [
+    "Pontuação base inicial",
+    "Avaliação no Google (até 5 estrelas)",
+    "Quantidade de avaliações",
+    "Telefone cadastrado",
+    "Sem site cadastrado (oportunidade)",
+    "E-mail cadastrado",
+    "Link do Google Maps",
+    "Etapa agendada ou em follow up no funil",
+  ];
+}
+
+export const COMMERCIAL_POTENTIAL_DISCLAIMER =
+  "Indicador estimado, não representa garantia de venda.";
 
 export function leadTier(score: number): LeadTier {
   if (score >= 70) return "quente";
