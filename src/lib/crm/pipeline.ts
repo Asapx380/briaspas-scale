@@ -6,6 +6,7 @@ import type {
   LeadTier,
   PipelineColumnId,
 } from "@/lib/crm/types";
+import { normalizeBrazilWhatsAppDigits } from "./whatsapp-phone";
 
 export type PipelineColumn = {
   id: PipelineColumnId;
@@ -197,8 +198,7 @@ export function sortLeads(leads: CrmLead[], sort: CrmSortId) {
 }
 
 export function toBrazilianWhatsAppNumber(value: string | null) {
-  const digits = value?.replace(/\D/g, "") ?? "";
-  return digits.length === 10 || digits.length === 11 ? `55${digits}` : digits;
+  return normalizeBrazilWhatsAppDigits(value) ?? "";
 }
 
 export function formatMoney(value: number | null) {
