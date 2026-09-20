@@ -3,6 +3,7 @@
 import { Copy } from "@phosphor-icons/react/dist/csr/Copy";
 import { WhatsappLogo } from "@phosphor-icons/react/dist/csr/WhatsappLogo";
 import { useMemo, useState } from "react";
+import { appendTimelineEntry } from "@/lib/crm/lead-timeline";
 import { appendOutreachHistory, listOutreachHistoryForLead } from "@/lib/crm/outreach-history";
 import { buildOutreachMessage } from "@/lib/crm/outreach-template";
 import { getPublicSiteOrigin } from "@/lib/crm/public-site-url";
@@ -12,9 +13,14 @@ import { buildWhatsAppDeepLink } from "@/lib/crm/whatsapp-phone";
 type LeadOutreachPanelProps = {
   lead: CrmLead;
   demoMode?: boolean;
+  onTimelineChange?: () => void;
 };
 
-export function LeadOutreachPanel({ lead, demoMode = false }: LeadOutreachPanelProps) {
+export function LeadOutreachPanel({
+  lead,
+  demoMode = false,
+  onTimelineChange,
+}: LeadOutreachPanelProps) {
   const siteOrigin = useMemo(() => getPublicSiteOrigin(), []);
   const [contactName, setContactName] = useState("");
   const [copied, setCopied] = useState(false);
@@ -59,6 +65,13 @@ export function LeadOutreachPanel({ lead, demoMode = false }: LeadOutreachPanelP
       action: "copy",
       messagePreview: trimmedMessage.slice(0, 160),
     });
+    appendTimelineEntry({
+      leadId: lead.id,
+      kind: "outreach_copy",
+      title: "Mensagem copiada",
+      detail: trimmedMessage.slice(0, 160),
+    });
+    onTimelineChange?.();
     setHistoryTick((tick) => tick + 1);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1800);
@@ -74,6 +87,13 @@ export function LeadOutreachPanel({ lead, demoMode = false }: LeadOutreachPanelP
       action: "whatsapp",
       messagePreview: trimmedMessage.slice(0, 160),
     });
+    appendTimelineEntry({
+      leadId: lead.id,
+      kind: "outreach_whatsapp",
+      title: "WhatsApp aberto",
+      detail: trimmedMessage.slice(0, 160),
+    });
+    onTimelineChange?.();
     setHistoryTick((tick) => tick + 1);
   }
 

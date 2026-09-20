@@ -36,7 +36,10 @@ import {
 } from "@/lib/crm/pipeline";
 import type { CrmLead, LeadStatus } from "@/lib/crm/types";
 import type { LeadNeighbors } from "@/lib/pagination/lead-neighbors";
+import { LeadFollowUpPanel } from "@/components/crm/lead-follow-up-panel";
+import { LeadMapsEnrichPanel } from "@/components/crm/lead-maps-enrich-panel";
 import { LeadOutreachPanel } from "@/components/crm/lead-outreach-panel";
+import { recordFollowUpScheduled } from "@/lib/crm/lead-timeline";
 
 type TabId =
   | "info"
@@ -169,6 +172,7 @@ export function LeadDetailView({
   const [outreach, setOutreach] = useState(lead.ai_outreach);
   const [outreachCopied, setOutreachCopied] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
+  const [timelineRefreshKey, setTimelineRefreshKey] = useState(0);
 
   const score = leadScore(lead);
   const column = columnForStatus(lead.status);
@@ -274,6 +278,10 @@ export function LeadDetailView({
       if (!demoMode) {
         const updated = await patchLead(lead, { followUpAt: iso });
         setLead((current) => ({ ...current, ...updated, follow_up_at: iso }));
+        if (iso) {
+          recordFollowUpScheduled(lead.id, iso);
+          setTimelineRefreshKey((key) => key + 1);
+        }
       } else {
         setLead((current) => ({ ...current, follow_up_at: iso }));
       }
@@ -599,7 +607,25 @@ export function LeadDetailView({
                   showTooltip
                 />
               </section>
-              <LeadOutreachPanel lead={lead} demoMode={demoMode} />
+              <LeadOutreachPanel
+                lead={lead}
+                demoMode={demoMode}
+                onTimelineChange={() => setTimelineRefreshKey((key) => key + 1)}
+              />
+              <div className="mb-6">
+                <LeadMapsEnrichPanel
+                  lead={lead}
+                  demoMode={demoMode}
+                  onTimelineChange={() => setTimelineRefreshKey((key) => key + 1)}
+                />
+              </div>
+              <div className="mb-6">
+                <LeadFollowUpPanel
+                  leadId={lead.id}
+                  followUpAt={lead.follow_up_at}
+                  refreshKey={timelineRefreshKey}
+                />
+              </div>
               <dl>
               <InfoRow label="Categoria">{lead.niche ?? "—"}</InfoRow>
               <InfoRow label="Cidade">{lead.city ?? "—"}</InfoRow>
