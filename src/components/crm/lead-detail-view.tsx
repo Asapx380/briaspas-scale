@@ -4,17 +4,20 @@ import { ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft";
 import { ArrowSquareOut } from "@phosphor-icons/react/dist/csr/ArrowSquareOut";
 import { CaretLeft } from "@phosphor-icons/react/dist/csr/CaretLeft";
 import { CaretRight } from "@phosphor-icons/react/dist/csr/CaretRight";
+import { ChatCircleDots } from "@phosphor-icons/react/dist/csr/ChatCircleDots";
 import { Check } from "@phosphor-icons/react/dist/csr/Check";
 import { Eye } from "@phosphor-icons/react/dist/csr/Eye";
 import { GlobeHemisphereWest } from "@phosphor-icons/react/dist/csr/GlobeHemisphereWest";
 import { MagicWand } from "@phosphor-icons/react/dist/csr/MagicWand";
+import { MapPin } from "@phosphor-icons/react/dist/csr/MapPin";
 import { Phone } from "@phosphor-icons/react/dist/csr/Phone";
 import { Sparkle } from "@phosphor-icons/react/dist/csr/Sparkle";
+import { Target } from "@phosphor-icons/react/dist/csr/Target";
 import { Trash } from "@phosphor-icons/react/dist/csr/Trash";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { FormEvent, useMemo, useState } from "react";
+import { type FormEvent, type KeyboardEvent, useMemo, useState } from "react";
 import type { SiteBrief } from "@/lib/sites/design-plan";
 
 const WhatsAppChatModal = dynamic(
@@ -52,6 +55,21 @@ const TABS: { id: TabId; label: string }[] = [
   { id: "sale", label: "Venda" },
   { id: "schedule", label: "Agendar" },
 ];
+
+const DEFAULT_OBJECTIONS = [
+  {
+    objecao: "Está caro ou não tenho orçamento agora",
+    resposta: "Faz sentido. Antes de falar de investimento, posso mostrar em poucos minutos a oportunidade que observei e você decide se vale avançar.",
+  },
+  {
+    objecao: "Já tenho site ou alguém cuida disso",
+    resposta: "Perfeito. A ideia não é substituir nada sem contexto; posso mostrar a prévia e você avalia se complementa o que já existe.",
+  },
+  {
+    objecao: "Me manda por mensagem",
+    resposta: "Claro. Vou enviar um resumo objetivo da oportunidade e, se fizer sentido, marcamos uma conversa curta depois.",
+  },
+] as const;
 
 function briefingText(brief: SiteBrief) {
   return [
@@ -161,6 +179,9 @@ export function LeadDetailView({
     neighbors != null
       ? Boolean(neighbors.prevId || neighbors.nextId)
       : (siblingIds?.length ?? 0) >= 2;
+  const objectionResponses = outreach?.objecoesAntecipadas?.length
+    ? outreach.objecoesAntecipadas
+    : DEFAULT_OBJECTIONS;
 
   const dealStatus: "open" | "won" | "lost" =
     lead.status === "won" ? "won" : lead.status === "lost" ? "lost" : "open";
@@ -421,8 +442,22 @@ export function LeadDetailView({
     router.push(`${base}/${siblingIds[next]}`);
   }
 
+  function onTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    let nextIndex: number | null = null;
+    if (event.key === "ArrowRight") nextIndex = (index + 1) % TABS.length;
+    if (event.key === "ArrowLeft") nextIndex = (index - 1 + TABS.length) % TABS.length;
+    if (event.key === "Home") nextIndex = 0;
+    if (event.key === "End") nextIndex = TABS.length - 1;
+    if (nextIndex == null) return;
+
+    event.preventDefault();
+    const nextTab = TABS[nextIndex];
+    setTab(nextTab.id);
+    window.requestAnimationFrame(() => document.getElementById(`lead-tab-${nextTab.id}`)?.focus());
+  }
+
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
+    <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <Link
           href={demoMode ? "/preview/crm" : "/app/crm"}
@@ -459,11 +494,48 @@ export function LeadDetailView({
         </div>
       </div>
 
-      <div className="mt-5">
-        <h1 className="text-2xl font-bold tracking-tight text-[var(--text)] sm:text-3xl">
-          {lead.company_name}
-        </h1>
-      </div>
+      <section className="mt-5 flex flex-col gap-4 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:flex-row sm:items-center sm:justify-between sm:p-5">
+        <div className="flex min-w-0 items-center gap-3.5">
+          <div
+            className="grid size-14 shrink-0 place-items-center rounded-full bg-[var(--neu-bg-well)] text-base font-bold tabular-nums text-[var(--text)]"
+            aria-label={`Potencial comercial: ${score}%`}
+          >
+            {score}
+          </div>
+          <div className="min-w-0">
+            <h1 className="text-balance truncate text-2xl font-bold tracking-tight text-[var(--text)] sm:text-3xl">
+              {lead.company_name}
+            </h1>
+            <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-[var(--text-3)]">
+              <span>{lead.niche ?? "Sem categoria"}</span>
+              {lead.city && (
+                <span className="inline-flex items-center gap-1">
+                  <MapPin size={14} aria-hidden /> {lead.city}
+                </span>
+              )}
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-2 sm:justify-end">
+          {lead.phone && (
+            <a
+              href={`tel:${lead.phone.replace(/\D/g, "")}`}
+              className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--neu-bg-pop)] px-3.5 text-sm font-semibold text-[var(--text-2)] transition-[background-color,transform] duration-150 hover:bg-[var(--neu-bg-well)] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+            >
+              <Phone size={16} aria-hidden /> Ligar
+            </a>
+          )}
+          {whatsapp && (
+            <button
+              type="button"
+              onClick={() => setChatOpen(true)}
+              className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-[var(--brand-solid)] px-3.5 text-sm font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-[var(--brand-solid-hover)] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+            >
+              <ChatCircleDots size={16} aria-hidden /> WhatsApp
+            </button>
+          )}
+        </div>
+      </section>
 
       <section className="app-card mt-6 overflow-hidden p-0">
         <div
@@ -471,7 +543,7 @@ export function LeadDetailView({
           role="tablist"
           aria-label="Seções do lead"
         >
-          {TABS.map((item) => {
+          {TABS.map((item, index) => {
             const active = tab === item.id;
             return (
               <button
@@ -483,7 +555,8 @@ export function LeadDetailView({
                 aria-controls={`lead-panel-${item.id}`}
                 tabIndex={active ? 0 : -1}
                 onClick={() => setTab(item.id)}
-                className={`relative shrink-0 px-3 py-3 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] ${
+                onKeyDown={(event) => onTabKeyDown(event, index)}
+                className={`relative min-h-11 shrink-0 px-3 py-3 text-sm font-semibold transition-[color] duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] ${
                   active ? "text-[var(--brand)]" : "text-[var(--text-4)] hover:text-[var(--text-2)]"
                 }`}
               >
@@ -665,63 +738,110 @@ export function LeadDetailView({
           )}
 
           {tab === "scripts" && (
-            <div className="space-y-4">
-              <div className="flex flex-wrap gap-2">
+            <div className="space-y-5">
+              <div className="flex flex-col gap-3 rounded-2xl border border-[var(--brand)]/15 bg-[var(--brand-hover)]/[0.055] p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 className="inline-flex items-center gap-1.5 text-base font-semibold text-[var(--text)]">
+                    <Target size={17} className="text-[var(--brand)]" aria-hidden /> Inteligência de abordagem
+                  </h2>
+                  <p className="mt-1 text-sm text-[var(--text-3)]">Dores observadas, copy e CTA com base apenas nos dados disponíveis.</p>
+                </div>
                 <button
                   type="button"
                   disabled={diagnosisBusy || demoMode}
                   onClick={() => void generateDiagnosis()}
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/20 px-3 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-500/10 disabled:opacity-60"
+                  className="inline-flex min-h-11 shrink-0 items-center justify-center gap-1.5 rounded-xl bg-[var(--brand-solid)] px-3.5 text-sm font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-[var(--brand-solid-hover)] active:scale-[0.98] disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
                 >
                   <Sparkle size={15} weight="fill" />
                   {diagnosisBusy ? "Gerando… pode levar ~30s" : diagnosis ? "Regenerar diagnóstico" : "Gerar diagnóstico + copy"}
                 </button>
-                {diagnosisBusy && (
-                  <p className="w-full text-xs text-[var(--text-4)]" role="status">
-                    Analisando o lead com IA. Mantenha esta aba aberta.
-                  </p>
-                )}
-                {outreach?.mensagem && (
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      await navigator.clipboard.writeText(outreach.mensagem!);
-                      setOutreachCopied(true);
-                      window.setTimeout(() => setOutreachCopied(false), 1800);
-                    }}
-                    className="rounded-xl border border-[var(--border)] px-3 py-2 text-sm font-semibold text-[var(--text-2)]"
-                  >
-                    {outreachCopied ? "Copiado" : "Copiar abordagem"}
-                  </button>
-                )}
               </div>
-              {diagnosisError && <p className="text-sm text-rose-600">{diagnosisError}</p>}
+              {diagnosisBusy && (
+                <p className="text-sm text-[var(--text-4)]" role="status">
+                  Analisando o lead com IA. Mantenha esta aba aberta.
+                </p>
+              )}
+              {diagnosisError && <p role="alert" className="text-sm text-rose-600">{diagnosisError}</p>}
+
               {diagnosis?.dorPrincipal ? (
-                <div className="space-y-3 text-sm leading-6 text-[var(--text-2)]">
-                  <p>
-                    <strong>Dor:</strong> {diagnosis.dorPrincipal}
-                  </p>
-                  {diagnosis.resumo && <p className="text-[var(--text-3)]">{diagnosis.resumo}</p>}
-                  {outreach?.mensagem && (
-                    <pre className="whitespace-pre-wrap rounded-2xl bg-[var(--neu-bg-pop)] p-4 text-[var(--text-3)]">
-                      {outreach.mensagem}
-                    </pre>
-                  )}
+                <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+                  <section className="rounded-2xl border border-[var(--border)] bg-[var(--neu-bg-pop)] p-4 sm:p-5" aria-labelledby="diagnostico-heading">
+                    <h3 id="diagnostico-heading" className="text-sm font-semibold text-[var(--text)]">Dores e oportunidade</h3>
+                    <p className="mt-3 text-sm font-medium leading-6 text-[var(--text)]">{diagnosis.dorPrincipal}</p>
+                    {diagnosis.resumo && <p className="mt-3 text-sm leading-6 text-[var(--text-3)]">{diagnosis.resumo}</p>}
+                    {diagnosis.doresSecundarias?.length ? (
+                      <ul className="mt-4 space-y-2 text-sm text-[var(--text-3)]">
+                        {diagnosis.doresSecundarias.map((pain) => <li key={pain}>• {pain}</li>)}
+                      </ul>
+                    ) : null}
+                    {diagnosis.oportunidades?.length ? (
+                      <div className="mt-5 border-t border-[var(--border)] pt-4">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-4)]">Oportunidade</p>
+                        <p className="mt-2 text-sm leading-6 text-[var(--text-2)]">{diagnosis.oportunidades[0]}</p>
+                      </div>
+                    ) : null}
+                  </section>
+
+                  <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-[0_1px_3px_rgba(15,23,42,0.05)] sm:p-5" aria-labelledby="copy-heading">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <h3 id="copy-heading" className="text-sm font-semibold text-[var(--text)]">Mensagem de abordagem</h3>
+                        <p className="mt-1 text-xs text-[var(--text-4)]">A mensagem começa pelo gancho; os primeiros 40 caracteres já apresentam a oportunidade.</p>
+                      </div>
+                      {outreach?.mensagem && (
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            await navigator.clipboard.writeText(outreach.mensagem!);
+                            setOutreachCopied(true);
+                            window.setTimeout(() => setOutreachCopied(false), 1800);
+                          }}
+                          className="inline-flex min-h-10 items-center rounded-xl border border-[var(--border)] px-3 text-sm font-semibold text-[var(--text-2)] transition-[background-color,transform] duration-150 hover:bg-[var(--neu-bg-pop)] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+                        >
+                          {outreachCopied ? "Copiado" : "Copiar mensagem"}
+                        </button>
+                      )}
+                    </div>
+                    {outreach?.gancho && (
+                      <p className="mt-4 rounded-xl border border-[var(--brand)]/15 bg-[var(--brand-hover)]/[0.055] px-3 py-2 text-sm font-semibold leading-6 text-[var(--brand)]">
+                        {outreach.gancho}
+                      </p>
+                    )}
+                    {outreach?.mensagem ? (
+                      <p className="mt-4 whitespace-pre-wrap text-sm leading-7 text-[var(--text-2)]">{outreach.mensagem}</p>
+                    ) : (
+                      <p className="mt-4 text-sm leading-6 text-[var(--text-4)]">Gere o diagnóstico para criar uma mensagem específica para este negócio.</p>
+                    )}
+                    {outreach?.cta && <p className="mt-4 border-t border-[var(--border)] pt-3 text-sm text-[var(--text-3)]"><strong className="text-[var(--text)]">CTA:</strong> {outreach.cta}</p>}
+                  </section>
                 </div>
               ) : (
                 <EmptyTab
-                  title="Roteiros de abordagem"
-                  body="Gere um diagnóstico com copy de WhatsApp para este lead. O histórico existente aparece aqui automaticamente."
+                  title="Descubra onde a abordagem pode ser mais relevante"
+                  body="Gere o diagnóstico para ver a dor principal, as oportunidades observadas e uma mensagem pronta para WhatsApp."
                 />
               )}
             </div>
           )}
 
           {tab === "objections" && (
-            <EmptyTab
-              title="Objeções"
-              body="Em breve: banco de respostas para objeções comuns (preço, timing, já tenho site)."
-            />
+            <section aria-labelledby="objecoes-heading">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <h2 id="objecoes-heading" className="text-base font-semibold text-[var(--text)]">Respostas para objeções</h2>
+                  <p className="mt-1 text-sm text-[var(--text-3)]">Use como guia e adapte ao que a pessoa realmente disser.</p>
+                </div>
+                {outreach?.objecoesAntecipadas?.length ? <span className="text-xs font-semibold text-[var(--brand)]">Sugestões geradas para este lead</span> : null}
+              </div>
+              <div className="mt-5 space-y-3">
+                {objectionResponses.map((item) => (
+                  <article key={item.objecao} className="rounded-2xl border border-[var(--border)] bg-[var(--neu-bg-pop)] p-4 transition-[box-shadow,transform] duration-150 hover:shadow-[0_6px_18px_rgba(15,23,42,0.05)] motion-reduce:transition-none">
+                    <h3 className="text-sm font-semibold text-[var(--text)]">“{item.objecao}”</h3>
+                    <p className="mt-2 text-sm leading-6 text-[var(--text-3)]">{item.resposta}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
           )}
 
           {tab === "site" && (
