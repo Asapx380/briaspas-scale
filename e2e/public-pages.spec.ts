@@ -97,6 +97,17 @@ test("exibe potencial comercial acessível no kanban mobile", async ({ page }) =
   expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(900);
 });
 
+test("mantém a jornada visível durante o scroll narrativo", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/#como-funciona");
+
+  const journey = page.locator("[data-journey-root]");
+  await expect(journey).toBeVisible();
+  await expect(journey).not.toHaveAttribute("data-reveal", /.+/);
+  await expect(page.getByRole("heading", { name: "Encontre" })).toBeVisible();
+  await expect(journey).toHaveCSS("clip-path", "none");
+});
+
 test("mini-demo lista leads por nicho e cidade", async ({ page }) => {
   await page.goto("/#mini-demo");
 
