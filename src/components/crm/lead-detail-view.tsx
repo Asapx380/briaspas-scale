@@ -499,7 +499,7 @@ export function LeadDetailView({
         <div className="flex min-w-0 items-center gap-3.5">
           <div
             className="grid size-14 shrink-0 place-items-center rounded-full bg-[var(--neu-bg-well)] text-base font-bold tabular-nums text-[var(--text)]"
-            aria-label={`Potencial comercial: ${score}%`}
+            aria-label={`Oportunidade de site: ${score}%`}
           >
             {score}
           </div>
