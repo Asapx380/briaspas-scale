@@ -29,10 +29,14 @@ Ambiente público com **dados demonstrativos** (sem leads reais). Explore a land
 | --- | --- |
 | Login, cadastro e recuperação de senha (Supabase Auth) | Disponível |
 | Busca/importação de leads (Foursquare, CSV, manual) | Disponível |
-| CRM visual, scores e follow-ups | Disponível |
+| CRM visual, kanban fluido, lixeira e potencial comercial | Disponível |
+| Mensagens de abordagem, CTA e abertura direta no WhatsApp | Disponível |
 | Geração, revisão e publicação de site-demo (`/empresa/[slug]`) | Disponível |
 | Prévia privada antes de publicar | Disponível |
-| Registro de visitas ao link do site | Disponível |
+| Registro de visitas e alerta de lead quente (2+ visitas em 24 h) | Disponível |
+| Consulta temporária ao Google Maps, com atribuição e link oficial | Disponível quando configurada |
+| Follow-up e histórico rápido nesta sessão do navegador | Disponível |
+| Galeria de sites-demo e mini-demo de prospecção | Disponível |
 | **Projetos** e tarefas pós-venda | **Em evolução** |
 | **Agenda** e organização da equipe | **Em evolução / em breve** |
 | Integração **WhatsApp / Meta** oficial | **Adiado** (UI preparada; API oficial não conectada) |
@@ -57,6 +61,7 @@ Desenvolvimento com Turbopack; build de produção com Webpack (`npm run build`)
 - **HTML gerado por IA:** sanitização com allowlist (`sanitize-html`) antes de persistir ou servir.
 - **Isolamento por workspace:** consultas autenticadas amarradas ao `workspace_id` do membro; políticas RLS no Supabase (auditoria em [`docs/auditoria-rls.sql`](./docs/auditoria-rls.sql)).
 - **Segredos:** chaves de provedor só em variáveis de ambiente do servidor; script `npm run security:secrets` impede vazamento no bundle cliente.
+- **Google Maps / Places:** a consulta retorna até três resultados temporários para conferência e não persiste telefone, endereço, site, nota ou avaliações fornecidos pela API. A interface mostra a atribuição e direciona para o Maps oficial.
 
 ## Executar localmente
 
@@ -90,13 +95,13 @@ npm run build
 
 Tudo junto: **`npm run check`** (lint, typecheck, testes unitários e verificação de segredos).
 
-## Próximos passos (roadmap — não implementados)
+## Próximas evoluções
 
 | Item | Descrição |
 | --- | --- |
-| **T7** | Galeria opcional de sites-demo na landing |
-| **T8** | Mensagem de outreach / copy comercial |
-| **T9** | Visitas de hot-lead e sinalização no CRM |
+| **Histórico compartilhado** | Persistir atividades e tarefas de follow-up com migration, RLS e visão da equipe. |
+| **WhatsApp oficial** | Conectar a API oficial da Meta, após definição de conta, modelo de cobrança e política de consentimento. |
+| **Maps com confirmação manual** | Permitir que o usuário registre dados confirmados sem persistir conteúdo retornado diretamente pelo Google Places. |
 
 Planejamento amplo: [`plans/blueprint-briaspas-scale.md`](./plans/blueprint-briaspas-scale.md) e [`docs/plano-de-evolucao-em-partes.md`](./docs/plano-de-evolucao-em-partes.md).
 
