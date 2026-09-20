@@ -28,9 +28,10 @@ export default async function CrmLeadDetailPage({ params }: PageProps) {
   const { data, error } = await supabase
     .from("leads")
     .select(
-      "id, company_name, phone, email, address, niche, city, status, notes, estimated_value, follow_up_at, website_url, google_maps_url, rating, review_count, source, slug, visit_count, site_status, site_source, site_brief, ai_diagnosis, ai_outreach, created_at, updated_at",
+      "id, company_name, phone, email, address, niche, city, status, notes, estimated_value, follow_up_at, website_url, google_maps_url, rating, review_count, source, slug, visit_count, site_status, site_source, site_brief, ai_diagnosis, ai_outreach, deleted_at, created_at, updated_at",
     )
     .eq("id", id)
+    .is("deleted_at", null)
     .maybeSingle();
 
   if (error || !data) notFound();

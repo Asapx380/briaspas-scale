@@ -62,6 +62,7 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, sy
     ? undefined
     : {
         transform: CSS.Translate.toString(transform),
+        transition: isDragging ? "none" : "transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 150ms ease-out",
         opacity: isDragging ? 0.45 : syncing ? 0.7 : 1,
         zIndex: isDragging ? 20 : undefined,
       };
@@ -93,7 +94,7 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, sy
         {!overlay && (
           <button
             type="button"
-            className={`mt-0.5 grid size-8 shrink-0 cursor-grab place-items-center rounded-lg text-[var(--text-4)] hover:bg-[var(--neu-bg-well)] hover:text-[var(--text-2)] active:cursor-grabbing ${FOCUS}`}
+            className={`mt-0.5 grid size-11 shrink-0 touch-none cursor-grab place-items-center rounded-lg text-[var(--text-4)] transition-[background-color,color,transform] duration-150 hover:bg-[var(--neu-bg-well)] hover:text-[var(--text-2)] active:scale-[0.94] active:cursor-grabbing ${FOCUS}`}
             aria-label={`Arrastar ${lead.company_name} no funil`}
             title="Arrastar para outra etapa"
             {...listeners}
@@ -179,7 +180,7 @@ function KanbanCardInner({ lead, detailHref, onWhatsAppChat, overlay = false, sy
       style={style}
       aria-busy={syncing}
       aria-label={`${lead.company_name}, ${commercialPotentialAriaLabel(score)}${syncing ? ", salvando status" : ""}`}
-      className={`${accentClass} rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition-[box-shadow,transform,opacity] hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)] ${
+      className={`${accentClass} rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3.5 shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition-[box-shadow,transform,opacity] duration-[180ms] motion-reduce:transition-none hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)] ${
         syncing ? "ring-1 ring-[var(--brand)]/25" : ""
       }`}
     >

@@ -5,6 +5,7 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
+  KeyboardSensor,
   MouseSensor,
   TouchSensor,
   closestCorners,
@@ -28,8 +29,8 @@ const ColumnDropZone = memo(function ColumnDropZone({
   return (
     <div
       ref={setNodeRef}
-      className={`min-h-[120px] space-y-2.5 rounded-2xl p-1 transition-colors ${
-        isOver ? "bg-[var(--brand-tint)]/60" : ""
+      className={`min-h-[120px] space-y-2.5 rounded-2xl p-1 transition-[background-color,box-shadow] duration-150 ${
+        isOver ? "bg-[var(--brand-tint)]/60 shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--brand)_35%,transparent)]" : ""
       }`}
     >
       {children}
@@ -116,6 +117,7 @@ export function CrmKanbanBoard({
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 180, tolerance: 8 } }),
+    useSensor(KeyboardSensor),
   );
 
   const leadsByColumn = useMemo(() => groupLeadsByColumn(leads), [leads]);
@@ -178,7 +180,7 @@ export function CrmKanbanBoard({
         ))}
       </section>
 
-      <DragOverlay dropAnimation={null}>
+      <DragOverlay dropAnimation={{ duration: 180, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" }}>
         {activeLead ? (
           <div className="pointer-events-none w-[256px] scale-[1.02] opacity-95 shadow-xl">
             <KanbanCard
