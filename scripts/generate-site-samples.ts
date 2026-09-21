@@ -1,3 +1,4 @@
+import "../src/lib/sites/load-sample-generation-env";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import {
