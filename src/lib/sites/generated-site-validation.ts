@@ -39,13 +39,38 @@ const PLACEHOLDER_PATTERNS: Array<{ pattern: RegExp; message: string }> = [
   { pattern: /\bplaceholder\b/i, message: "O HTML contém a palavra \"placeholder\"." },
 ];
 
-const HOUR_PATTERNS: RegExp[] = [
+const SCHEDULING_HOUR_PHRASES = [
+  /\bagende\s+(o\s+|seu\s+)?hor[aá]rio\b/gi,
+  /\bescolha\s+um\s+hor[aá]rio\b/gi,
+  /\bagendar\s+um\s+hor[aá]rio\b/gi,
+  /\bconfirme\s+hor[aá]rios\b/gi,
+  /\bhor[aá]rio\s+que\s+melhor\b/gi,
+];
+
+const BUSINESS_HOUR_PATTERNS: RegExp[] = [
   /\b\d{1,2}\s*:\s*\d{2}\b/,
   /\b\d{1,2}h(?:\d{2})?\b/i,
-  /\bhor[aá]rio\b/i,
+  /\b\d{1,2}\s*h\s*[-–]\s*\d{1,2}\s*h\b/i,
+  /\bhor[aá]rio\s+de\s+funcionamento\b/i,
   /\bsegunda\b.*\bsexta\b/i,
   /\bdomingo\b/i,
+  /\batendemos\s+(das|de)\s+\d/i,
+  /\baberto\s+(das|de)\s+\d/i,
 ];
+
+function stripSchedulingHourPhrases(text: string) {
+  let scrubbed = text;
+  for (const pattern of SCHEDULING_HOUR_PHRASES) {
+    scrubbed = scrubbed.replace(pattern, " ");
+  }
+  return scrubbed;
+}
+
+/** Detecta horário de funcionamento inventado, ignorando CTAs de agendamento. */
+export function mentionsInventedBusinessHours(text: string) {
+  const scrubbed = stripSchedulingHourPhrases(text);
+  return BUSINESS_HOUR_PATTERNS.some((pattern) => pattern.test(scrubbed));
+}
 
 const MAX_HTML_SIZE = 120_000;
 
@@ -435,11 +460,8 @@ export function collectGeneratedSiteContentIssues(html: string, lead: GeneratedS
   }
 
   const visibleText = extractVisibleText(document);
-  for (const pattern of HOUR_PATTERNS) {
-    if (pattern.test(visibleText)) {
-      push("content.hours_without_data", "O HTML menciona horário de funcionamento sem esse dado no lead.");
-      break;
-    }
+  if (mentionsInventedBusinessHours(visibleText)) {
+    push("content.hours_without_data", "O HTML menciona horário de funcionamento sem esse dado no lead.");
   }
 
   if (/<blockquote\b/i.test(document)) {

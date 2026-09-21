@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   type GeneratedSiteLeadFacts,
+  mentionsInventedBusinessHours,
   validateGeneratedSiteContent,
 } from "./generated-site-validation";
 
@@ -190,12 +191,27 @@ describe("validateGeneratedSiteContent", () => {
     expectSingleError(html, sampleLead, "números");
   });
 
-  it("rejeita horário sem dado no lead", () => {
+  it("rejeita horário de funcionamento inventado", () => {
     const html = readFixture("valid-minimal.html").replace(
       "Fale conosco pelo WhatsApp.",
       "Atendemos de segunda a sexta das 09:00 às 18:00.",
     );
     expectSingleError(html, sampleLead, "horário");
+  });
+
+  it("aceita CTA de agendamento com a palavra horário", () => {
+    expect(mentionsInventedBusinessHours("Agende seu horário pelo WhatsApp.")).toBe(false);
+    expect(mentionsInventedBusinessHours("Escolha um horário para falar conosco.")).toBe(false);
+    const html = readFixture("valid-minimal.html").replace(
+      "Fale conosco pelo WhatsApp.",
+      "Agende seu horário pelo WhatsApp.",
+    );
+    expect(validateGeneratedSiteContent(html, sampleLead)).toEqual([]);
+  });
+
+  it("continua bloqueando faixas de horário explícitas", () => {
+    expect(mentionsInventedBusinessHours("Funcionamos das 8h às 18h.")).toBe(true);
+    expect(mentionsInventedBusinessHours("Aberto de 08:00 às 18:00.")).toBe(true);
   });
 
   it("rejeita depoimentos em blockquote", () => {
