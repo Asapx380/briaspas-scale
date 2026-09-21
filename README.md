@@ -24,7 +24,7 @@ MVP em validação. O que está em `main` é o que está listado abaixo — sem 
 - **Google Maps** — consulta temporária para conferência, quando a chave está configurada. Telefone, endereço e nota da API não são gravados.
 - **Projetos, agendamentos e equipe** — as telas existem; ainda em evolução.
 
-A tela **Criar site** (gerar HTML automaticamente) **não faz parte do produto em `main`**. O CRM usa briefing + ZIP. Há código de geração no repositório, mas essa UI ainda não entrou.
+A rota **Criar site** (`/app/criar-site`) existe como **Em breve**. Não há gerador de HTML no produto. O caminho atual é briefing + ZIP no lead.
 
 Mais detalhe operacional: [`docs/importacao-de-leads.md`](./docs/importacao-de-leads.md), [`docs/geracao-de-sites.md`](./docs/geracao-de-sites.md), [`docs/modelo-completo-do-lead.md`](./docs/modelo-completo-do-lead.md).
 
@@ -81,7 +81,7 @@ Tudo junto: **`npm run check`** (lint, typecheck, testes unitários e `security:
 
 - Histórico de follow-up compartilhado com a equipe (hoje o registro rápido é só nesta sessão).
 - WhatsApp Cloud API da Meta, se conta e política de consentimento fecharem.
-- Geração de HTML no produto — ainda fora de `main`.
+- Geração automática de HTML no produto — a tela **Criar site** está como **Em breve**.
 
 Planejamento: [`plans/blueprint-briaspas-scale.md`](./plans/blueprint-briaspas-scale.md) e [`docs/plano-de-evolucao-em-partes.md`](./docs/plano-de-evolucao-em-partes.md).
 

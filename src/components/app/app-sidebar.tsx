@@ -14,6 +14,7 @@ import {
   ListChecks,
   PlusCircle,
   SidebarSimple,
+  Sparkle,
   UsersThree,
   X,
 } from "@phosphor-icons/react";
@@ -36,6 +37,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/app/crm", label: "CRM", icon: Kanban, match: "prefix" },
   { href: "/app/agendamentos", label: "Agendamentos", icon: CalendarBlank, match: "prefix" },
   { href: "/app/sites", label: "Meus sites", icon: Globe, match: "prefix" },
+  { href: "/app/criar-site", label: "Criar site", icon: Sparkle, match: "exact" },
   { href: "/app/equipe", label: "Equipe", icon: UsersThree, match: "prefix" },
   { href: "/app/projetos", label: "Projetos", icon: ListChecks, match: "prefix" },
   { href: "/app/operacao", label: "Operação", icon: Buildings, match: "prefix" },
@@ -51,6 +53,7 @@ function isActive(pathname: string, item: NavItem) {
   // Preview do shell: destaca Dashboard para screenshots sem auth.
   let path = pathname;
   if (pathname.startsWith("/preview/shell")) path = "/app";
+  else if (pathname.startsWith("/preview/criar-site")) path = "/app/criar-site";
   else if (pathname.startsWith("/preview/sites")) path = "/app/sites";
   if (item.match === "exact") return path === item.href;
   return path === item.href || path.startsWith(`${item.href}/`);

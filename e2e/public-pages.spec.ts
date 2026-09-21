@@ -86,7 +86,14 @@ test("galeria Meus sites renderiza, filtra busca e mostra vazio", async ({ page 
 
   await page.goto("/preview/sites?empty=1");
   await expect(main.getByText("Nenhum site ainda")).toBeVisible();
-  await expect(main.getByRole("link", { name: "Criar site" })).toBeVisible();
+  const comingSoon = main.getByRole("link", { name: "Em breve" });
+  await expect(comingSoon).toBeVisible();
+  await comingSoon.click();
+  await expect(page).toHaveURL(/\/preview\/criar-site$/);
+  await expect(page.getByRole("heading", { name: "Em breve", level: 1 })).toBeVisible();
+  await expect(
+    page.getByText("A geração automática de HTML ainda não está disponível no Briaspas Scale."),
+  ).toBeVisible();
 });
 
 test("exibe potencial comercial acessível no kanban mobile", async ({ page }) => {
