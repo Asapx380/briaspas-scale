@@ -1,4 +1,7 @@
+import { DEFAULT_MAX_RATE_LIMIT_RETRIES } from "./provider-http-retry";
 import { SITE_GENERATION_SAMPLES } from "./site-generation-sample-leads";
+
+export { DEFAULT_MAX_RATE_LIMIT_RETRIES, DEFAULT_RATE_LIMIT_WAIT_SECONDS } from "./provider-http-retry";
 
 export type GenerateSiteSamplesCliOptions = {
   outputRoot: string;
@@ -13,7 +16,7 @@ export function parseGenerateSiteSamplesCli(argv: string[]): GenerateSiteSamples
   let outputRoot = "/tmp/briaspas-samples";
   let onlySlug: string | null = null;
   let respectRateLimit = false;
-  let maxRateLimitRetries = 3;
+  let maxRateLimitRetries = DEFAULT_MAX_RATE_LIMIT_RETRIES;
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
@@ -32,8 +35,9 @@ export function parseGenerateSiteSamplesCli(argv: string[]): GenerateSiteSamples
       continue;
     }
     if (arg === "--max-rate-limit-retries") {
-      const parsed = Number.parseInt(argv[index + 1] ?? "3", 10);
-      maxRateLimitRetries = Number.isFinite(parsed) && parsed >= 0 ? parsed : 3;
+      const parsed = Number.parseInt(argv[index + 1] ?? String(DEFAULT_MAX_RATE_LIMIT_RETRIES), 10);
+      maxRateLimitRetries =
+        Number.isFinite(parsed) && parsed >= 0 ? parsed : DEFAULT_MAX_RATE_LIMIT_RETRIES;
       index += 1;
       continue;
     }

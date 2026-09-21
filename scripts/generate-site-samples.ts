@@ -13,7 +13,11 @@ import {
 } from "../src/lib/sites/generate-site-samples-cli";
 import { classifySampleGenerationFailure } from "../src/lib/sites/generated-site-validation-issue";
 import { collectGeneratedSiteContentIssues } from "../src/lib/sites/generated-site-validation";
-import { runWithRateLimitRetries } from "../src/lib/sites/provider-http-retry";
+import {
+  DEFAULT_RATE_LIMIT_WAIT_SECONDS,
+  formatProviderFailureLog,
+  runWithRateLimitRetries,
+} from "../src/lib/sites/provider-http-retry";
 import { estimatedSiteGenerationCostUsd } from "../src/lib/sites/site-generation-estimated-cost";
 import { generateLeadSite, isSiteGeneratorConfigured } from "../src/lib/sites/site-generator";
 
@@ -69,12 +73,13 @@ async function generateSample(
     {
       respectRateLimit: cli.respectRateLimit,
       maxRetries: cli.maxRateLimitRetries,
-      defaultWaitSeconds: 60,
-      sleep: async (milliseconds) => {
-        const seconds = Math.ceil(milliseconds / 1000);
-        console.error(`${sample.slug}: aguardando ${seconds}s (429)`);
-        await sleep(milliseconds);
+      defaultWaitSeconds: DEFAULT_RATE_LIMIT_WAIT_SECONDS,
+      onRetry: ({ waitSeconds, error }) => {
+        console.error(
+          `${sample.slug}: aguardando ${waitSeconds}s ${formatProviderFailureLog(error)}`,
+        );
       },
+      sleep,
     },
   );
 }
@@ -134,6 +139,7 @@ async function main() {
         cliOptions: {
           onlySlug: cli.onlySlug,
           respectRateLimit: cli.respectRateLimit,
+          maxRateLimitRetries: cli.maxRateLimitRetries,
         },
         generatedAt: new Date().toISOString(),
       };
@@ -152,12 +158,13 @@ async function main() {
         cliOptions: {
           onlySlug: cli.onlySlug,
           respectRateLimit: cli.respectRateLimit,
+          maxRateLimitRetries: cli.maxRateLimitRetries,
         },
         ...classified,
       };
       await writeFile(path.join(sampleDir, "report.json"), `${JSON.stringify(report, null, 2)}\n`, "utf8");
       summary.push(report);
-      console.error(`${sample.slug}: falhou (${classified.failureKind})`);
+      console.error(`${sample.slug}: falhou (${classified.failureKind}) ${formatProviderFailureLog(error)}`);
     }
   }
 
@@ -185,6 +192,6 @@ main().catch(async (error) => {
   } catch {
     // ignore write errors on fatal path
   }
-  console.error(classified.error);
+  console.error(classified.error, formatProviderFailureLog(error));
   process.exit(1);
 });

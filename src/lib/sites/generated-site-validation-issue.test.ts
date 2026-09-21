@@ -40,6 +40,20 @@ describe("generated-site-validation-issue", () => {
     expect(JSON.stringify(report)).not.toContain("secret");
   });
 
+  it("classifica OpenRouterRequestError com status HTTP", () => {
+    const report = classifySampleGenerationFailure(
+      Object.assign(new Error("A geração do site pela OpenRouter falhou: Rate limit exceeded"), {
+        name: "OpenRouterRequestError",
+        upstreamStatus: 429,
+      }),
+    );
+    expect(report.failureKind).toBe("provider");
+    expect(report.error).toBe("OpenRouterRequestError");
+    expect(report.providerHttpStatus).toBe(429);
+    expect(report.providerFailure).toBe("rate_limit");
+    expect(JSON.stringify(report)).not.toContain("Rate limit exceeded");
+  });
+
   it("classifica rejeição do validador com issues", () => {
     const error = new GeneratedSiteContentError([
       { code: "semantic.header", message: "Falta header." },

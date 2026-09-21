@@ -12,6 +12,11 @@ describe("parseGenerateSiteSamplesCli", () => {
     ]);
     expect(options.onlySlug).toBe("petshop-dados-demonstrativos");
     expect(options.respectRateLimit).toBe(false);
+    expect(options.maxRateLimitRetries).toBe(8);
+  });
+
+  it("usa 8 retries por padrão", () => {
+    expect(parseGenerateSiteSamplesCli([]).maxRateLimitRetries).toBe(8);
   });
 
   it("ativa espera em 429 com --respect-rate-limit", () => {

@@ -6,6 +6,7 @@ import { isOpenAiConfigured } from "@/lib/openai/env";
 import * as openai from "@/lib/openai/generate-site";
 import { isOpenRouterConfigured } from "@/lib/openrouter/env";
 import * as openrouter from "@/lib/openrouter/generate-site";
+import { formatProviderFailureLog } from "@/lib/sites/provider-http-retry";
 
 export type SiteGeneratorProvider = "groq" | "openai" | "gemini" | "openrouter";
 
@@ -71,7 +72,9 @@ export async function generateDesignPlan(prompt: string) {
       return await providers[provider].generateDesignPlan(prompt);
     } catch (error) {
       lastError = error;
-      console.warn(`site_generation_provider_failed provider=${provider} stage=design error=${error instanceof Error ? error.name : "UnknownError"}`);
+      console.warn(
+        `site_generation_provider_failed provider=${provider} stage=design ${formatProviderFailureLog(error)}`,
+      );
     }
   }
   throw lastError ?? new Error("site_generator_not_configured");
@@ -85,7 +88,9 @@ export async function generateSiteBrief(prompt: string) {
       return { ...generated, provider };
     } catch (error) {
       lastError = error;
-      console.warn(`site_generation_provider_failed provider=${provider} stage=brief error=${error instanceof Error ? error.name : "UnknownError"}`);
+      console.warn(
+        `site_generation_provider_failed provider=${provider} stage=brief ${formatProviderFailureLog(error)}`,
+      );
     }
   }
   throw lastError ?? new Error("site_generator_not_configured");
@@ -101,7 +106,9 @@ export async function generateLeadSite(
       return { ...generated, provider };
     } catch (error) {
       lastError = error;
-      console.warn(`site_generation_provider_failed provider=${provider} stage=site error=${error instanceof Error ? error.name : "UnknownError"}`);
+      console.warn(
+        `site_generation_provider_failed provider=${provider} stage=site ${formatProviderFailureLog(error)}`,
+      );
     }
   }
   throw lastError ?? new Error("site_generator_not_configured");

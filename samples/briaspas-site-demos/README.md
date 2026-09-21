@@ -15,7 +15,7 @@ npm run generate-site-samples -- --only odontologia-dados-demonstrativos --respe
 Flags:
 
 - `--only <slug>` — gera só uma amostra (slugs em `site-generation-sample-leads.ts`).
-- `--respect-rate-limit` ou `--wait-on-429` — em HTTP 429, aguarda `Retry-After` do provedor (ou 60s padrão) e repete até `--max-rate-limit-retries` (padrão 3).
+- `--respect-rate-limit` ou `--wait-on-429` — em rate-limit, capacidade ou timeout, aguarda `max(Retry-After, 60s)` e repete até `--max-rate-limit-retries` (padrão 8).
 - `--out <dir>` — diretório de saída (padrão `/tmp/briaspas-samples`).
 
 Saída padrão:
