@@ -2,7 +2,6 @@
 
 Portfólio de produto — CRM de prospecção para negócios locais.
 
-**Autor:** Wesley Luther
 
 ## Problema
 
