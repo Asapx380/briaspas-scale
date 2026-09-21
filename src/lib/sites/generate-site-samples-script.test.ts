@@ -19,12 +19,23 @@ describe("scripts/generate-site-samples.ts", () => {
     let stderr = "";
 
     try {
-      execFileSync("npx", ["tsx", "scripts/generate-site-samples.ts", "--out", outputRoot], {
-        cwd: process.cwd(),
-        env: emptyProviderEnv,
-        encoding: "utf8",
-        stdio: ["ignore", "pipe", "pipe"],
-      });
+      execFileSync(
+        "npx",
+        [
+          "tsx",
+          "scripts/generate-site-samples.ts",
+          "--out",
+          outputRoot,
+          "--only",
+          "petshop-dados-demonstrativos",
+        ],
+        {
+          cwd: process.cwd(),
+          env: emptyProviderEnv,
+          encoding: "utf8",
+          stdio: ["ignore", "pipe", "pipe"],
+        },
+      );
     } catch (error) {
       const execError = error as NodeJS.ErrnoException & {
         status?: number;
@@ -38,10 +49,14 @@ describe("scripts/generate-site-samples.ts", () => {
     expect(stderr).not.toMatch(/server-only|Client Component module/);
     expect(stderr).toMatch(/Nenhum provedor de geração configurado/);
 
-    const report = JSON.parse(
-      readFileSync(join(outputRoot, "petshop-dados-demonstrativos", "report.json"), "utf8"),
-    ) as { failureKind: string; error: string };
-    expect(report.failureKind).toBe("provider");
-    expect(report.error).toBe("site_generator_not_configured");
+    const summary = JSON.parse(readFileSync(join(outputRoot, "summary.json"), "utf8")) as Array<{
+      slug: string;
+      failureKind: string;
+      error: string;
+    }>;
+    expect(summary).toHaveLength(1);
+    expect(summary[0]?.slug).toBe("petshop-dados-demonstrativos");
+    expect(summary[0]?.failureKind).toBe("provider");
+    expect(summary[0]?.error).toBe("site_generator_not_configured");
   });
 });
