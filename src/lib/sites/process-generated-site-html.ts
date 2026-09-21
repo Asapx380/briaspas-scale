@@ -1,14 +1,19 @@
 import {
+  formatValidationIssuesForRetry,
+  type GeneratedSiteValidationIssue,
+} from "./generated-site-validation-issue";
+import {
   GeneratedSiteContentError,
+  collectGeneratedSiteContentIssues,
   enforceLeadLinks,
   type GeneratedSiteLeadFacts,
-  validateGeneratedSiteContent,
   validateHtml,
 } from "./generated-site-validation";
 import { sanitizeGeneratedHtml, type GeneratedSiteAllowlist } from "./sanitize-generated-html";
 
-export function buildGeneratedSiteRetryPromptSuffix(errors: string[]) {
-  return `\n\nA tentativa anterior falhou na validação de conteúdo. Corrija todos os pontos abaixo sem inventar dados:\n${errors.map((error) => `- ${error}`).join("\n")}`;
+export function buildGeneratedSiteRetryPromptSuffix(issues: GeneratedSiteValidationIssue[]) {
+  const lines = formatValidationIssuesForRetry(issues);
+  return `\n\nA tentativa anterior falhou na validação automática. Corrija todos os pontos abaixo sem inventar dados:\n${lines.map((line) => `- ${line}`).join("\n")}`;
 }
 
 const GENERIC_HTML_RETRY_SUFFIX =
@@ -17,11 +22,11 @@ const GENERIC_HTML_RETRY_SUFFIX =
 export function buildHtmlGenerationUserPrompt(
   htmlPrompt: string,
   attempt: number,
-  contentErrors: string[] | null,
+  validationIssues: GeneratedSiteValidationIssue[] | null,
 ) {
   if (attempt === 1) return htmlPrompt;
-  if (contentErrors && contentErrors.length > 0) {
-    return `${htmlPrompt}${buildGeneratedSiteRetryPromptSuffix(contentErrors)}`;
+  if (validationIssues && validationIssues.length > 0) {
+    return `${htmlPrompt}${buildGeneratedSiteRetryPromptSuffix(validationIssues)}`;
   }
   return `${htmlPrompt}${GENERIC_HTML_RETRY_SUFFIX}`;
 }
@@ -34,9 +39,9 @@ export function processGeneratedSiteHtml(
   const linked = enforceLeadLinks(rawHtml, guardrails);
   const sanitized = sanitizeGeneratedHtml(linked, guardrails);
   const html = validateHtml(sanitized);
-  const contentErrors = validateGeneratedSiteContent(html, lead);
-  if (contentErrors.length > 0) {
-    throw new GeneratedSiteContentError(contentErrors);
+  const contentIssues = collectGeneratedSiteContentIssues(html, lead);
+  if (contentIssues.length > 0) {
+    throw new GeneratedSiteContentError(contentIssues);
   }
   return html;
 }

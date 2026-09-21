@@ -7,7 +7,8 @@ import {
   buildLeadWhatsAppUrl,
 } from "../src/lib/sites/build-generation-prompt";
 import { buildDesignPlanPrompt } from "../src/lib/sites/design-plan";
-import { validateGeneratedSiteContent } from "../src/lib/sites/generated-site-validation";
+import { classifySampleGenerationFailure } from "../src/lib/sites/generated-site-validation-issue";
+import { collectGeneratedSiteContentIssues } from "../src/lib/sites/generated-site-validation";
 import { SITE_GENERATION_SAMPLES } from "../src/lib/sites/site-generation-sample-leads";
 import { generateLeadSite, isSiteGeneratorConfigured } from "../src/lib/sites/site-generator";
 
@@ -41,7 +42,13 @@ function guardrailsFor(lead: (typeof SITE_GENERATION_SAMPLES)[number]["lead"]) {
 }
 
 function sampleFailed(entry: Record<string, unknown>) {
-  return Boolean(entry.error) || entry.validatorPassed === false;
+  if (entry.failureKind === "success") return false;
+  return (
+    entry.failureKind === "provider" ||
+    entry.failureKind === "html_validation" ||
+    entry.failureKind === "unknown" ||
+    entry.validatorPassed === false
+  );
 }
 
 async function writeSummary(summary: Array<Record<string, unknown>>) {
@@ -57,6 +64,7 @@ async function main() {
       summary.push({
         slug: sample.slug,
         niche: sample.nicheLabel,
+        failureKind: "provider",
         error: "site_generator_not_configured",
         generatedAt: new Date().toISOString(),
       });
@@ -83,12 +91,13 @@ async function main() {
         sample.lead,
         guardrailsFor(sample.lead),
       );
-      const validatorErrors = validateGeneratedSiteContent(generated.html, sample.lead);
+      const validatorIssues = collectGeneratedSiteContentIssues(generated.html, sample.lead);
       await writeFile(path.join(sampleDir, "index.html"), generated.html, "utf8");
 
       const report = {
         slug: sample.slug,
         niche: sample.nicheLabel,
+        failureKind: validatorIssues.length === 0 ? "success" : "html_validation",
         provider: generated.provider,
         model: generated.model,
         durationMs: generated.durationMs,
@@ -99,8 +108,9 @@ async function main() {
           generated.usage.promptTokens,
           generated.usage.completionTokens,
         ),
-        validatorErrors,
-        validatorPassed: validatorErrors.length === 0,
+        validatorStage: validatorIssues.length === 0 ? undefined : "content",
+        validatorIssues,
+        validatorPassed: validatorIssues.length === 0,
         generatedAt: new Date().toISOString(),
       };
       await writeFile(path.join(sampleDir, "report.json"), `${JSON.stringify(report, null, 2)}\n`, "utf8");
@@ -109,17 +119,17 @@ async function main() {
         `${sample.slug}: ${report.validatorPassed ? "validador ok" : "validador com erros"} em ${Date.now() - startedAt}ms`,
       );
     } catch (error) {
+      const classified = classifySampleGenerationFailure(error);
       const report = {
         slug: sample.slug,
         niche: sample.nicheLabel,
-        error: error instanceof Error ? error.name : "erro_desconhecido",
-        message: error instanceof Error ? error.message : "erro_desconhecido",
         durationMs: Date.now() - startedAt,
         generatedAt: new Date().toISOString(),
+        ...classified,
       };
       await writeFile(path.join(sampleDir, "report.json"), `${JSON.stringify(report, null, 2)}\n`, "utf8");
       summary.push(report);
-      console.error(`${sample.slug}: falhou (${report.error})`);
+      console.error(`${sample.slug}: falhou (${classified.failureKind})`);
     }
   }
 
@@ -132,12 +142,12 @@ async function main() {
 }
 
 main().catch(async (error) => {
+  const classified = classifySampleGenerationFailure(error);
   const fallback = [
     {
       fatal: true,
-      error: error instanceof Error ? error.name : "erro_desconhecido",
-      message: error instanceof Error ? error.message : "erro_desconhecido",
       generatedAt: new Date().toISOString(),
+      ...classified,
     },
   ];
   try {
@@ -146,6 +156,6 @@ main().catch(async (error) => {
   } catch {
     // ignore write errors on fatal path
   }
-  console.error(error instanceof Error ? error.name : "erro_fatal");
+  console.error(classified.error);
   process.exit(1);
 });

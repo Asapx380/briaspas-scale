@@ -2,11 +2,12 @@ import { getGeminiConfig } from "@/lib/gemini/env";
 import { parseDesignPlanPayload } from "@/lib/sites/design-plan";
 import type { LeadSiteInput } from "@/lib/sites/build-generation-prompt";
 import {
-  GeneratedSiteContentError,
   InvalidGeneratedSiteError,
   stripMarkdownFence,
   validateDesignPlan,
 } from "@/lib/sites/generated-site-validation";
+import { readHtmlRejectionIssues } from "@/lib/sites/generated-site-validation-issue";
+import type { GeneratedSiteValidationIssue } from "@/lib/sites/generated-site-validation";
 import {
   buildHtmlGenerationUserPrompt,
   processGeneratedSiteHtml,
@@ -119,12 +120,12 @@ ${JSON.stringify(design.plan, null, 2)}
 
 Siga exatamente o plano visual validado. Não troque suas cores, fontes, composição ou linguagem de formas.`;
   let lastError: unknown;
-  let lastContentErrors: string[] | null = null;
+  let lastValidationIssues: GeneratedSiteValidationIssue[] | null = null;
 
   for (let attempt = 1; attempt <= 2; attempt += 1) {
     try {
       const response = await callGemini(
-        buildHtmlGenerationUserPrompt(htmlPrompt, attempt, lastContentErrors),
+        buildHtmlGenerationUserPrompt(htmlPrompt, attempt, lastValidationIssues),
         18_000,
         {
           systemInstruction:
@@ -147,8 +148,9 @@ Siga exatamente o plano visual validado. Não troque suas cores, fontes, composi
       };
     } catch (error) {
       if (error instanceof GeminiRequestError) throw error;
-      if (error instanceof GeneratedSiteContentError) {
-        lastContentErrors = error.errors;
+      const rejectionIssues = readHtmlRejectionIssues(error);
+      if (rejectionIssues.length > 0) {
+        lastValidationIssues = rejectionIssues;
       }
       lastError = error;
     }

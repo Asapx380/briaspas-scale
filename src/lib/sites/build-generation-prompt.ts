@@ -122,6 +122,15 @@ QUALIDADE TÉCNICA
 - <title> específico, meta description, meta viewport, theme-color, Open Graph (og:title, og:description, og:type=website) e JSON-LD LocalBusiness somente com campos reais do JSON (nome, telefone, endereço, url do site atual quando existir).
 - Um único <h1>; demais títulos em h2/h3. Alt descritivo em todas as imagens. Sem scripts externos nem inline. Documento abaixo de 120 KB.
 
+CHECKLIST ANTES DE RESPONDER (falha automática se faltar)
+- Documento completo: <!doctype html>, <html lang="pt-BR">, </html> final, <title>, meta description, viewport e theme-color.
+- CSS com :focus-visible e bloco @media (prefers-reduced-motion: reduce).
+- Estrutura: <header>, <main> com sections data-site-section="hero|services|contact" (e opcionais só com dado real), <footer>.
+- Hero contém o único <h1>. Imagens com alt de pelo menos 8 caracteres.
+- Se houver telefone: pelo menos três links idênticos ao whatsapp_url (cabeçalho, contato e botão flutuante).
+- Mapa: no máximo um iframe https://www.google.com/maps?...&output=embed usando exatamente mapa_embed quando existir.
+- Proibido: script, form, lorem, {{ }}, TODO, horários inventados, depoimentos e números fora do JSON.
+
 <dados-do-lead>
 ${serializeLead(input)}
 </dados-do-lead>`;
