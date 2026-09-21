@@ -14,22 +14,11 @@ import {
 import { classifySampleGenerationFailure } from "../src/lib/sites/generated-site-validation-issue";
 import { collectGeneratedSiteContentIssues } from "../src/lib/sites/generated-site-validation";
 import { runWithRateLimitRetries } from "../src/lib/sites/provider-http-retry";
+import { estimatedSiteGenerationCostUsd } from "../src/lib/sites/site-generation-estimated-cost";
 import { generateLeadSite, isSiteGeneratorConfigured } from "../src/lib/sites/site-generator";
 
 const cli = parseGenerateSiteSamplesCli(process.argv.slice(2));
 const outputRoot = cli.outputRoot;
-
-function estimatedCost(
-  provider: "groq" | "openai" | "gemini",
-  promptTokens: number,
-  completionTokens: number,
-) {
-  const prefix = provider.toUpperCase();
-  const inputRate = Number(process.env[`${prefix}_INPUT_USD_PER_MILLION`]);
-  const outputRate = Number(process.env[`${prefix}_OUTPUT_USD_PER_MILLION`]);
-  if (!Number.isFinite(inputRate) || !Number.isFinite(outputRate)) return null;
-  return (promptTokens * inputRate + completionTokens * outputRate) / 1_000_000;
-}
 
 function guardrailsFor(lead: ReturnType<typeof selectSiteGenerationSamples>[number]["lead"]) {
   return {
@@ -134,7 +123,7 @@ async function main() {
         durationMs: generated.durationMs,
         attempts: generated.attempts,
         usage: generated.usage,
-        estimatedCostUsd: estimatedCost(
+        estimatedCostUsd: estimatedSiteGenerationCostUsd(
           generated.provider,
           generated.usage.promptTokens,
           generated.usage.completionTokens,
