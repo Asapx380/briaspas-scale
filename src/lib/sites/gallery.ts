@@ -85,10 +85,9 @@ function pickRelativeUnit(diffSeconds: number): { value: number; unit: RelativeU
   const hours = Math.round(diffSeconds / 3600);
   if (Math.abs(hours) < 24) return { value: hours, unit: "hour" };
   const days = Math.round(diffSeconds / 86400);
-  if (Math.abs(days) < 30) return { value: days, unit: "day" };
-  const months = Math.round(diffSeconds / (86400 * 30));
-  if (Math.abs(months) < 12) return { value: months, unit: "month" };
-  return { value: Math.round(diffSeconds / (86400 * 365)), unit: "year" };
+  if (Math.abs(days) < 365) return { value: days, unit: "day" };
+  const years = Math.round(diffSeconds / (86400 * 365));
+  return { value: years, unit: "year" };
 }
 
 export function formatSiteUpdatedLabel(
@@ -100,15 +99,12 @@ export function formatSiteUpdatedLabel(
   if (Number.isNaN(then.getTime())) return "Atualizado recentemente";
 
   const diffSeconds = Math.round((then.getTime() - now.getTime()) / 1000);
-  if (diffSeconds === 0) return "Atualizado agora";
+  if (diffSeconds >= 0) return "Atualizado agora";
 
-  const rtf = new Intl.RelativeTimeFormat("pt-BR", { numeric: "auto" });
+  const rtf = new Intl.RelativeTimeFormat("pt-BR", { numeric: "always" });
   const { value, unit } = pickRelativeUnit(diffSeconds);
   const relative = rtf.format(value, unit);
-  if (relative.startsWith("há ") || relative === "agora") {
-    return `Atualizado ${relative}`;
-  }
-  return `Atualizado há ${relative}`;
+  return relative.startsWith("há ") ? `Atualizado ${relative}` : `Atualizado há ${relative}`;
 }
 
 export function filterDemoSites(

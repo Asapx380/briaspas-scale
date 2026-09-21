@@ -1,5 +1,9 @@
 import type { SiteGalleryLead } from "@/lib/sites/gallery";
 
+function hoursAgo(hours: number): string {
+  return new Date(Date.now() - hours * 3_600_000).toISOString();
+}
+
 /** Fixtures only for UI preview / e2e when Supabase is unavailable. */
 export const SITE_GALLERY_DEMO_LEADS: SiteGalleryLead[] = [
   {
@@ -10,7 +14,7 @@ export const SITE_GALLERY_DEMO_LEADS: SiteGalleryLead[] = [
     site_status: "ready",
     site_source: "uploaded",
     photos: ["https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg"],
-    updated_at: "2026-09-20T15:30:00.000Z",
+    updated_at: hoursAgo(6),
   },
   {
     id: 302,
@@ -20,7 +24,7 @@ export const SITE_GALLERY_DEMO_LEADS: SiteGalleryLead[] = [
     site_status: "published",
     site_source: "generated",
     photos: [],
-    updated_at: "2026-09-18T09:00:00.000Z",
+    updated_at: hoursAgo(30),
   },
   {
     id: 303,
@@ -30,7 +34,7 @@ export const SITE_GALLERY_DEMO_LEADS: SiteGalleryLead[] = [
     site_status: "generating",
     site_source: "generated",
     photos: [],
-    updated_at: "2026-09-21T08:00:00.000Z",
+    updated_at: hoursAgo(2),
   },
   {
     id: 304,
@@ -40,6 +44,6 @@ export const SITE_GALLERY_DEMO_LEADS: SiteGalleryLead[] = [
     site_status: "failed",
     site_source: "generated",
     photos: ["https://images.pexels.com/photos/377970/pexels-photo-377970.jpeg"],
-    updated_at: "2026-09-10T11:00:00.000Z",
+    updated_at: hoursAgo(120),
   },
 ];

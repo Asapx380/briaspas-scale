@@ -45,10 +45,51 @@ const SORT_OPTIONS: { id: SiteGallerySortId; label: string }[] = [
 ];
 
 function statusTone(status: SiteGalleryLead["site_status"]) {
-  if (status === "published") return "bg-emerald-500/15 text-emerald-800 dark:text-emerald-200";
-  if (status === "generating") return "bg-sky-500/15 text-sky-900 dark:text-sky-100";
-  if (status === "failed") return "bg-red-500/15 text-red-800 dark:text-red-200";
-  return "bg-[var(--neu-bg-well)] text-[var(--text-2)]";
+  if (status === "published") {
+    return "bg-[var(--site-chip-published-bg)] text-[var(--site-chip-published-fg)]";
+  }
+  if (status === "generating") {
+    return "bg-[var(--site-chip-generating-bg)] text-[var(--site-chip-generating-fg)]";
+  }
+  if (status === "failed") {
+    return "bg-[var(--site-chip-failed-bg)] text-[var(--site-chip-failed-fg)]";
+  }
+  return "bg-[var(--site-chip-draft-bg)] text-[var(--site-chip-draft-fg)]";
+}
+
+function SiteCover({
+  cover,
+  initials,
+}: {
+  cover: string | null;
+  initials: string;
+}) {
+  const [photoFailed, setPhotoFailed] = useState(false);
+  const showInitials = !cover || photoFailed;
+
+  if (showInitials) {
+    return (
+      <div
+        className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[var(--brand-solid)]/25 via-[var(--neu-bg-well)] to-[var(--brand-solid)]/10 text-3xl font-bold tracking-tight text-[var(--brand-hover)]"
+        aria-hidden
+      >
+        {initials}
+      </div>
+    );
+  }
+
+  return (
+    <Image
+      src={cover}
+      alt=""
+      fill
+      className="object-cover transition-transform duration-300 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+      sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+      unoptimized
+      referrerPolicy="no-referrer"
+      onError={() => setPhotoFailed(true)}
+    />
+  );
 }
 
 function SiteCardMenu({
@@ -157,23 +198,7 @@ function SiteCard({ lead }: { lead: SiteGalleryLead }) {
         className={`flex min-h-0 flex-1 flex-col ${FOCUS} rounded-2xl`}
       >
         <div className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--neu-bg-well)]">
-          {cover ? (
-            <Image
-              src={cover}
-              alt=""
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-              unoptimized
-            />
-          ) : (
-            <div
-              className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[var(--brand-solid)]/25 via-[var(--neu-bg-well)] to-[var(--brand-solid)]/10 text-3xl font-bold tracking-tight text-[var(--brand-hover)]"
-              aria-hidden
-            >
-              {initials}
-            </div>
-          )}
+          <SiteCover cover={cover} initials={initials} />
         </div>
         <div className="flex flex-1 flex-col gap-2 p-4">
           <h2 className="line-clamp-2 text-base font-semibold leading-snug text-[var(--text)]">
@@ -314,7 +339,7 @@ export function SitesGallery({
       </p>
 
       {loadError ? (
-        <p role="alert" className="mt-8 rounded-2xl border border-red-400/30 bg-red-50 px-4 py-3 text-sm text-red-900 dark:bg-red-950/40 dark:text-red-100">
+        <p role="alert" className="mt-8 rounded-2xl border border-[var(--site-alert-error-border)] bg-[var(--site-alert-error-bg)] px-4 py-3 text-sm text-[var(--site-alert-error-fg)]">
           {loadError}
         </p>
       ) : null}
@@ -327,8 +352,8 @@ export function SitesGallery({
         <div className="app-card mt-10 flex flex-col items-start gap-4 p-8 sm:p-10">
           <p className="text-base font-semibold text-[var(--text)]">Nenhum site ainda</p>
           <p className="max-w-lg text-sm leading-6 text-[var(--text-3)]">
-            Quando você gerar ou enviar um site para um lead, ele aparecerá aqui com status e
-            atalhos para prévia e CRM.
+            Quando você enviar um site em ZIP para um lead, ele aparecerá aqui com status e atalhos
+            para prévia e CRM.
           </p>
           <Link
             href="/app/criar-site"

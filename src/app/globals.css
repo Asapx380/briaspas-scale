@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 :root {
   /* LeadSite-aligned tokens (live site soft-dark neu + brand) */
   --background: #e6e7ec;
@@ -92,6 +94,18 @@
   --brand-on-ink: #4da3ff;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  --site-chip-draft-bg: rgba(222, 225, 231, 0.95);
+  --site-chip-draft-fg: #3a3a3c;
+  --site-chip-published-bg: rgba(16, 185, 129, 0.16);
+  --site-chip-published-fg: #065f46;
+  --site-chip-generating-bg: rgba(14, 165, 233, 0.16);
+  --site-chip-generating-fg: #0c4a6e;
+  --site-chip-failed-bg: rgba(239, 68, 68, 0.14);
+  --site-chip-failed-fg: #991b1b;
+  --site-alert-error-bg: #fef2f2;
+  --site-alert-error-fg: #7f1d1d;
+  --site-alert-error-border: rgba(248, 113, 113, 0.45);
 }
 
 [data-theme="dark"] {
@@ -163,6 +177,18 @@
   --potential-high-border: #34c759;
   --potential-high-badge: #145a2a;
   --potential-high-fill: #30d158;
+
+  --site-chip-draft-bg: rgba(255, 255, 255, 0.08);
+  --site-chip-draft-fg: #d8dee8;
+  --site-chip-published-bg: rgba(52, 211, 153, 0.18);
+  --site-chip-published-fg: #d1fae5;
+  --site-chip-generating-bg: rgba(56, 189, 248, 0.18);
+  --site-chip-generating-fg: #e0f2fe;
+  --site-chip-failed-bg: rgba(248, 113, 113, 0.18);
+  --site-chip-failed-fg: #fecaca;
+  --site-alert-error-bg: rgba(127, 29, 29, 0.35);
+  --site-alert-error-fg: #fecaca;
+  --site-alert-error-border: rgba(248, 113, 113, 0.4);
 }
 
 @theme inline {

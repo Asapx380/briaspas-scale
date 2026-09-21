@@ -23,15 +23,35 @@ describe("sanitizeGallerySearchQuery", () => {
 });
 
 describe("formatSiteUpdatedLabel", () => {
-  it("usa Atualizado e RelativeTimeFormat em pt-BR", () => {
-    const now = new Date("2026-09-21T12:00:00.000Z");
-    const twoDaysAgo = "2026-09-19T12:00:00.000Z";
-    const label = formatSiteUpdatedLabel(twoDaysAgo, now);
-    expect(label).toMatch(/^Atualizado /);
-    expect(label.toLowerCase()).not.toContain("editado");
+  const now = new Date("2026-09-21T12:00:00.000Z");
+
+  function isoSecondsAgo(seconds: number) {
+    return new Date(now.getTime() - seconds * 1000).toISOString();
+  }
+
+  it("usa numeric always e prefixo Atualizado há", () => {
+    expect(formatSiteUpdatedLabel(isoSecondsAgo(30), now)).toBe("Atualizado há 30 segundos");
+    expect(formatSiteUpdatedLabel(isoSecondsAgo(5 * 60), now)).toBe("Atualizado há 5 minutos");
+    expect(formatSiteUpdatedLabel(isoSecondsAgo(3600), now)).toBe("Atualizado há 1 hora");
+    expect(formatSiteUpdatedLabel(isoSecondsAgo(86400), now)).toBe("Atualizado há 1 dia");
+    expect(formatSiteUpdatedLabel(isoSecondsAgo(2 * 86400), now)).toBe("Atualizado há 2 dias");
+    expect(formatSiteUpdatedLabel(isoSecondsAgo(40 * 86400), now)).toBe("Atualizado há 40 dias");
+    expect(formatSiteUpdatedLabel(isoSecondsAgo(365 * 86400), now)).toBe("Atualizado há 1 ano");
+  });
+
+  it("não usa rótulos vagos como ontem ou mês passado", () => {
+    const label = formatSiteUpdatedLabel(isoSecondsAgo(86400), now);
+    expect(label.toLowerCase()).not.toContain("ontem");
+    expect(label.toLowerCase()).not.toContain("mês passado");
+    expect(label.toLowerCase()).not.toContain("ano passado");
+  });
+
+  it("trata data no futuro como agora", () => {
+    const future = new Date(now.getTime() + 60_000).toISOString();
+    expect(formatSiteUpdatedLabel(future, now)).toBe("Atualizado agora");
   });
 
   it("trata ausência de data", () => {
-    expect(formatSiteUpdatedLabel(null)).toBe("Atualizado recentemente");
+    expect(formatSiteUpdatedLabel(null, now)).toBe("Atualizado recentemente");
   });
 });

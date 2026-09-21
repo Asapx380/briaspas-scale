@@ -11,8 +11,7 @@ export default function CriarSitePage() {
       <div className="app-card mt-10 p-8 text-center sm:p-12">
         <p className="text-lg font-semibold text-[var(--text)]">Em breve</p>
         <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[var(--text-3)]">
-          Enquanto isso, use a galeria Meus sites para abrir rascunhos existentes ou continue
-          gerando sites a partir do CRM.
+          Enquanto isso, gere o briefing e envie o site em ZIP pelo detalhe do lead no CRM.
         </p>
         <Link
           href="/app/sites"

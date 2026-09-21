@@ -59,7 +59,7 @@ function buildSitesQuery(
     query = query.order("updated_at", { ascending: false, nullsFirst: false });
   }
 
-  return query;
+  return query.order("id", { ascending: false });
 }
 
 export default async function SitesPage({ searchParams }: SitesPageProps) {
