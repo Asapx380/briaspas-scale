@@ -1,6 +1,7 @@
 import { isGroqConfigured, getGroqConfig } from "@/lib/groq/env";
 import { isOpenAiConfigured, getOpenAiConfig } from "@/lib/openai/env";
 import { isGeminiConfigured, getGeminiConfig } from "@/lib/gemini/env";
+import { isOpenRouterConfigured, getOpenRouterConfig } from "@/lib/openrouter/env";
 import { getSelectedSiteGeneratorProvider, type SiteGeneratorProvider } from "@/lib/sites/site-generator";
 import { stripMarkdownFence } from "@/lib/sites/generated-site-validation";
 
@@ -63,6 +64,31 @@ async function requestOpenAi(messages: ChatMessage[], jsonMode: boolean) {
   return { content, model, provider: "openai" as const };
 }
 
+async function requestOpenRouter(messages: ChatMessage[], jsonMode: boolean) {
+  const { apiKey, model } = getOpenRouterConfig();
+  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model,
+      temperature: 0.4,
+      max_tokens: 2_500,
+      messages,
+      ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
+    }),
+    cache: "no-store",
+    signal: AbortSignal.timeout(60_000),
+  });
+  if (!response.ok) {
+    const payload = await response.json().catch(() => null) as { error?: { message?: string } } | null;
+    throw new AiTextRequestError("openrouter", response.status, payload?.error?.message);
+  }
+  const payload = await response.json() as { choices?: Array<{ message?: { content?: string | null } }> };
+  const content = payload.choices?.[0]?.message?.content;
+  if (typeof content !== "string") throw new AiTextRequestError("openrouter", 502, "Resposta vazia da OpenRouter.");
+  return { content, model, provider: "openrouter" as const };
+}
+
 async function requestGemini(messages: ChatMessage[], jsonMode: boolean) {
   const { apiKey, model } = getGeminiConfig();
   const system = messages.find((message) => message.role === "system")?.content ?? "";
@@ -94,10 +120,11 @@ async function requestGemini(messages: ChatMessage[], jsonMode: boolean) {
 
 function providerOrder(): SiteGeneratorProvider[] {
   const preferred = getSelectedSiteGeneratorProvider();
-  const all: SiteGeneratorProvider[] = ["groq", "openai", "gemini"];
+  const all: SiteGeneratorProvider[] = ["gemini", "groq", "openrouter", "openai"];
   const configured = all.filter((provider) => {
     if (provider === "openai") return isOpenAiConfigured();
     if (provider === "gemini") return isGeminiConfigured();
+    if (provider === "openrouter") return isOpenRouterConfigured();
     return isGroqConfigured();
   });
   if (!preferred) return configured;
@@ -115,6 +142,7 @@ export async function generateAiText(messages: ChatMessage[], options: { json?: 
     try {
       if (provider === "openai") return await requestOpenAi(messages, jsonMode);
       if (provider === "gemini") return await requestGemini(messages, jsonMode);
+      if (provider === "openrouter") return await requestOpenRouter(messages, jsonMode);
       return await requestGroq(messages, jsonMode);
     } catch (error) {
       lastError = error;

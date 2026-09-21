@@ -4,26 +4,36 @@ import { isGeminiConfigured } from "@/lib/gemini/env";
 import * as gemini from "@/lib/gemini/generate-site";
 import { isOpenAiConfigured } from "@/lib/openai/env";
 import * as openai from "@/lib/openai/generate-site";
+import { isOpenRouterConfigured } from "@/lib/openrouter/env";
+import * as openrouter from "@/lib/openrouter/generate-site";
 
-export type SiteGeneratorProvider = "groq" | "openai" | "gemini";
+export type SiteGeneratorProvider = "groq" | "openai" | "gemini" | "openrouter";
 
-const providers = { groq, openai, gemini } as const;
-const fallbackProviders: SiteGeneratorProvider[] = ["gemini", "groq", "openai"];
-
-function preferredProvider(): SiteGeneratorProvider {
-  const configured = process.env.SITE_GENERATOR_PROVIDER;
-  return configured === "openai" || configured === "gemini" ? configured : "groq";
-}
+const providers = { groq, openai, gemini, openrouter } as const;
+const fallbackProviders: SiteGeneratorProvider[] = ["gemini", "groq", "openrouter", "openai"];
 
 function isConfigured(provider: SiteGeneratorProvider) {
   if (provider === "openai") return isOpenAiConfigured();
   if (provider === "gemini") return isGeminiConfigured();
+  if (provider === "openrouter") return isOpenRouterConfigured();
   return isGroqConfigured();
 }
 
 function providerOrder() {
-  const primary = preferredProvider();
-  return [primary, ...fallbackProviders.filter((provider) => provider !== primary)].filter(isConfigured);
+  const configured = process.env.SITE_GENERATOR_PROVIDER?.trim();
+  const explicitPrimary =
+    configured === "openai" ||
+    configured === "gemini" ||
+    configured === "groq" ||
+    configured === "openrouter"
+      ? (configured as SiteGeneratorProvider)
+      : null;
+
+  const order = explicitPrimary
+    ? [explicitPrimary, ...fallbackProviders.filter((provider) => provider !== explicitPrimary)]
+    : fallbackProviders;
+
+  return order.filter(isConfigured);
 }
 
 export function isSiteGeneratorConfigured() {
@@ -38,6 +48,7 @@ export function getSiteGeneratorErrorProvider(error: unknown): SiteGeneratorProv
   if (error instanceof groq.GroqRequestError) return "groq";
   if (error instanceof openai.OpenAiRequestError) return "openai";
   if (error instanceof gemini.GeminiRequestError) return "gemini";
+  if (error instanceof openrouter.OpenRouterRequestError) return "openrouter";
   return null;
 }
 
@@ -45,7 +56,8 @@ export function getSiteGeneratorErrorStatus(error: unknown) {
   if (
     error instanceof groq.GroqRequestError ||
     error instanceof openai.OpenAiRequestError ||
-    error instanceof gemini.GeminiRequestError
+    error instanceof gemini.GeminiRequestError ||
+    error instanceof openrouter.OpenRouterRequestError
   ) {
     return error.upstreamStatus;
   }
@@ -93,4 +105,8 @@ export async function generateLeadSite(
     }
   }
   throw lastError ?? new Error("site_generator_not_configured");
+}
+
+export function __siteGeneratorProviderOrderForTests() {
+  return providerOrder();
 }
