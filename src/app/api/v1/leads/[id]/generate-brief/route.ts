@@ -42,7 +42,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
   const userId = claimsData.claims.sub;
   const rateLimit = checkRateLimit(`site-brief:${userId}`, { limit: 5, windowMs: 10 * 60_000 });
   if (!rateLimit.allowed) return rateLimitResponse(rateLimit.retryAfterSeconds);
-  if (!isSiteGeneratorConfigured()) return errorResponse("site_generator_not_configured", "Adicione GROQ_API_KEY, OPENAI_API_KEY ou GEMINI_API_KEY ao arquivo .env.local e reinicie o servidor.", 503);
+  if (!isSiteGeneratorConfigured()) return errorResponse("site_generator_not_configured", "Adicione GROQ_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY ou OPENROUTER_API_KEY ao arquivo .env.local e reinicie o servidor.", 503);
 
   const { data, error } = await supabase.from("leads")
     .select("id, workspace_id, company_name, niche, phone, address, instagram, website_url, google_maps_url, photos, rating, review_count")
