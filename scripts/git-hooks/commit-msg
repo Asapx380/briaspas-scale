@@ -9,8 +9,19 @@ if [[ -z "$msg_file" || ! -f "$msg_file" ]]; then
 fi
 
 tmp="$(mktemp)"
-# Remove Co-authored-by lines that credit Cursor / cursoragent / generic agents.
+# Remove Co-authored-by lines that credit Cursor / cursoragent / @cursor.com.
 grep -Eiv '^[[:space:]]*Co-authored-by:[[:space:]].*(Cursor|cursoragent|@cursor\.com)' "$msg_file" >"$tmp" || true
+# Drop GitHub squash separator if it now only precedes trailing whitespace.
+python3 - "$tmp" <<'PY'
+import re
+import sys
+path = sys.argv[1]
+with open(path, encoding="utf-8") as f:
+    text = f.read()
+text = re.sub(r"\n---------+\s*\Z", "\n", text)
+with open(path, "w", encoding="utf-8") as f:
+    f.write(text)
+PY
 mv "$tmp" "$msg_file"
 
 is_agent_ident() {

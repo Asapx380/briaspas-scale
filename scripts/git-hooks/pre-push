@@ -18,7 +18,7 @@ while read -r local_ref local_sha remote_ref remote_sha; do
   fi
 
   offending="$(
-    git log --format='%H|%an|%ae|%cn|%ce|%s' "$range" 2>/dev/null \
+    git log --format='%H|%an|%ae|%cn|%ce' "$range" 2>/dev/null \
       | grep -Ei "$agent_pat" || true
   )"
   if [[ -n "$offending" ]]; then
