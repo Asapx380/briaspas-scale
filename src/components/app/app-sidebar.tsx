@@ -9,10 +9,12 @@ import {
   CalendarBlank,
   ChartLineUp,
   GearSix,
+  Globe,
   Kanban,
   ListChecks,
   PlusCircle,
   SidebarSimple,
+  Sparkle,
   UsersThree,
   X,
 } from "@phosphor-icons/react";
@@ -31,9 +33,10 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/app", label: "Dashboard", icon: ChartLineUp, match: "exact" },
-  { href: "/app/leads", label: "Adicionar leads", icon: PlusCircle, match: "prefix" },
+  { href: "/app/leads", label: "Leads", icon: PlusCircle, match: "prefix" },
   { href: "/app/crm", label: "CRM", icon: Kanban, match: "prefix" },
   { href: "/app/agendamentos", label: "Agendamentos", icon: CalendarBlank, match: "prefix" },
+  { href: "/app/sites", label: "Meus sites", icon: Globe, match: "prefix" },
   { href: "/app/equipe", label: "Equipe", icon: UsersThree, match: "prefix" },
   { href: "/app/projetos", label: "Projetos", icon: ListChecks, match: "prefix" },
   { href: "/app/operacao", label: "Operação", icon: Buildings, match: "prefix" },
@@ -45,9 +48,13 @@ const NAV_ITEMS: NavItem[] = [
   },
 ];
 
+const CREATE_SITE_HREF = "/app/criar-site";
+
 function isActive(pathname: string, item: NavItem) {
   // Preview do shell: destaca Dashboard para screenshots sem auth.
-  const path = pathname.startsWith("/preview/shell") ? "/app" : pathname;
+  let path = pathname;
+  if (pathname.startsWith("/preview/shell")) path = "/app";
+  else if (pathname.startsWith("/preview/sites")) path = "/app/sites";
   if (item.match === "exact") return path === item.href;
   return path === item.href || path.startsWith(`${item.href}/`);
 }
@@ -175,7 +182,7 @@ export function AppSidebar({
         >
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
-            const active = isActive(pathname, item);
+            const active = isActive(pathname, item) && pathname !== CREATE_SITE_HREF;
 
             const className = `group flex w-full items-center gap-3 rounded-full text-[13px] font-medium transition-all duration-150 ${FOCUS} ${
               collapsed ? "md:justify-center md:px-0 md:py-2.5" : "px-3.5 py-2.5"
@@ -211,6 +218,20 @@ export function AppSidebar({
               </Link>
             );
           })}
+
+          <Link
+            href={CREATE_SITE_HREF}
+            className={`mt-3 flex w-full items-center gap-3 rounded-full bg-[var(--brand-solid)] text-[13px] font-semibold text-white shadow-[0_8px_20px_rgba(0,113,227,0.35)] transition-opacity hover:opacity-95 ${FOCUS} ${
+              collapsed ? "md:justify-center md:px-0 md:py-2.5" : "px-3.5 py-2.5"
+            } ${pathname === CREATE_SITE_HREF ? "ring-2 ring-white/40" : ""}`}
+            onClick={onClose}
+            title={collapsed ? "Criar site" : undefined}
+          >
+            <Sparkle size={18} weight="fill" className="shrink-0" aria-hidden />
+            <span className={`flex-1 truncate text-left ${collapsed ? "md:hidden" : ""}`}>
+              Criar site
+            </span>
+          </Link>
         </nav>
 
         <div
