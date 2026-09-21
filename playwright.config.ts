@@ -17,7 +17,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "CRM_UI_PREVIEW=1 npm run dev -- --hostname 127.0.0.1",
+    command: "CRM_UI_PREVIEW=1 SITES_UI_PREVIEW=1 npm run dev -- --hostname 127.0.0.1",
     url: "http://127.0.0.1:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
