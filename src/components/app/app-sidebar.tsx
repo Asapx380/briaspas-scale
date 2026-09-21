@@ -14,7 +14,6 @@ import {
   ListChecks,
   PlusCircle,
   SidebarSimple,
-  Sparkle,
   UsersThree,
   X,
 } from "@phosphor-icons/react";
@@ -47,8 +46,6 @@ const NAV_ITEMS: NavItem[] = [
     match: "prefix",
   },
 ];
-
-const CREATE_SITE_HREF = "/app/criar-site";
 
 function isActive(pathname: string, item: NavItem) {
   // Preview do shell: destaca Dashboard para screenshots sem auth.
@@ -182,7 +179,7 @@ export function AppSidebar({
         >
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
-            const active = isActive(pathname, item) && pathname !== CREATE_SITE_HREF;
+            const active = isActive(pathname, item);
 
             const className = `group flex w-full items-center gap-3 rounded-full text-[13px] font-medium transition-all duration-150 ${FOCUS} ${
               collapsed ? "md:justify-center md:px-0 md:py-2.5" : "px-3.5 py-2.5"
@@ -218,20 +215,6 @@ export function AppSidebar({
               </Link>
             );
           })}
-
-          <Link
-            href={CREATE_SITE_HREF}
-            className={`mt-3 flex w-full items-center gap-3 rounded-full bg-[var(--brand-solid)] text-[13px] font-semibold text-white shadow-[0_8px_20px_rgba(0,113,227,0.35)] transition-opacity hover:opacity-95 ${FOCUS} ${
-              collapsed ? "md:justify-center md:px-0 md:py-2.5" : "px-3.5 py-2.5"
-            } ${pathname === CREATE_SITE_HREF ? "ring-2 ring-white/40" : ""}`}
-            onClick={onClose}
-            title={collapsed ? "Criar site" : undefined}
-          >
-            <Sparkle size={18} weight="fill" className="shrink-0" aria-hidden />
-            <span className={`flex-1 truncate text-left ${collapsed ? "md:hidden" : ""}`}>
-              Criar site
-            </span>
-          </Link>
         </nav>
 
         <div
