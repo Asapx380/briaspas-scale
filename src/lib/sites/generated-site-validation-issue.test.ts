@@ -10,6 +10,7 @@ import {
   classifySampleGenerationFailure,
   formatValidationIssuesForRetry,
 } from "./generated-site-validation-issue";
+import { DailyQuotaExhaustedError } from "./provider-quota";
 
 describe("generated-site-validation-issue", () => {
   it("formata códigos para o retry", () => {
@@ -64,6 +65,26 @@ describe("generated-site-validation-issue", () => {
     expect(report.validatorIssues).toEqual([
       { code: "semantic.header", message: "Falta header." },
     ]);
+  });
+
+  it("classifica cota diária OpenRouter sem mensagem de billing no relatório", () => {
+    const report = classifySampleGenerationFailure(
+      new DailyQuotaExhaustedError(["openrouter"]),
+    );
+    expect(report.failureKind).toBe("provider");
+    expect(report.error).toBe("DailyQuotaExhaustedError");
+    expect(report.providerFailure).toBe("daily_quota");
+    expect(JSON.stringify(report)).not.toContain("credits");
+  });
+
+  it("classifica Groq TPM", () => {
+    const report = classifySampleGenerationFailure(
+      Object.assign(new Error("Limit 8000 TPM, Used 5700, Requested 5300. Please try again in 7.32s."), {
+        name: "GroqRequestError",
+        upstreamStatus: 429,
+      }),
+    );
+    expect(report.providerFailure).toBe("tpm");
   });
 
   it("classifica falha de segurança do HTML", () => {

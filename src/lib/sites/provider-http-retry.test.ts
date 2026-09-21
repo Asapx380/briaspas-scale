@@ -142,4 +142,26 @@ describe("provider-http-retry", () => {
     expect(log).not.toMatch(/sk-or-v1-secretkey12/);
     expect(log).toContain("[redacted]");
   });
+
+  it("no TPM espera o try again in, não o piso de 60s", async () => {
+    const sleep = vi.fn(async () => {});
+    const task = vi
+      .fn<() => Promise<string>>()
+      .mockRejectedValueOnce(
+        Object.assign(new Error("Limit 8000 TPM. Please try again in 7.32s."), {
+          name: "GroqRequestError",
+          upstreamStatus: 429,
+        }),
+      )
+      .mockResolvedValueOnce("ok");
+
+    await runWithRateLimitRetries(task, {
+      respectRateLimit: true,
+      maxRetries: 8,
+      defaultWaitSeconds: 60,
+      sleep,
+    });
+
+    expect(sleep).toHaveBeenCalledWith(8_000);
+  });
 });

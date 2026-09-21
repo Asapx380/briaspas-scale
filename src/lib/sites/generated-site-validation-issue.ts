@@ -4,6 +4,7 @@ import {
   type GeneratedSiteValidationIssue,
   type GeneratedSiteValidationStage,
 } from "./generated-site-validation";
+import { classifyProviderQuotaKind } from "./provider-quota";
 
 export type { GeneratedSiteValidationIssue, GeneratedSiteValidationStage };
 
@@ -26,7 +27,11 @@ const PROVIDER_REQUEST_ERROR_NAMES = new Set([
   "OpenRouterRequestError",
 ]);
 
-function classifyProviderFailureKind(name: string, status: number | undefined, message: string) {
+function classifyProviderFailureKind(error: unknown, name: string, status: number | undefined, message: string) {
+  if (name === "DailyQuotaExhaustedError" || classifyProviderQuotaKind(error) === "daily") {
+    return "daily_quota" as const;
+  }
+  if (classifyProviderQuotaKind(error) === "tpm") return "tpm" as const;
   if (status === 401 || status === 403) return "auth" as const;
   if (status === 429 || /rate[\s_-]?limit|resource[\s_-]?exhausted/i.test(message)) {
     return "rate_limit" as const;
@@ -45,7 +50,8 @@ export function classifySampleGenerationFailure(error: unknown) {
   if (
     PROVIDER_REQUEST_ERROR_NAMES.has(name) ||
     name === "TimeoutError" ||
-    name === "AbortError"
+    name === "AbortError" ||
+    name === "DailyQuotaExhaustedError"
   ) {
     const status = typeof groq.upstreamStatus === "number" ? groq.upstreamStatus : undefined;
     const retryAfterSeconds =
@@ -57,7 +63,7 @@ export function classifySampleGenerationFailure(error: unknown) {
       error: name,
       providerHttpStatus: status,
       providerRetryAfterSeconds: retryAfterSeconds,
-      providerFailure: classifyProviderFailureKind(name, status, message),
+      providerFailure: classifyProviderFailureKind(error, name, status, message),
     };
   }
 

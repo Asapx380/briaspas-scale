@@ -18,11 +18,13 @@ import {
   formatProviderFailureLog,
   runWithRateLimitRetries,
 } from "../src/lib/sites/provider-http-retry";
+import { createProviderQuotaState } from "../src/lib/sites/provider-quota";
 import { estimatedSiteGenerationCostUsd } from "../src/lib/sites/site-generation-estimated-cost";
 import { generateLeadSite, isSiteGeneratorConfigured } from "../src/lib/sites/site-generator";
 
 const cli = parseGenerateSiteSamplesCli(process.argv.slice(2));
 const outputRoot = cli.outputRoot;
+const providerQuota = createProviderQuotaState();
 
 function guardrailsFor(lead: ReturnType<typeof selectSiteGenerationSamples>[number]["lead"]) {
   return {
@@ -69,6 +71,7 @@ async function generateSample(
         buildDesignPlanPrompt(sample.lead.category, sample.lead.photoUrls.length > 0),
         sample.lead,
         guardrailsFor(sample.lead),
+        providerQuota,
       ),
     {
       respectRateLimit: cli.respectRateLimit,

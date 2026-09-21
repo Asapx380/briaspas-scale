@@ -1,3 +1,9 @@
+import {
+  DailyQuotaExhaustedError,
+  classifyProviderQuotaKind,
+  parseTryAgainInSeconds,
+} from "./provider-quota";
+
 export const DEFAULT_RATE_LIMIT_WAIT_SECONDS = 60;
 export const DEFAULT_MAX_RATE_LIMIT_RETRIES = 8;
 
@@ -44,17 +50,26 @@ export function readProviderRetryAfterSeconds(error: unknown) {
 }
 
 export function waitSecondsForProviderRetry(error: unknown, defaultWaitSeconds: number) {
+  const kind = classifyProviderQuotaKind(error);
+  const tryAgain = parseTryAgainInSeconds(readErrorMessage(error));
   const hinted =
     typeof (error as { retryAfterSeconds?: number }).retryAfterSeconds === "number" &&
     (error as { retryAfterSeconds: number }).retryAfterSeconds >= 0
       ? (error as { retryAfterSeconds: number }).retryAfterSeconds
       : readProviderRetryAfterSeconds(error);
-  return Math.max(hinted ?? 0, defaultWaitSeconds);
+
+  if (kind === "tpm") {
+    return Math.max(1, tryAgain ?? hinted ?? defaultWaitSeconds);
+  }
+
+  return Math.max(hinted ?? 0, tryAgain ?? 0, defaultWaitSeconds);
 }
 
 export function isRetryableProviderFailure(error: unknown) {
+  if (error instanceof DailyQuotaExhaustedError) return false;
   const name = readErrorName(error);
   if (name === "GeneratedSiteContentError" || name === "InvalidGeneratedSiteError") return false;
+  if (classifyProviderQuotaKind(error) === "daily") return false;
 
   const status = readProviderHttpStatus(error);
   if (typeof status === "number" && NON_RETRYABLE_HTTP_STATUS.has(status)) return false;
@@ -71,6 +86,11 @@ export function redactProviderSecrets(value: string) {
     .replace(
       /\b(?:sk-[A-Za-z0-9_-]{10,}|gsk_[A-Za-z0-9_-]{10,}|or-[A-Za-z0-9_-]{10,}|AIza[A-Za-z0-9_-]{10,})\b/g,
       "[redacted]",
+    )
+    .replace(/\borg_[A-Za-z0-9]+\b/g, "org_[redacted]")
+    .replace(
+      /https?:\/\/[^\s]*?(?:console\.groq\.com|openrouter\.ai|ai\.google\.dev|makersuite)[^\s]*/gi,
+      "[url]",
     );
 }
 
