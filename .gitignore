@@ -45,3 +45,7 @@ next-env.d.ts
 test-results/
 playwright-report/
 .tmp
+
+# Amostras de site geradas localmente (PR 2b; nunca commitar HTML)
+/tmp/briaspas-samples/
+briaspas-samples/

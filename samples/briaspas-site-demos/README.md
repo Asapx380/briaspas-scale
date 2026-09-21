@@ -17,6 +17,6 @@ Saída padrão:
 - `/tmp/briaspas-samples/<slug>/lead.json`
 - `/tmp/briaspas-samples/summary.json`
 
-Diretório customizado: `npx tsx scripts/generate-site-samples.ts ./caminho/de-saida`
+Diretório customizado: `npm run generate-site-samples -- ./caminho/de-saida`
 
 Nunca commitar chaves nem leads reais.
