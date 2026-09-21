@@ -1,5 +1,3 @@
-import "server-only";
-
 export function isOpenRouterConfigured() {
   return Boolean(process.env.OPENROUTER_API_KEY?.trim());
 }

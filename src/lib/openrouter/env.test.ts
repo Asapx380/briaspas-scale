@@ -21,9 +21,9 @@ describe("openrouter env", () => {
     expect(() => getOpenRouterConfig()).toThrow(/OPENROUTER_API_KEY/);
   });
 
-  it("marca módulo como server-only", () => {
+  it("não expõe chave em NEXT_PUBLIC_ nem importa server-only (compatível com tsx/Node)", () => {
     const envSource = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "env.ts"), "utf8");
-    expect(envSource).toContain('import "server-only"');
+    expect(envSource).not.toContain('import "server-only"');
     expect(envSource).not.toMatch(/NEXT_PUBLIC_/);
   });
 });
