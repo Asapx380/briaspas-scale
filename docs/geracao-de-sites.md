@@ -4,7 +4,7 @@ A IA gera um briefing estruturado. O operador cria o site e envia um ZIP para ho
 
 ## Configuração
 
-1. Escolha Groq, OpenAI ou Gemini e crie a respectiva chave de API.
+1. Escolha Groq, OpenAI, Gemini ou OpenRouter e crie a respectiva chave de API.
 2. Adicione a chave somente ao arquivo `.env.local`:
 
 ```env
@@ -13,7 +13,17 @@ GROQ_SITE_MODEL=openai/gpt-oss-120b
 SITE_GENERATOR_PROVIDER=groq
 ```
 
-Para os outros provedores, altere `SITE_GENERATOR_PROVIDER` para `openai` ou `gemini` e preencha a chave e modelo correspondentes. O servidor tenta outro provedor já configurado se o principal falhar.
+Para os outros provedores, altere `SITE_GENERATOR_PROVIDER` para `openai`, `gemini` ou `openrouter` e preencha a chave e modelo correspondentes. O servidor tenta outro provedor já configurado se o principal falhar, na ordem padrão Gemini, Groq, OpenRouter e OpenAI.
+
+Fallback gratuito via OpenRouter (modelos free com capacidade variável; podem falhar ou atingir limite):
+
+```env
+OPENROUTER_API_KEY=sua_chave
+OPENROUTER_SITE_MODEL=openrouter/free
+SITE_GENERATOR_PROVIDER=openrouter
+```
+
+Modelos gratuitos não garantem geração ilimitada. Monitore falhas e limites no painel da OpenRouter.
 
 Para usar foto de banco quando o lead não tiver foto real, crie uma chave em [Pexels API](https://www.pexels.com/api/) e adicione:
 

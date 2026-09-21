@@ -75,7 +75,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   try {
     if (!brief) {
-      if (!isSiteGeneratorConfigured()) return errorResponse("site_generator_not_configured", "Configure Groq, OpenAI ou Gemini antes de criar o site.", 503);
+      if (!isSiteGeneratorConfigured()) return errorResponse("site_generator_not_configured", "Configure Groq, OpenAI, Gemini ou OpenRouter antes de criar o site.", 503);
       generation = await generateSiteBrief(buildSiteBriefPrompt(input));
       brief = withTrustedStockPhoto(generation.plan, input);
     } else {

@@ -49,17 +49,7 @@ function photoUrls(value: unknown) {
     }
   });
 }
-function estimatedGenerationCost(
-  provider: "groq" | "openai" | "gemini",
-  promptTokens: number,
-  completionTokens: number,
-) {
-  const prefix = provider.toUpperCase();
-  const inputRate = Number(process.env[`${prefix}_INPUT_USD_PER_MILLION`]);
-  const outputRate = Number(process.env[`${prefix}_OUTPUT_USD_PER_MILLION`]);
-  if (!Number.isFinite(inputRate) || !Number.isFinite(outputRate) || inputRate < 0 || outputRate < 0) return null;
-  return (promptTokens * inputRate + completionTokens * outputRate) / 1_000_000;
-}
+import { estimatedSiteGenerationCostUsd } from "@/lib/sites/site-generation-estimated-cost";
 
 export async function POST(
   _request: Request,
@@ -82,7 +72,7 @@ export async function POST(
   if (!isSiteGeneratorConfigured()) {
     return errorResponse(
       "site_generator_not_configured",
-      "Adicione GROQ_API_KEY, OPENAI_API_KEY ou GEMINI_API_KEY ao arquivo .env.local e reinicie o servidor.",
+      "Adicione GROQ_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY ou OPENROUTER_API_KEY ao arquivo .env.local e reinicie o servidor.",
       503,
     );
   }
@@ -189,7 +179,7 @@ export async function POST(
       prompt_tokens: generated.usage.promptTokens,
       completion_tokens: generated.usage.completionTokens,
       total_tokens: generated.usage.totalTokens,
-      estimated_cost_usd: estimatedGenerationCost(
+      estimated_cost_usd: estimatedSiteGenerationCostUsd(
         generated.provider,
         generated.usage.promptTokens,
         generated.usage.completionTokens,
@@ -213,11 +203,14 @@ export async function POST(
       lead_id: lead.id,
       requested_by: userId,
       provider: getSiteGeneratorErrorProvider(generationError) ?? getSelectedSiteGeneratorProvider() ?? "unknown",
-      model: process.env.SITE_GENERATOR_PROVIDER === "openai"
-        ? process.env.OPENAI_SITE_MODEL ?? "unknown"
-        : process.env.SITE_GENERATOR_PROVIDER === "gemini"
-          ? process.env.GEMINI_SITE_MODEL ?? "unknown"
-          : process.env.GROQ_SITE_MODEL ?? "unknown",
+      model:
+        getSiteGeneratorErrorProvider(generationError) === "openai"
+          ? process.env.OPENAI_SITE_MODEL ?? "unknown"
+          : getSiteGeneratorErrorProvider(generationError) === "gemini"
+            ? process.env.GEMINI_SITE_MODEL ?? "unknown"
+            : getSiteGeneratorErrorProvider(generationError) === "openrouter"
+              ? process.env.OPENROUTER_SITE_MODEL ?? "openrouter/free"
+              : process.env.GROQ_SITE_MODEL ?? "unknown",
       status: "failed",
       duration_ms: Date.now() - generationStartedAt,
       error_code: errorCode,
@@ -232,14 +225,24 @@ export async function POST(
     const provider = getSiteGeneratorErrorProvider(generationError);
     const upstreamStatus = getSiteGeneratorErrorStatus(generationError);
     if (provider && upstreamStatus) {
-      const providerLabel = provider === "openai" ? "OpenAI" : provider === "gemini" ? "Gemini" : "Groq";
+      const providerLabel =
+        provider === "openai"
+          ? "OpenAI"
+          : provider === "gemini"
+            ? "Gemini"
+            : provider === "openrouter"
+              ? "OpenRouter"
+              : "Groq";
       if (upstreamStatus === 401) {
         return errorResponse(`${provider}_unauthorized`, `A chave da ${providerLabel} não foi aceita.`, 502);
       }
       if (upstreamStatus === 429) {
-        const message = provider === "gemini"
-          ? "A cota gratuita da Gemini foi atingida (RPM, TPM ou RPD). Aguarde o limite renovar e consulte o AI Studio."
-          : `O limite temporário da ${providerLabel} foi atingido. Tente novamente em instantes.`;
+        const message =
+          provider === "gemini"
+            ? "A cota gratuita da Gemini foi atingida (RPM, TPM ou RPD). Aguarde o limite renovar e consulte o AI Studio."
+            : provider === "openrouter"
+              ? "A capacidade do modelo gratuito da OpenRouter foi atingida. Aguarde o limite renovar e tente novamente."
+              : `O limite temporário da ${providerLabel} foi atingido. Tente novamente em instantes.`;
         return errorResponse(`${provider}_rate_limit`, message, 429);
       }
       return errorResponse(`${provider}_request_failed`, `A ${providerLabel} não conseguiu gerar o site agora.`, 502);
