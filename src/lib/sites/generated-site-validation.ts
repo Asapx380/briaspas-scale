@@ -44,6 +44,16 @@ export class InvalidGeneratedSiteError extends Error {
   }
 }
 
+export class GeneratedSiteContentError extends Error {
+  readonly errors: string[];
+
+  constructor(errors: string[]) {
+    super(errors.join(" "));
+    this.name = "GeneratedSiteContentError";
+    this.errors = errors;
+  }
+}
+
 export function stripMarkdownFence(value: string) {
   const trimmed = value.trim();
   const match = trimmed.match(/^```(?:html)?\s*([\s\S]*?)\s*```$/i);

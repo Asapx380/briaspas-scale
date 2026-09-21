@@ -95,19 +95,32 @@ CONVERSÃO
 - Use a avaliação somente quando avaliacao e numero_de_avaliacoes estiverem presentes. Diga "mais de X avaliações"; nunca converta o número em "clientes satisfeitos".
 - Use somente as URLs existentes no JSON.
 
-ESTRUTURA OBRIGATÓRIA
-1. Cabeçalho fixo com nome ou logo e CTA.
-2. Hero com headline de benefício, subheadline e CTA. Priorize foto real; sem foto real, pode usar foto_de_banco conforme regras de crédito e veracidade.
-3. Sobre com no máximo 2 frases. Use somente nome, categoria e localização existentes, terminando com um convite para confirmar detalhes pelo WhatsApp. Não escreva em primeira pessoa e não diga que o negócio oferece atendimento personalizado, atende determinada faixa etária, possui ambiente acolhedor ou qualquer outro atributo ausente.
-4. Uma lista de 4 a 6 itens típicos da categoria, cada um com microbenefício. Use obrigatoriamente o título "Serviços que podem estar disponíveis" e o aviso visível "Consulte o estabelecimento para confirmar os serviços oferecidos."
-5. Prova social com estrelas e quantidade, somente quando os dois dados reais de avaliação existirem.
-6. Galeria com todas as fotos_reais, somente quando fotos_reais não estiver vazio. Nunca inclua foto_de_banco na galeria.
-7. Localização com endereço. Quando mapa_embed existir, use exatamente essa URL em um único iframe com loading="lazy"; não crie outro iframe.
-8. Botões para Instagram, site atual e localização externa, somente quando existirem. No botão de google_maps, use o rótulo neutro "Ver localização", pois a URL pode vir de provedores diferentes.
-9. CTA final com reforço curto e botão grande de WhatsApp, quando houver telefone.
-10. Rodapé com nome, endereço quando houver e a frase discreta "Site criado por Briaspas Scale".
+MARCAÇÃO SEMÂNTICA (validação automática)
+- Use exatamente um <header>, um <main> e um <footer>. Não dependa de classes visuais para identificar seções.
+- Dentro de <main>, cada bloco principal deve ser <section data-site-section="..."> com estes identificadores:
+  - Obrigatórios: hero (com o único <h1> da página), services, contact.
+  - Opcionais (somente com dado real no JSON): about, social-proof, gallery, location.
+- Nunca use data-site-section="testimonials", <blockquote> com citações de clientes, horários de funcionamento nem números que não estejam no JSON.
 
-Inclua <title> específico, meta description realista, meta viewport, idioma pt-BR e cor de tema. Use HTML semântico, CSS embutido em <style>, :focus-visible claramente perceptível, bom contraste, imagens com alt descritivo contendo o nome ou a categoria do negócio e dimensões responsivas. Não use estilos inline repetitivos. Mantenha o documento abaixo de 120 KB.
+ESTRUTURA OBRIGATÓRIA
+1. <header> fixo com nome ou logo e CTA de WhatsApp quando houver telefone.
+2. <section data-site-section="hero"> com headline de benefício, subheadline e CTA. Priorize foto real; sem foto real, pode usar foto_de_banco conforme regras de crédito e veracidade.
+3. <section data-site-section="about"> com no máximo 2 frases, somente se fizer sentido com nome, categoria e localização existentes, terminando com convite para confirmar detalhes pelo WhatsApp. Omita a seção inteira se não houver conteúdo factual suficiente.
+4. <section data-site-section="services"> com 4 a 6 itens típicos da categoria, cada um com microbenefício. Título obrigatório: "Serviços que podem estar disponíveis" e aviso visível "Consulte o estabelecimento para confirmar os serviços oferecidos."
+5. Bloco de diferenciais (pode ficar dentro de services ou em section about) com sugestões do nicho, sem afirmar fatos não confirmados.
+6. <section data-site-section="social-proof"> com estrelas e quantidade, somente quando avaliacao e numero_de_avaliacoes existirem no JSON.
+7. <section data-site-section="gallery"> com todas as fotos_reais, somente quando fotos_reais não estiver vazio. Nunca inclua foto_de_banco na galeria.
+8. <section data-site-section="location"> com endereço. Quando mapa_embed existir, use exatamente essa URL em um único iframe com loading="lazy"; não crie outro iframe.
+9. Botões para Instagram, site atual e localização externa, somente quando existirem. No botão de google_maps, use o rótulo neutro "Ver localização".
+10. FAQ curto com 3 a 4 perguntas genéricas do nicho (sem horários, preços ou promessas factuais inventadas).
+11. <section data-site-section="contact"> com reforço curto e botão grande de WhatsApp, quando houver telefone.
+12. Botão flutuante fixo de WhatsApp (canto inferior) quando houver telefone, usando exatamente whatsapp_url.
+13. <footer> com nome, endereço quando houver, créditos de fotos_reais e foto_de_banco quando usadas, e a frase discreta "Site criado por Briaspas Scale".
+
+QUALIDADE TÉCNICA
+- Mobile-first, CSS embutido em <style>, :focus-visible perceptível, contraste AA, @media (prefers-reduced-motion: reduce).
+- <title> específico, meta description, meta viewport, theme-color, Open Graph (og:title, og:description, og:type=website) e JSON-LD LocalBusiness somente com campos reais do JSON (nome, telefone, endereço, url do site atual quando existir).
+- Um único <h1>; demais títulos em h2/h3. Alt descritivo em todas as imagens. Sem scripts externos nem inline. Documento abaixo de 120 KB.
 
 <dados-do-lead>
 ${serializeLead(input)}

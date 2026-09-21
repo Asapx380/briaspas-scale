@@ -36,5 +36,6 @@ Use este formato exato:
 Fontes permitidas: Bebas Neue, DM Serif Display, Fraunces, Manrope, Outfit, Playfair Display, Inter, Lato, Nunito Sans, Source Sans 3, Work Sans.
 Inclua 4 a 6 serviços e 2 ou 3 diferenciais. Todos os textos devem ser objetivos: resumo até 300 caracteres, demais campos de texto até 120 caracteres. Cores devem ter contraste legível. Evite bege com terracota, preto com um único neon e cards repetidos.
 ${hasPhotos ? "Há fotos reais; sugira valorizá-las." : "Não há fotos reais; use composição, cor e tipografia sem inventar imagens."}
+O HTML final usará seções com data-site-section (hero, services, contact e opcionais). O layoutConcept e os principles devem orientar hierarquia clara, CTA de WhatsApp visível e blocos que possam ser omitidos quando não houver dado real.
 Retorne somente objeto JSON.`;
 }

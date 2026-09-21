@@ -125,6 +125,7 @@ export async function POST(
     const generated = await generateLeadSite(
       buildLeadSitePrompt(input),
       buildDesignPlanPrompt(input.category, input.photoUrls.length > 0),
+      input,
       {
         whatsappUrl: buildLeadWhatsAppUrl(input.phone),
         mapEmbedUrl: buildLeadMapEmbedUrl(input.address),

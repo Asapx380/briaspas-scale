@@ -40,4 +40,12 @@ describe("sanitizeGeneratedHtml", () => {
     expect(html).toContain(`href="${page}"`);
     expect(html).not.toContain("fora.jpg");
   });
+
+  it("preserva data-site-section nas seções", () => {
+    const html = sanitizeGeneratedHtml(
+      '<main><section data-site-section="hero"><h1>Título</h1></section></main>',
+      { whatsappUrl: null, mapEmbedUrl: null, photoUrls: [], externalUrls: [] },
+    );
+    expect(html).toContain('data-site-section="hero"');
+  });
 });

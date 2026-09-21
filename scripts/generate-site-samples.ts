@@ -1,104 +1,117 @@
-import { loadEnvConfig } from "@next/env";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import {
   buildLeadMapEmbedUrl,
   buildLeadSitePrompt,
   buildLeadWhatsAppUrl,
-  type LeadSiteInput,
 } from "../src/lib/sites/build-generation-prompt";
 import { buildDesignPlanPrompt } from "../src/lib/sites/design-plan";
-import { estimatedSiteGenerationCostUsd } from "../src/lib/sites/site-generation-estimated-cost";
-import { generateLeadSite, isSiteGeneratorConfigured } from "../src/lib/sites/site-generator";
+import { validateGeneratedSiteContent } from "../src/lib/sites/generated-site-validation";
+import { SITE_GENERATION_SAMPLES } from "../src/lib/sites/site-generation-sample-leads";
+import { generateLeadSite, getSelectedSiteGeneratorProvider } from "../src/lib/sites/site-generator";
 
-loadEnvConfig(process.cwd());
+const outputRoot = process.argv[2] || "/tmp/briaspas-samples";
 
-const outputRoot = process.argv.includes("--out")
-  ? process.argv[process.argv.indexOf("--out") + 1] ?? "/tmp/briaspas-samples"
-  : "/tmp/briaspas-samples";
+function estimatedCost(
+  provider: "groq" | "openai" | "gemini",
+  promptTokens: number,
+  completionTokens: number,
+) {
+  const prefix = provider.toUpperCase();
+  const inputRate = Number(process.env[`${prefix}_INPUT_USD_PER_MILLION`]);
+  const outputRate = Number(process.env[`${prefix}_OUTPUT_USD_PER_MILLION`]);
+  if (!Number.isFinite(inputRate) || !Number.isFinite(outputRate)) return null;
+  return (promptTokens * inputRate + completionTokens * outputRate) / 1_000_000;
+}
 
-const demoLead: LeadSiteInput = {
-  companyName: "Petshop Horizonte (Dados demonstrativos)",
-  category: "petshop",
-  phone: "11999990000",
-  address: "Rua das Flores, 100, São Paulo, SP",
-  instagram: "https://instagram.com/exemplo",
-  websiteUrl: null,
-  googleMapsUrl: "https://maps.google.com/?q=petshop",
-  photoUrls: ["https://images.pexels.com/photos/placeholder/pexels-photo.jpeg"],
-  stockPhoto: null,
-  rating: 4.8,
-  reviewCount: 120,
-};
-
-const slug = "petshop-dados-demonstrativos";
-
-function guardrailsFor(input: LeadSiteInput) {
+function guardrailsFor(lead: (typeof SITE_GENERATION_SAMPLES)[number]["lead"]) {
   return {
-    whatsappUrl: buildLeadWhatsAppUrl(input.phone),
-    mapEmbedUrl: buildLeadMapEmbedUrl(input.address),
-    photoUrls: input.photoUrls,
-    externalUrls: [input.instagram, input.websiteUrl, input.googleMapsUrl].filter(
-      (url): url is string => Boolean(url),
-    ),
+    whatsappUrl: buildLeadWhatsAppUrl(lead.phone),
+    mapEmbedUrl: buildLeadMapEmbedUrl(lead.address),
+    photoUrls: lead.stockPhoto ? [...lead.photoUrls, lead.stockPhoto.url] : lead.photoUrls,
+    externalUrls: [
+      lead.instagram,
+      lead.websiteUrl,
+      lead.googleMapsUrl,
+      lead.stockPhoto?.photographerUrl,
+      lead.stockPhoto?.pexelsUrl,
+    ].filter((url): url is string => Boolean(url)),
   };
 }
 
 async function main() {
-  await mkdir(outputRoot, { recursive: true });
-  const sampleDir = path.join(outputRoot, slug);
-  await mkdir(sampleDir, { recursive: true });
-
-  if (!isSiteGeneratorConfigured()) {
-    const report = {
-      slug,
-      failureKind: "provider",
-      error: "site_generator_not_configured",
-      generatedAt: new Date().toISOString(),
-    };
-    await writeFile(path.join(sampleDir, "report.json"), `${JSON.stringify(report, null, 2)}\n`, "utf8");
-    console.error("Nenhum provedor de geração configurado.");
-    process.exit(1);
-  }
-
-  const startedAt = Date.now();
-  try {
-    const generated = await generateLeadSite(
-      buildLeadSitePrompt(demoLead),
-      buildDesignPlanPrompt(demoLead.category, demoLead.photoUrls.length > 0),
-      guardrailsFor(demoLead),
+  const provider = getSelectedSiteGeneratorProvider();
+  if (!provider) {
+    console.error(
+      "Configure GROQ_API_KEY, OPENAI_API_KEY ou GEMINI_API_KEY em .env.local antes de gerar amostras.",
     );
-    await writeFile(path.join(sampleDir, "index.html"), generated.html, "utf8");
-    const report = {
-      slug,
-      label: "Dados demonstrativos",
-      provider: generated.provider,
-      model: generated.model,
-      durationMs: generated.durationMs,
-      attempts: generated.attempts,
-      usage: generated.usage,
-      estimatedCostUsd: estimatedSiteGenerationCostUsd(
-        generated.provider,
-        generated.usage.promptTokens,
-        generated.usage.completionTokens,
-      ),
-      validatorPassed: true,
-      failureKind: "success",
-      generatedAt: new Date().toISOString(),
-    };
-    await writeFile(path.join(sampleDir, "report.json"), `${JSON.stringify(report, null, 2)}\n`, "utf8");
-    console.log(`${slug}: ok em ${Date.now() - startedAt}ms (${generated.provider}/${generated.model})`);
-  } catch (error) {
-    const report = {
-      slug,
-      failureKind: "provider",
-      error: error instanceof Error ? error.name : "UnknownError",
-      generatedAt: new Date().toISOString(),
-    };
-    await writeFile(path.join(sampleDir, "report.json"), `${JSON.stringify(report, null, 2)}\n`, "utf8");
-    console.error(`${slug}: falhou (${report.error})`);
     process.exit(1);
   }
+
+  await mkdir(outputRoot, { recursive: true });
+  const summary: Array<Record<string, unknown>> = [];
+
+  for (const sample of SITE_GENERATION_SAMPLES) {
+    const sampleDir = path.join(outputRoot, sample.slug);
+    await mkdir(sampleDir, { recursive: true });
+    await writeFile(
+      path.join(sampleDir, "lead.json"),
+      `${JSON.stringify({ label: "Dados demonstrativos", ...sample.lead }, null, 2)}\n`,
+      "utf8",
+    );
+
+    const startedAt = Date.now();
+    try {
+      const generated = await generateLeadSite(
+        buildLeadSitePrompt(sample.lead),
+        buildDesignPlanPrompt(sample.lead.category, sample.lead.photoUrls.length > 0),
+        sample.lead,
+        guardrailsFor(sample.lead),
+      );
+      const validatorErrors = validateGeneratedSiteContent(generated.html, sample.lead);
+      await writeFile(path.join(sampleDir, "index.html"), generated.html, "utf8");
+
+      const report = {
+        slug: sample.slug,
+        niche: sample.nicheLabel,
+        provider: generated.provider,
+        model: generated.model,
+        durationMs: generated.durationMs,
+        attempts: generated.attempts,
+        usage: generated.usage,
+        estimatedCostUsd: estimatedCost(
+          generated.provider,
+          generated.usage.promptTokens,
+          generated.usage.completionTokens,
+        ),
+        validatorErrors,
+        validatorPassed: validatorErrors.length === 0,
+        generatedAt: new Date().toISOString(),
+      };
+      await writeFile(path.join(sampleDir, "report.json"), `${JSON.stringify(report, null, 2)}\n`, "utf8");
+      summary.push(report);
+      console.log(
+        `${sample.slug}: ${report.validatorPassed ? "validador ok" : "validador com erros"} em ${Date.now() - startedAt}ms`,
+      );
+    } catch (error) {
+      const report = {
+        slug: sample.slug,
+        niche: sample.nicheLabel,
+        error: error instanceof Error ? error.message : "erro_desconhecido",
+        durationMs: Date.now() - startedAt,
+        generatedAt: new Date().toISOString(),
+      };
+      await writeFile(path.join(sampleDir, "report.json"), `${JSON.stringify(report, null, 2)}\n`, "utf8");
+      summary.push(report);
+      console.error(`${sample.slug}: falhou — ${report.error}`);
+    }
+  }
+
+  await writeFile(path.join(outputRoot, "summary.json"), `${JSON.stringify(summary, null, 2)}\n`, "utf8");
+  console.log(`Relatório consolidado: ${path.join(outputRoot, "summary.json")}`);
 }
 
-void main();
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

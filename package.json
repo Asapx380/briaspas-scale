@@ -14,6 +14,7 @@
     "test:e2e": "playwright test",
     "security:secrets": "node scripts/check-client-secrets.mjs",
     "hooks:install": "node scripts/install-git-hooks.mjs",
+    "generate-site-samples": "npx tsx scripts/generate-site-samples.ts",
     "check": "npm run lint && npm run typecheck && npm run test && npm run security:secrets",
     "postinstall": "node scripts/install-git-hooks.mjs"
   },

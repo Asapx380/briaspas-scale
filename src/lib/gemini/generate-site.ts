@@ -1,13 +1,17 @@
 import { getGeminiConfig } from "@/lib/gemini/env";
 import { designPlanSchema } from "@/lib/sites/design-plan";
+import type { LeadSiteInput } from "@/lib/sites/build-generation-prompt";
 import {
-  enforceLeadLinks,
+  GeneratedSiteContentError,
   InvalidGeneratedSiteError,
   stripMarkdownFence,
   validateDesignPlan,
-  validateHtml,
 } from "@/lib/sites/generated-site-validation";
-import { sanitizeGeneratedHtml, type GeneratedSiteAllowlist } from "@/lib/sites/sanitize-generated-html";
+import {
+  buildHtmlGenerationUserPrompt,
+  processGeneratedSiteHtml,
+} from "@/lib/sites/process-generated-site-html";
+import type { GeneratedSiteAllowlist } from "@/lib/sites/sanitize-generated-html";
 
 type GeminiGenerateContentResponse = {
   candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
@@ -102,6 +106,7 @@ export async function generateDesignPlan(prompt: string) {
 export async function generateLeadSite(
   prompt: string,
   designPrompt: string,
+  lead: LeadSiteInput,
   guardrails: GeneratedSiteAllowlist,
 ) {
   const startedAt = Date.now();
@@ -114,22 +119,19 @@ ${JSON.stringify(design.plan, null, 2)}
 
 Siga exatamente o plano visual validado. Não troque suas cores, fontes, composição ou linguagem de formas.`;
   let lastError: unknown;
+  let lastContentErrors: string[] | null = null;
 
   for (let attempt = 1; attempt <= 2; attempt += 1) {
     try {
       const response = await callGemini(
-        attempt === 1
-          ? htmlPrompt
-          : `${htmlPrompt}\n\nA tentativa anterior falhou na validação automática. Revise todos os requisitos de segurança, SEO, acessibilidade, URLs exatas e estrutura antes de responder.`,
+        buildHtmlGenerationUserPrompt(htmlPrompt, attempt, lastContentErrors),
         18_000,
         {
           systemInstruction:
             "Você cria sites comerciais em HTML e CSS. Os dados objetivos fornecidos são imutáveis: nunca altere um dígito, URL, nome, nota ou endereço. Siga rigorosamente as regras de segurança e responda somente com o HTML solicitado.",
         },
       );
-      const linked = enforceLeadLinks(response.content, guardrails);
-      const sanitized = sanitizeGeneratedHtml(linked, guardrails);
-      const html = validateHtml(sanitized);
+      const html = processGeneratedSiteHtml(response.content, lead, guardrails);
 
       return {
         html,
@@ -145,6 +147,9 @@ Siga exatamente o plano visual validado. Não troque suas cores, fontes, composi
       };
     } catch (error) {
       if (error instanceof GeminiRequestError) throw error;
+      if (error instanceof GeneratedSiteContentError) {
+        lastContentErrors = error.errors;
+      }
       lastError = error;
     }
   }
