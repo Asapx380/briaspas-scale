@@ -20,6 +20,7 @@ import {
   mapSiteSourceLabel,
   mapSiteStatusLabel,
   pickSiteCoverPhoto,
+  siteGalleryEffectiveUpdatedAt,
   type SiteGalleryLead,
   type SiteGallerySortId,
 } from "@/lib/sites/gallery";
@@ -189,7 +190,8 @@ function SiteCardMenu({
 function SiteCard({ lead }: { lead: SiteGalleryLead }) {
   const cover = pickSiteCoverPhoto(lead.photos);
   const initials = companyInitials(lead.company_name);
-  const updatedLabel = formatSiteUpdatedLabel(lead.updated_at);
+  const effectiveUpdatedAt = siteGalleryEffectiveUpdatedAt(lead);
+  const updatedLabel = formatSiteUpdatedLabel(effectiveUpdatedAt);
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-[0_1px_0_rgba(15,23,42,0.04)] transition-shadow hover:shadow-[0_12px_32px_rgba(15,23,42,0.08)]">
@@ -220,7 +222,7 @@ function SiteCard({ lead }: { lead: SiteGalleryLead }) {
             </span>
             <time
               className="text-xs text-[var(--text-3)]"
-              dateTime={lead.updated_at ?? undefined}
+              dateTime={effectiveUpdatedAt ?? undefined}
             >
               {updatedLabel}
             </time>

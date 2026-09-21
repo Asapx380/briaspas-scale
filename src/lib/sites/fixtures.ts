@@ -15,6 +15,7 @@ export const SITE_GALLERY_DEMO_LEADS: SiteGalleryLead[] = [
     site_source: "uploaded",
     photos: ["https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg"],
     updated_at: hoursAgo(6),
+    site_generated_at: null,
   },
   {
     id: 302,
@@ -24,7 +25,8 @@ export const SITE_GALLERY_DEMO_LEADS: SiteGalleryLead[] = [
     site_status: "published",
     site_source: "generated",
     photos: [],
-    updated_at: hoursAgo(30),
+    updated_at: hoursAgo(48),
+    site_generated_at: hoursAgo(30),
   },
   {
     id: 303,
@@ -34,7 +36,8 @@ export const SITE_GALLERY_DEMO_LEADS: SiteGalleryLead[] = [
     site_status: "generating",
     site_source: "generated",
     photos: [],
-    updated_at: hoursAgo(2),
+    updated_at: hoursAgo(10),
+    site_generated_at: hoursAgo(2),
   },
   {
     id: 304,
@@ -44,6 +47,7 @@ export const SITE_GALLERY_DEMO_LEADS: SiteGalleryLead[] = [
     site_status: "failed",
     site_source: "generated",
     photos: ["https://images.pexels.com/photos/377970/pexels-photo-377970.jpeg"],
-    updated_at: hoursAgo(120),
+    updated_at: hoursAgo(200),
+    site_generated_at: hoursAgo(120),
   },
 ];

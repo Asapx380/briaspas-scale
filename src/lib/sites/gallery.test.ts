@@ -3,6 +3,7 @@ import {
   formatSiteUpdatedLabel,
   mapSiteStatusLabel,
   sanitizeGallerySearchQuery,
+  siteGalleryEffectiveUpdatedAt,
 } from "./gallery";
 
 describe("mapSiteStatusLabel", () => {
@@ -53,5 +54,24 @@ describe("formatSiteUpdatedLabel", () => {
 
   it("trata ausência de data", () => {
     expect(formatSiteUpdatedLabel(null, now)).toBe("Atualizado recentemente");
+  });
+});
+
+describe("siteGalleryEffectiveUpdatedAt", () => {
+  it("usa updated_at para ZIP e site_generated_at para geração", () => {
+    expect(
+      siteGalleryEffectiveUpdatedAt({
+        site_source: "uploaded",
+        updated_at: "2026-09-01T10:00:00.000Z",
+        site_generated_at: "2026-09-10T10:00:00.000Z",
+      }),
+    ).toBe("2026-09-01T10:00:00.000Z");
+    expect(
+      siteGalleryEffectiveUpdatedAt({
+        site_source: "generated",
+        updated_at: "2026-09-01T10:00:00.000Z",
+        site_generated_at: "2026-09-10T10:00:00.000Z",
+      }),
+    ).toBe("2026-09-10T10:00:00.000Z");
   });
 });

@@ -1,10 +1,11 @@
 import type { CrmLead } from "@/lib/crm/types";
 
 export const SITE_GALLERY_COLUMNS =
-  "id, company_name, niche, slug, site_status, site_source, photos, updated_at";
+  "id, company_name, niche, slug, site_status, site_source, photos, updated_at, site_generated_at";
 
 export const SITE_GALLERY_PAGE_SIZES = [6, 12, 24] as const;
 export const SITE_GALLERY_DEFAULT_PAGE_SIZE = 12;
+export const SITE_GALLERY_FETCH_LIMIT = 5000;
 
 export type SiteGallerySortId = "recent" | "name_asc" | "status";
 
@@ -13,6 +14,7 @@ export type SiteGalleryLead = Pick<
   "id" | "company_name" | "niche" | "slug" | "site_status" | "site_source" | "updated_at"
 > & {
   photos: unknown;
+  site_generated_at: string | null;
 };
 
 const STATUS_LABELS: Record<CrmLead["site_status"], string> = {
@@ -107,6 +109,50 @@ export function formatSiteUpdatedLabel(
   return relative.startsWith("há ") ? `Atualizado ${relative}` : `Atualizado há ${relative}`;
 }
 
+/** ZIP usa updated_at; geração usa site_generated_at. */
+export function siteGalleryEffectiveUpdatedAt(
+  lead: Pick<SiteGalleryLead, "site_source" | "site_generated_at" | "updated_at">,
+): string | null {
+  if (lead.site_source === "uploaded") return lead.updated_at;
+  return lead.site_generated_at;
+}
+
+function effectiveUpdatedTimestamp(lead: SiteGalleryLead): number {
+  const iso = siteGalleryEffectiveUpdatedAt(lead);
+  if (!iso) return 0;
+  const parsed = Date.parse(iso);
+  return Number.isNaN(parsed) ? 0 : parsed;
+}
+
+export function sortSiteGalleryLeads(
+  items: SiteGalleryLead[],
+  sort: SiteGallerySortId,
+): SiteGalleryLead[] {
+  const sorted = [...items];
+  if (sort === "name_asc") {
+    sorted.sort((a, b) => {
+      const byName = a.company_name.localeCompare(b.company_name, "pt-BR");
+      if (byName !== 0) return byName;
+      return b.id - a.id;
+    });
+  } else if (sort === "status") {
+    sorted.sort((a, b) => {
+      const byStatus = a.site_status.localeCompare(b.site_status, "pt-BR");
+      if (byStatus !== 0) return byStatus;
+      const byEffective = effectiveUpdatedTimestamp(b) - effectiveUpdatedTimestamp(a);
+      if (byEffective !== 0) return byEffective;
+      return b.id - a.id;
+    });
+  } else {
+    sorted.sort((a, b) => {
+      const byEffective = effectiveUpdatedTimestamp(b) - effectiveUpdatedTimestamp(a);
+      if (byEffective !== 0) return byEffective;
+      return b.id - a.id;
+    });
+  }
+  return sorted;
+}
+
 export function filterDemoSites(
   items: SiteGalleryLead[],
   q: string,
@@ -117,17 +163,6 @@ export function filterDemoSites(
   if (needle) {
     list = items.filter((item) => item.company_name.toLowerCase().includes(needle));
   }
-  const sorted = [...list];
-  if (sort === "name_asc") {
-    sorted.sort((a, b) => a.company_name.localeCompare(b.company_name, "pt-BR"));
-  } else if (sort === "status") {
-    sorted.sort((a, b) => a.site_status.localeCompare(b.site_status, "pt-BR"));
-  } else {
-    sorted.sort((a, b) => {
-      const aTime = a.updated_at ? Date.parse(a.updated_at) : 0;
-      const bTime = b.updated_at ? Date.parse(b.updated_at) : 0;
-      return bTime - aTime;
-    });
-  }
+  const sorted = sortSiteGalleryLeads(list, sort);
   return sorted;
 }

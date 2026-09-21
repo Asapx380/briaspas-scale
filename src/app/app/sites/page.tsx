@@ -9,10 +9,11 @@ import {
   sanitizeGallerySearchQuery,
   SITE_GALLERY_COLUMNS,
   SITE_GALLERY_DEFAULT_PAGE_SIZE,
+  SITE_GALLERY_FETCH_LIMIT,
   SITE_GALLERY_PAGE_SIZES,
   parseSiteGallerySort,
+  sortSiteGalleryLeads,
   type SiteGalleryLead,
-  type SiteGallerySortId,
 } from "@/lib/sites/gallery";
 import { createClient } from "@/lib/supabase/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -30,10 +31,9 @@ function first(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
 
-function buildSitesQuery(
+function buildSitesFilterQuery(
   supabase: SupabaseClient,
   q: string,
-  sort: SiteGallerySortId,
   withCount: "exact" | undefined = "exact",
 ) {
   let query = supabase
@@ -49,17 +49,7 @@ function buildSitesQuery(
     }
   }
 
-  if (sort === "name_asc") {
-    query = query.order("company_name", { ascending: true });
-  } else if (sort === "status") {
-    query = query
-      .order("site_status", { ascending: true })
-      .order("updated_at", { ascending: false, nullsFirst: false });
-  } else {
-    query = query.order("updated_at", { ascending: false, nullsFirst: false });
-  }
-
-  return query.order("id", { ascending: false });
+  return query;
 }
 
 export default async function SitesPage({ searchParams }: SitesPageProps) {
@@ -75,15 +65,18 @@ export default async function SitesPage({ searchParams }: SitesPageProps) {
 
   const supabase = await createClient();
 
-  let { from, to } = rangeFromPage(requestedPage, pageSize);
-  let { data, error, count } = await buildSitesQuery(supabase, rawQuery, sort).range(from, to);
+  const { data, error, count } = await buildSitesFilterQuery(supabase, rawQuery).limit(
+    SITE_GALLERY_FETCH_LIMIT,
+  );
 
-  let meta = buildPageMeta(count ?? 0, requestedPage, pageSize);
-  if (meta.page !== requestedPage && (count ?? 0) > 0) {
-    ({ from, to } = rangeFromPage(meta.page, pageSize));
-    ({ data, error, count } = await buildSitesQuery(supabase, rawQuery, sort).range(from, to));
-    meta = buildPageMeta(count ?? 0, meta.page, pageSize);
+  const sorted = sortSiteGalleryLeads((data ?? []) as SiteGalleryLead[], sort);
+  const total = count ?? sorted.length;
+  let meta = buildPageMeta(total, requestedPage, pageSize);
+  if (meta.page !== requestedPage && total > 0) {
+    meta = buildPageMeta(total, meta.page, pageSize);
   }
+  const { from, to } = rangeFromPage(meta.page, pageSize);
+  const items = sorted.slice(from, to + 1);
 
   const { count: totalSitesCount, error: countError } = await supabase
     .from("leads")
@@ -91,7 +84,6 @@ export default async function SitesPage({ searchParams }: SitesPageProps) {
     .is("deleted_at", null)
     .or("site_status.neq.not_generated,site_source.eq.uploaded");
 
-  const items = (data ?? []) as SiteGalleryLead[];
   const hasAnySites = !countError && (totalSitesCount ?? 0) > 0;
 
   return (
