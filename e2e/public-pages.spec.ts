@@ -68,6 +68,27 @@ test("apresenta o produto e abre a demonstração", async ({ page }) => {
   await expect(page.getByText("Os dados abaixo são fictícios")).toBeVisible();
 });
 
+test("galeria Meus sites renderiza, filtra busca e mostra vazio", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/preview/sites");
+
+  const main = page.getByRole("main");
+  await expect(main.getByRole("heading", { name: "Meus sites", level: 1 })).toBeVisible();
+  await expect(main.getByRole("list").getByRole("listitem")).toHaveCount(4);
+
+  await page.goto("/preview/sites?q=Caf%C3%A9");
+  await expect(main.getByRole("list").getByRole("listitem")).toHaveCount(1);
+  await expect(main.getByRole("heading", { name: "Café do Centro", level: 2 })).toBeVisible();
+
+  await main.getByRole("searchbox").fill("inexistente");
+  await expect(page).toHaveURL(/q=inexistente/, { timeout: 5000 });
+  await expect(main.getByText("Nenhum resultado para a busca")).toBeVisible();
+
+  await page.goto("/preview/sites?empty=1");
+  await expect(main.getByText("Nenhum site ainda")).toBeVisible();
+  await expect(main.getByRole("link", { name: "Criar site" })).toBeVisible();
+});
+
 test("exibe potencial comercial acessível no kanban mobile", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 900 });
   await page.goto("/preview/crm");
