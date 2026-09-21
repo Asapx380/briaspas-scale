@@ -6,6 +6,14 @@ import { isOpenAiConfigured } from "@/lib/openai/env";
 import * as openai from "@/lib/openai/generate-site";
 import { isOpenRouterConfigured } from "@/lib/openrouter/env";
 import * as openrouter from "@/lib/openrouter/generate-site";
+import type { LeadSiteInput } from "@/lib/sites/build-generation-prompt";
+import { formatProviderFailureLog } from "@/lib/sites/provider-http-retry";
+import {
+  createProviderQuotaState,
+  runWithProviderQuota,
+  type ProviderQuotaState,
+} from "@/lib/sites/provider-quota";
+import type { GeneratedSiteAllowlist } from "@/lib/sites/sanitize-generated-html";
 
 export type SiteGeneratorProvider = "groq" | "openai" | "gemini" | "openrouter";
 
@@ -64,47 +72,60 @@ export function getSiteGeneratorErrorStatus(error: unknown) {
   return null;
 }
 
-export async function generateDesignPlan(prompt: string) {
-  let lastError: unknown;
-  for (const provider of providerOrder()) {
-    try {
-      return await providers[provider].generateDesignPlan(prompt);
-    } catch (error) {
-      lastError = error;
-      console.warn(`site_generation_provider_failed provider=${provider} stage=design error=${error instanceof Error ? error.name : "UnknownError"}`);
-    }
-  }
-  throw lastError ?? new Error("site_generator_not_configured");
+function logProviderFailure(stage: "design" | "brief" | "site", provider: SiteGeneratorProvider, error: unknown) {
+  console.warn(
+    `site_generation_provider_failed provider=${provider} stage=${stage} ${formatProviderFailureLog(error)}`,
+  );
 }
 
-export async function generateSiteBrief(prompt: string) {
-  let lastError: unknown;
-  for (const provider of providerOrder()) {
-    try {
+export async function generateDesignPlan(
+  prompt: string,
+  quota: ProviderQuotaState = createProviderQuotaState(),
+) {
+  return runWithProviderQuota(
+    providerOrder(),
+    quota,
+    (provider) => providers[provider].generateDesignPlan(prompt),
+    { log: (provider, error) => logProviderFailure("design", provider, error) },
+  );
+}
+
+export async function generateSiteBrief(
+  prompt: string,
+  quota: ProviderQuotaState = createProviderQuotaState(),
+) {
+  return runWithProviderQuota(
+    providerOrder(),
+    quota,
+    async (provider) => {
       const generated = await providers[provider].generateDesignPlan(prompt);
       return { ...generated, provider };
-    } catch (error) {
-      lastError = error;
-      console.warn(`site_generation_provider_failed provider=${provider} stage=brief error=${error instanceof Error ? error.name : "UnknownError"}`);
-    }
-  }
-  throw lastError ?? new Error("site_generator_not_configured");
+    },
+    { log: (provider, error) => logProviderFailure("brief", provider, error) },
+  );
 }
 
 export async function generateLeadSite(
-  ...args: Parameters<typeof groq.generateLeadSite>
+  prompt: string,
+  designPrompt: string,
+  lead: LeadSiteInput,
+  guardrails: GeneratedSiteAllowlist,
+  quota: ProviderQuotaState = createProviderQuotaState(),
 ) {
-  let lastError: unknown;
-  for (const provider of providerOrder()) {
-    try {
-      const generated = await providers[provider].generateLeadSite(...args);
+  return runWithProviderQuota(
+    providerOrder(),
+    quota,
+    async (provider) => {
+      const generated = await providers[provider].generateLeadSite(
+        prompt,
+        designPrompt,
+        lead,
+        guardrails,
+      );
       return { ...generated, provider };
-    } catch (error) {
-      lastError = error;
-      console.warn(`site_generation_provider_failed provider=${provider} stage=site error=${error instanceof Error ? error.name : "UnknownError"}`);
-    }
-  }
-  throw lastError ?? new Error("site_generator_not_configured");
+    },
+    { log: (provider, error) => logProviderFailure("site", provider, error) },
+  );
 }
 
 export function __siteGeneratorProviderOrderForTests() {

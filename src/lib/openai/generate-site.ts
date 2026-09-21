@@ -1,13 +1,20 @@
 import { getOpenAiConfig } from "@/lib/openai/env";
-import { designPlanSchema } from "@/lib/sites/design-plan";
+import { parseDesignPlanPayload } from "@/lib/sites/design-plan";
+import type { LeadSiteInput } from "@/lib/sites/build-generation-prompt";
 import {
-  enforceLeadLinks,
   InvalidGeneratedSiteError,
   stripMarkdownFence,
   validateDesignPlan,
-  validateHtml,
 } from "@/lib/sites/generated-site-validation";
-import { sanitizeGeneratedHtml, type GeneratedSiteAllowlist } from "@/lib/sites/sanitize-generated-html";
+import { readHtmlRejectionIssues } from "@/lib/sites/generated-site-validation-issue";
+import type { GeneratedSiteValidationIssue } from "@/lib/sites/generated-site-validation";
+import {
+  buildHtmlGenerationUserPrompt,
+  buildHtmlPromptWithValidatedDesignPlan,
+  processGeneratedSiteHtml,
+} from "@/lib/sites/process-generated-site-html";
+import { parseRetryAfterHeader } from "@/lib/sites/provider-http-retry";
+import type { GeneratedSiteAllowlist } from "@/lib/sites/sanitize-generated-html";
 
 const CHAT_COMPLETIONS_URL = "https://api.openai.com/v1/chat/completions";
 
@@ -18,7 +25,7 @@ type OpenAiChatResponse = {
 };
 
 export class OpenAiRequestError extends Error {
-  constructor(readonly upstreamStatus: number) {
+  constructor(readonly upstreamStatus: number, readonly retryAfterSeconds?: number) {
     super("A geração do site pela OpenAI falhou.");
     this.name = "OpenAiRequestError";
   }
@@ -42,7 +49,11 @@ async function requestOpenAi(messages: ChatMessage[], maxCompletionTokens: numbe
     signal: AbortSignal.timeout(45_000),
   });
 
-  if (!response.ok) throw new OpenAiRequestError(response.status);
+  if (!response.ok) {
+    const retryAfterSeconds =
+      response.status === 429 ? parseRetryAfterHeader(response.headers.get("retry-after")) : undefined;
+    throw new OpenAiRequestError(response.status, retryAfterSeconds);
+  }
 
   const payload = (await response.json()) as OpenAiChatResponse;
   const content = payload.choices?.[0]?.message?.content;
@@ -75,7 +86,7 @@ export async function generateDesignPlan(prompt: string) {
         1_600,
         true,
       );
-      const parsed = designPlanSchema.parse(JSON.parse(stripMarkdownFence(response.content)));
+      const parsed = parseDesignPlanPayload(JSON.parse(stripMarkdownFence(response.content)));
       return { plan: validateDesignPlan(parsed), response, attempts: attempt };
     } catch (error) {
       lastError = error;
@@ -87,18 +98,14 @@ export async function generateDesignPlan(prompt: string) {
 export async function generateLeadSite(
   prompt: string,
   designPrompt: string,
+  lead: LeadSiteInput,
   guardrails: GeneratedSiteAllowlist,
 ) {
   const startedAt = Date.now();
   const design = await generateDesignPlan(designPrompt);
-  const htmlPrompt = `${prompt}
-
-<plano-visual-validado>
-${JSON.stringify(design.plan, null, 2)}
-</plano-visual-validado>
-
-Siga exatamente o plano visual validado. Não troque suas cores, fontes, composição ou linguagem de formas.`;
+  const htmlPrompt = buildHtmlPromptWithValidatedDesignPlan(prompt, design.plan);
   let lastError: unknown;
+  let lastValidationIssues: GeneratedSiteValidationIssue[] | null = null;
 
   for (let attempt = 1; attempt <= 2; attempt += 1) {
     try {
@@ -111,16 +118,12 @@ Siga exatamente o plano visual validado. Não troque suas cores, fontes, composi
           },
           {
             role: "user",
-            content: attempt === 1
-              ? htmlPrompt
-              : `${htmlPrompt}\n\nA tentativa anterior falhou na validação automática. Revise todos os requisitos de segurança, SEO, acessibilidade, URLs exatas e estrutura antes de responder.`,
+            content: buildHtmlGenerationUserPrompt(htmlPrompt, attempt, lastValidationIssues),
           },
         ],
         18_000,
       );
-      const linked = enforceLeadLinks(response.content, guardrails);
-      const sanitized = sanitizeGeneratedHtml(linked, guardrails);
-      const html = validateHtml(sanitized);
+      const html = processGeneratedSiteHtml(response.content, lead, guardrails);
 
       return {
         html,
@@ -136,6 +139,10 @@ Siga exatamente o plano visual validado. Não troque suas cores, fontes, composi
       };
     } catch (error) {
       if (error instanceof OpenAiRequestError) throw error;
+      const rejectionIssues = readHtmlRejectionIssues(error);
+      if (rejectionIssues.length > 0) {
+        lastValidationIssues = rejectionIssues;
+      }
       lastError = error;
     }
   }

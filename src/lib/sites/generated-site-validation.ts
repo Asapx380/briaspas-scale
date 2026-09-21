@@ -4,10 +4,24 @@ import {
   type LeadSiteInput,
 } from "./build-generation-prompt";
 import type { DesignPlan } from "./design-plan";
+import { collectInventedContentIssues } from "./generated-site-content-claims";
+import { collectHeroContrastIssues, contrastRatio } from "./generated-site-hero-contrast";
 import type { GeneratedSiteAllowlist } from "./sanitize-generated-html";
 
 /** Recorte explícito dos campos do lead usados na validação do HTML gerado. */
 export type GeneratedSiteLeadFacts = LeadSiteInput;
+
+export type GeneratedSiteValidationIssue = {
+  code: string;
+  message: string;
+};
+
+export type GeneratedSiteValidationStage =
+  | "security"
+  | "whatsapp_links"
+  | "content"
+  | "design_plan"
+  | "unknown";
 
 const REQUIRED_SITE_SECTIONS = ["hero", "services", "contact"] as const;
 
@@ -27,20 +41,70 @@ const PLACEHOLDER_PATTERNS: Array<{ pattern: RegExp; message: string }> = [
   { pattern: /\bplaceholder\b/i, message: "O HTML contém a palavra \"placeholder\"." },
 ];
 
-const HOUR_PATTERNS: RegExp[] = [
+const SCHEDULING_HOUR_PHRASES = [
+  /\bagende\s+(o\s+|seu\s+)?hor[aá]rio\b/gi,
+  /\bescolha\s+um\s+hor[aá]rio\b/gi,
+  /\bagendar\s+um\s+hor[aá]rio\b/gi,
+  /\bconfirme\s+hor[aá]rios\b/gi,
+  /\bhor[aá]rio\s+que\s+melhor\b/gi,
+];
+
+const BUSINESS_HOUR_PATTERNS: RegExp[] = [
   /\b\d{1,2}\s*:\s*\d{2}\b/,
   /\b\d{1,2}h(?:\d{2})?\b/i,
-  /\bhor[aá]rio\b/i,
+  /\b\d{1,2}\s*h\s*[-–]\s*\d{1,2}\s*h\b/i,
+  /\bhor[aá]rio\s+de\s+funcionamento\b/i,
   /\bsegunda\b.*\bsexta\b/i,
   /\bdomingo\b/i,
+  /\batendemos\s+(das|de)\s+\d/i,
+  /\baberto\s+(das|de)\s+\d/i,
 ];
+
+function stripSchedulingHourPhrases(text: string) {
+  let scrubbed = text;
+  for (const pattern of SCHEDULING_HOUR_PHRASES) {
+    scrubbed = scrubbed.replace(pattern, " ");
+  }
+  return scrubbed;
+}
+
+/** Detecta horário de funcionamento inventado, ignorando CTAs de agendamento. */
+export function mentionsInventedBusinessHours(text: string) {
+  const scrubbed = stripSchedulingHourPhrases(text);
+  return BUSINESS_HOUR_PATTERNS.some((pattern) => pattern.test(scrubbed));
+}
 
 const MAX_HTML_SIZE = 120_000;
 
 export class InvalidGeneratedSiteError extends Error {
-  constructor() {
-    super("A IA devolveu um site inválido ou inseguro.");
+  readonly stage: GeneratedSiteValidationStage;
+  readonly issues: GeneratedSiteValidationIssue[];
+
+  constructor(
+    issues: GeneratedSiteValidationIssue[] = [],
+    stage: GeneratedSiteValidationStage = "unknown",
+  ) {
+    super(
+      issues.map((issue) => issue.message).join(" ") ||
+        "A IA devolveu um site inválido ou inseguro.",
+    );
     this.name = "InvalidGeneratedSiteError";
+    this.issues = issues;
+    this.stage = stage;
+  }
+}
+
+export class GeneratedSiteContentError extends Error {
+  readonly issues: GeneratedSiteValidationIssue[];
+
+  constructor(issues: GeneratedSiteValidationIssue[]) {
+    super(issues.map((issue) => issue.message).join(" "));
+    this.name = "GeneratedSiteContentError";
+    this.issues = issues;
+  }
+
+  get errors() {
+    return this.issues.map((issue) => issue.message);
   }
 }
 
@@ -55,8 +119,11 @@ function readAttribute(tag: string, name: string) {
   return match?.[2]?.trim() ?? null;
 }
 
-export function validateHtml(value: string) {
+export function collectHtmlSecurityIssues(value: string) {
   const html = stripMarkdownFence(value);
+  const issues: GeneratedSiteValidationIssue[] = [];
+  const push = (code: string, message: string) => issues.push({ code, message });
+
   const metaTags = html.match(/<meta\b[^>]*>/gi) ?? [];
   const imageTags = html.match(/<img\b[^>]*>/gi) ?? [];
   const hasMeta = (name: string) =>
@@ -93,41 +160,86 @@ export function validateHtml(value: string) {
       return true;
     }
   });
-  const forbidden = [
-    /<script\b/i,
-    /<object\b/i,
-    /<embed\b/i,
-    /<form\b/i,
-    /\bon[a-z]+\s*=/i,
-    /javascript\s*:/i,
-    /<meta\b[^>]*http-equiv\s*=\s*["']?refresh/i,
+  const forbiddenChecks: Array<{ code: string; pattern: RegExp; message: string }> = [
+    { code: "html.forbidden_script", pattern: /<script\b/i, message: "Scripts não são permitidos." },
+    { code: "html.forbidden_object", pattern: /<object\b/i, message: "Tags object não são permitidas." },
+    { code: "html.forbidden_embed", pattern: /<embed\b/i, message: "Tags embed não são permitidas." },
+    { code: "html.forbidden_form", pattern: /<form\b/i, message: "Formulários não são permitidos." },
+    {
+      code: "html.forbidden_inline_handler",
+      pattern: /\bon[a-z]+\s*=/i,
+      message: "Atributos de evento inline não são permitidos.",
+    },
+    {
+      code: "html.forbidden_javascript_url",
+      pattern: /javascript\s*:/i,
+      message: "URLs javascript: não são permitidas.",
+    },
+    {
+      code: "html.forbidden_meta_refresh",
+      pattern: /<meta\b[^>]*http-equiv\s*=\s*["']?refresh/i,
+      message: "Meta refresh não é permitido.",
+    },
   ];
 
-  if (
-    html.length === 0 ||
-    html.length > MAX_HTML_SIZE ||
-    !/^<!doctype html>/i.test(html) ||
-    !/<html\b[^>]*\blang\s*=\s*["']pt-BR["']/i.test(html) ||
-    !/<\/html>\s*$/i.test(html) ||
-    !/<title\b[^>]*>\s*[^<]+\s*<\/title>/i.test(html) ||
-    !hasMeta("description") ||
-    !hasMeta("viewport") ||
-    !hasMeta("theme-color") ||
-    !/:focus-visible/i.test(html) ||
-    !/prefers-reduced-motion\s*:\s*reduce/i.test(html) ||
-    hasImageWithoutAlt ||
-    iframeStructureIsInvalid ||
-    hasUnsafeIframe ||
-    forbidden.some((pattern) => pattern.test(html))
-  ) {
-    throw new InvalidGeneratedSiteError();
+  if (html.length === 0) push("html.empty", "O documento HTML está vazio.");
+  if (html.length > MAX_HTML_SIZE) {
+    push("html.size_limit", "O HTML excede o tamanho máximo permitido.");
+  }
+  if (!/^<!doctype html>/i.test(html)) {
+    push("html.doctype", "O documento deve começar com <!doctype html>.");
+  }
+  if (!/<html\b[^>]*\blang\s*=\s*["']pt-BR["']/i.test(html)) {
+    push("html.lang", 'O elemento <html> precisa de lang="pt-BR".');
+  }
+  if (!/<\/html>\s*$/i.test(html)) {
+    push("html.closing", "O documento precisa terminar com </html>.");
+  }
+  if (!/<title\b[^>]*>\s*[^<]+\s*<\/title>/i.test(html)) {
+    push("html.title", "Inclua um <title> com texto.");
+  }
+  if (!hasMeta("description")) {
+    push("html.meta_description", 'Inclua <meta name="description" content="...">.');
+  }
+  if (!hasMeta("viewport")) {
+    push("html.meta_viewport", 'Inclua <meta name="viewport" content="...">.');
+  }
+  if (!hasMeta("theme-color")) {
+    push("html.meta_theme_color", 'Inclua <meta name="theme-color" content="...">.');
+  }
+  if (!/:focus-visible/i.test(html)) {
+    push("html.focus_visible", "Inclua estilos :focus-visible no CSS.");
+  }
+  if (!/prefers-reduced-motion\s*:\s*reduce/i.test(html)) {
+    push("html.reduced_motion", "Inclua @media (prefers-reduced-motion: reduce).");
+  }
+  if (hasImageWithoutAlt) {
+    push("html.image_alt", "Todas as imagens precisam de alt com pelo menos 8 caracteres.");
+  }
+  if (iframeStructureIsInvalid) {
+    push("html.iframe_structure", "Use no máximo um iframe bem formado.");
+  }
+  if (hasUnsafeIframe) {
+    push("html.iframe_unsafe", "O iframe do mapa deve usar URL https do Google Maps em modo embed.");
+  }
+  for (const check of forbiddenChecks) {
+    if (check.pattern.test(html)) push(check.code, check.message);
   }
 
-  return html;
+  return issues;
 }
 
-export function enforceLeadLinks(value: string, guardrails: GeneratedSiteAllowlist) {
-  if (!guardrails.whatsappUrl) return value;
+export function validateHtml(value: string) {
+  const issues = collectHtmlSecurityIssues(value);
+  if (issues.length > 0) {
+    throw new InvalidGeneratedSiteError(issues, "security");
+  }
+  return stripMarkdownFence(value);
+}
+
+export function collectWhatsappLinkIssues(value: string, guardrails: GeneratedSiteAllowlist) {
+  const issues: GeneratedSiteValidationIssue[] = [];
+  if (!guardrails.whatsappUrl) return issues;
 
   const html = value.replace(
     /(\bhref\s*=\s*)(["'])https:\/\/wa\.me\/[^"']*\2/gi,
@@ -137,30 +249,32 @@ export function enforceLeadLinks(value: string, guardrails: GeneratedSiteAllowli
   const whatsappLinks = [
     ...html.matchAll(/\bhref\s*=\s*(["'])(https:\/\/wa\.me\/[^"']*)\1/gi),
   ];
-
-  if (
-    whatsappLinks.length < 3 ||
-    whatsappLinks.some((match) => match[2] !== guardrails.whatsappUrl)
-  ) {
-    throw new InvalidGeneratedSiteError();
+  if (whatsappLinks.length < 3) {
+    issues.push({
+      code: "whatsapp.link_count",
+      message: "Inclua pelo menos três links wa.me idênticos ao whatsapp_url do lead.",
+    });
+  } else if (whatsappLinks.some((match) => match[2] !== guardrails.whatsappUrl)) {
+    issues.push({
+      code: "whatsapp.link_mismatch",
+      message: "Todos os links wa.me devem usar exatamente o whatsapp_url do lead.",
+    });
   }
-
-  return html;
+  return issues;
 }
 
-function colorChannels(value: string) {
-  return [1, 3, 5].map((index) => Number.parseInt(value.slice(index, index + 2), 16) / 255);
-}
+export function enforceLeadLinks(value: string, guardrails: GeneratedSiteAllowlist) {
+  const linkIssues = collectWhatsappLinkIssues(value, guardrails);
+  if (linkIssues.length > 0) {
+    throw new InvalidGeneratedSiteError(linkIssues, "whatsapp_links");
+  }
+  if (!guardrails.whatsappUrl) return value;
 
-function luminance(value: string) {
-  return colorChannels(value)
-    .map((channel) => channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4)
-    .reduce((sum, channel, index) => sum + channel * [0.2126, 0.7152, 0.0722][index], 0);
-}
-
-function contrastRatio(first: string, second: string) {
-  const [light, dark] = [luminance(first), luminance(second)].sort((a, b) => b - a);
-  return (light + 0.05) / (dark + 0.05);
+  return value.replace(
+    /(\bhref\s*=\s*)(["'])https:\/\/wa\.me\/[^"']*\2/gi,
+    (_match, prefix: string, quote: string) =>
+      `${prefix}${quote}${guardrails.whatsappUrl}${quote}`,
+  );
 }
 
 export function validateDesignPlan(plan: DesignPlan) {
@@ -168,7 +282,10 @@ export function validateDesignPlan(plan: DesignPlan) {
     contrastRatio(plan.colors.text, plan.colors.background) < 4.5 ||
     contrastRatio(plan.colors.text, plan.colors.surface) < 4.5
   ) {
-    throw new InvalidGeneratedSiteError();
+    throw new InvalidGeneratedSiteError(
+      [{ code: "design.contrast", message: "O plano visual não atende contraste mínimo." }],
+      "design_plan",
+    );
   }
   return plan;
 }
@@ -267,8 +384,9 @@ function collectMapIframeSources(html: string) {
   return sources;
 }
 
-export function validateGeneratedSiteContent(html: string, lead: GeneratedSiteLeadFacts) {
-  const errors: string[] = [];
+export function collectGeneratedSiteContentIssues(html: string, lead: GeneratedSiteLeadFacts) {
+  const issues: GeneratedSiteValidationIssue[] = [];
+  const push = (code: string, message: string) => issues.push({ code, message });
   const document = stripMarkdownFence(html);
   const whatsappUrl = buildLeadWhatsAppUrl(lead.phone);
   const mapEmbedUrl = buildLeadMapEmbedUrl(lead.address);
@@ -276,21 +394,22 @@ export function validateGeneratedSiteContent(html: string, lead: GeneratedSiteLe
   const sectionIds = mainHtml ? readSiteSectionIds(mainHtml) : [];
 
   if (countTags(document, "header") !== 1) {
-    errors.push("O documento precisa de exatamente um elemento <header>.");
+    push("semantic.header", "O documento precisa de exatamente um elemento <header>.");
   }
   if (countTags(document, "main") !== 1) {
-    errors.push("O documento precisa de exatamente um elemento <main>.");
+    push("semantic.main", "O documento precisa de exatamente um elemento <main>.");
   }
   if (countTags(document, "footer") !== 1) {
-    errors.push("O documento precisa de exatamente um elemento <footer>.");
+    push("semantic.footer", "O documento precisa de exatamente um elemento <footer>.");
   }
 
   if (!mainHtml) {
-    errors.push("O conteúdo principal precisa estar dentro de <main>.");
+    push("semantic.main_content", "O conteúdo principal precisa estar dentro de <main>.");
   } else {
     for (const sectionId of REQUIRED_SITE_SECTIONS) {
       if (!sectionIds.includes(sectionId)) {
-        errors.push(
+        push(
+          `semantic.section_${sectionId}`,
           `Falta a seção obrigatória "${sectionId}" (use <section data-site-section="${sectionId}"> dentro de <main>).`,
         );
       }
@@ -298,67 +417,84 @@ export function validateGeneratedSiteContent(html: string, lead: GeneratedSiteLe
 
     for (const [sectionId, isAllowed] of Object.entries(CONDITIONAL_SITE_SECTIONS)) {
       if (sectionIds.includes(sectionId) && !isAllowed(lead)) {
-        errors.push(
+        push(
+          `semantic.section_${sectionId}_without_data`,
           `A seção "${sectionId}" só pode aparecer quando o lead tem o dado correspondente.`,
         );
       }
     }
 
     if (sectionIds.includes("testimonials")) {
-      errors.push("Depoimentos não fazem parte dos dados do lead; omita a seção \"testimonials\".");
+      push(
+        "content.testimonials_forbidden",
+        "Depoimentos não fazem parte dos dados do lead; omita a seção \"testimonials\".",
+      );
     }
   }
 
   const h1Count = (document.match(/<h1\b/gi) ?? []).length;
   if (h1Count !== 1) {
-    errors.push(`O documento precisa de exatamente um <h1> (encontrados: ${h1Count}).`);
+    push(
+      "semantic.h1_count",
+      `O documento precisa de exatamente um <h1> (encontrados: ${h1Count}).`,
+    );
   }
 
   for (const { pattern, message } of PLACEHOLDER_PATTERNS) {
-    if (pattern.test(document)) errors.push(message);
-  }
-
-  const visibleText = extractVisibleText(document);
-  for (const pattern of HOUR_PATTERNS) {
-    if (pattern.test(visibleText)) {
-      errors.push("O HTML menciona horário de funcionamento sem esse dado no lead.");
-      break;
+    if (pattern.test(document)) {
+      push("content.placeholder", message);
     }
   }
 
+  const visibleText = extractVisibleText(document);
+  if (mentionsInventedBusinessHours(visibleText)) {
+    push("content.hours_without_data", "O HTML menciona horário de funcionamento sem esse dado no lead.");
+  }
+
   if (/<blockquote\b/i.test(document)) {
-    errors.push("O HTML contém depoimento em <blockquote>, mas o lead não fornece citações.");
+    push(
+      "content.blockquote_forbidden",
+      "O HTML contém depoimento em <blockquote>, mas o lead não fornece citações.",
+    );
   }
 
   const unexpectedNumbers = findUnexpectedNumbers(visibleText, collectAllowedNumberTokens(lead));
   if (unexpectedNumbers.length > 0) {
-    errors.push(
+    push(
+      "content.unexpected_numbers",
       `O HTML exibe números que não vêm do lead: ${unexpectedNumbers.slice(0, 5).join(", ")}.`,
     );
   }
 
   const whatsappLinks = collectWhatsappLinks(document);
   if (!whatsappUrl && whatsappLinks.length > 0) {
-    errors.push("O HTML inclui links wa.me, mas o lead não tem telefone/WhatsApp.");
+    push("whatsapp.unexpected_links", "O HTML inclui links wa.me, mas o lead não tem telefone/WhatsApp.");
   }
   if (whatsappUrl) {
     if (whatsappLinks.length === 0) {
-      errors.push("O lead tem telefone, mas o HTML não inclui links wa.me.");
+      push("whatsapp.missing_links", "O lead tem telefone, mas o HTML não inclui links wa.me.");
     } else if (whatsappLinks.some((link) => link !== whatsappUrl)) {
-      errors.push("Algum link wa.me não corresponde ao telefone do lead.");
+      push("whatsapp.link_mismatch", "Algum link wa.me não corresponde ao telefone do lead.");
     }
   }
 
   const mapSources = collectMapIframeSources(document);
   if (!mapEmbedUrl) {
     if (mapSources.length > 0) {
-      errors.push("O HTML inclui mapa incorporado, mas o lead não tem endereço.");
+      push("map.unexpected_iframe", "O HTML inclui mapa incorporado, mas o lead não tem endereço.");
     }
   } else if (mapSources.some((source) => source !== mapEmbedUrl)) {
-    errors.push("O iframe do mapa não corresponde ao endereço do lead.");
+    push("map.iframe_mismatch", "O iframe do mapa não corresponde ao endereço do lead.");
   } else if (sectionIds.includes("location") && mapSources.length === 0) {
-    errors.push("A seção \"location\" precisa do iframe com a URL de mapa do lead.");
+    push("map.missing_iframe", "A seção \"location\" precisa do iframe com a URL de mapa do lead.");
   }
 
-  return errors;
+  issues.push(...collectInventedContentIssues(document, lead));
+  issues.push(...collectHeroContrastIssues(document));
+
+  return issues;
+}
+
+export function validateGeneratedSiteContent(html: string, lead: GeneratedSiteLeadFacts) {
+  return collectGeneratedSiteContentIssues(html, lead).map((issue) => issue.message);
 }
