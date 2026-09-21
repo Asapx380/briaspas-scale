@@ -355,13 +355,14 @@ export function SitesGallery({
           <p className="text-base font-semibold text-[var(--text)]">Nenhum site ainda</p>
           <p className="max-w-lg text-sm leading-6 text-[var(--text-3)]">
             Quando você enviar um site em ZIP para um lead, ele aparecerá aqui com status e atalhos
-            para prévia e CRM.
+            para prévia e CRM. A geração automática ainda não está disponível.
           </p>
           <Link
-            href="/app/criar-site"
+            href={demoMode ? "/preview/criar-site" : "/app/criar-site"}
+            aria-label="Criar site, em breve"
             className={`inline-flex items-center justify-center rounded-full bg-[var(--brand-solid)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90 ${FOCUS}`}
           >
-            Criar site
+            Em breve
           </Link>
         </div>
       ) : null}
