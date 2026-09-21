@@ -20,6 +20,54 @@ export const designPlanSchema = z.object({
 export type SiteBrief = z.infer<typeof designPlanSchema>;
 export type DesignPlan = SiteBrief;
 
+const defaultFotoCredito = "Foto sugerida pelo plano visual";
+
+function isHttpUrl(value: string) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+/** Normaliza respostas imperfeitas do modelo sem afrouxar o schema final. */
+export function normalizeDesignPlanFotoSugerida(value: unknown): SiteBrief["fotoSugerida"] {
+  if (value === null || value === undefined) return null;
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!isHttpUrl(trimmed)) return null;
+    return { url: trimmed, credito: defaultFotoCredito };
+  }
+
+  if (typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    const url = typeof record.url === "string" ? record.url.trim() : "";
+    if (!isHttpUrl(url)) return null;
+    const credito =
+      typeof record.credito === "string" && record.credito.trim().length >= 3
+        ? record.credito.trim().slice(0, 180)
+        : defaultFotoCredito;
+    return { url, credito };
+  }
+
+  return null;
+}
+
+export function preprocessDesignPlanPayload(raw: unknown) {
+  if (!raw || typeof raw !== "object") return raw;
+  const clone = { ...(raw as Record<string, unknown>) };
+  clone.fotoSugerida = normalizeDesignPlanFotoSugerida(
+    "fotoSugerida" in clone ? clone.fotoSugerida : null,
+  );
+  return clone;
+}
+
+export function parseDesignPlanPayload(raw: unknown) {
+  return designPlanSchema.parse(preprocessDesignPlanPayload(raw));
+}
+
 export function buildDesignPlanPrompt(category: string, hasPhotos: boolean) {
   return `Crie um briefing de site em JSON para um negócio brasileiro da categoria "${category}".
 

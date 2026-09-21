@@ -9,7 +9,7 @@ import {
 import { buildDesignPlanPrompt } from "../src/lib/sites/design-plan";
 import { validateGeneratedSiteContent } from "../src/lib/sites/generated-site-validation";
 import { SITE_GENERATION_SAMPLES } from "../src/lib/sites/site-generation-sample-leads";
-import { generateLeadSite, getSelectedSiteGeneratorProvider } from "../src/lib/sites/site-generator";
+import { generateLeadSite, isSiteGeneratorConfigured } from "../src/lib/sites/site-generator";
 
 const outputRoot = process.argv[2] || "/tmp/briaspas-samples";
 
@@ -40,17 +40,31 @@ function guardrailsFor(lead: (typeof SITE_GENERATION_SAMPLES)[number]["lead"]) {
   };
 }
 
-async function main() {
-  const provider = getSelectedSiteGeneratorProvider();
-  if (!provider) {
-    console.error(
-      "Configure GROQ_API_KEY, OPENAI_API_KEY ou GEMINI_API_KEY em .env.local antes de gerar amostras.",
-    );
-    process.exit(1);
-  }
+function sampleFailed(entry: Record<string, unknown>) {
+  return Boolean(entry.error) || entry.validatorPassed === false;
+}
 
+async function writeSummary(summary: Array<Record<string, unknown>>) {
+  await writeFile(path.join(outputRoot, "summary.json"), `${JSON.stringify(summary, null, 2)}\n`, "utf8");
+}
+
+async function main() {
   await mkdir(outputRoot, { recursive: true });
   const summary: Array<Record<string, unknown>> = [];
+
+  if (!isSiteGeneratorConfigured()) {
+    for (const sample of SITE_GENERATION_SAMPLES) {
+      summary.push({
+        slug: sample.slug,
+        niche: sample.nicheLabel,
+        error: "site_generator_not_configured",
+        generatedAt: new Date().toISOString(),
+      });
+    }
+    await writeSummary(summary);
+    console.error("Nenhum provedor de geração configurado.");
+    process.exit(1);
+  }
 
   for (const sample of SITE_GENERATION_SAMPLES) {
     const sampleDir = path.join(outputRoot, sample.slug);
@@ -98,21 +112,40 @@ async function main() {
       const report = {
         slug: sample.slug,
         niche: sample.nicheLabel,
-        error: error instanceof Error ? error.message : "erro_desconhecido",
+        error: error instanceof Error ? error.name : "erro_desconhecido",
+        message: error instanceof Error ? error.message : "erro_desconhecido",
         durationMs: Date.now() - startedAt,
         generatedAt: new Date().toISOString(),
       };
       await writeFile(path.join(sampleDir, "report.json"), `${JSON.stringify(report, null, 2)}\n`, "utf8");
       summary.push(report);
-      console.error(`${sample.slug}: falhou — ${report.error}`);
+      console.error(`${sample.slug}: falhou (${report.error})`);
     }
   }
 
-  await writeFile(path.join(outputRoot, "summary.json"), `${JSON.stringify(summary, null, 2)}\n`, "utf8");
+  await writeSummary(summary);
   console.log(`Relatório consolidado: ${path.join(outputRoot, "summary.json")}`);
+
+  if (summary.some(sampleFailed)) {
+    process.exit(1);
+  }
 }
 
-main().catch((error) => {
-  console.error(error);
+main().catch(async (error) => {
+  const fallback = [
+    {
+      fatal: true,
+      error: error instanceof Error ? error.name : "erro_desconhecido",
+      message: error instanceof Error ? error.message : "erro_desconhecido",
+      generatedAt: new Date().toISOString(),
+    },
+  ];
+  try {
+    await mkdir(outputRoot, { recursive: true });
+    await writeSummary(fallback);
+  } catch {
+    // ignore write errors on fatal path
+  }
+  console.error(error instanceof Error ? error.name : "erro_fatal");
   process.exit(1);
 });

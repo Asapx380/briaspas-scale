@@ -1,5 +1,5 @@
 import { getGroqConfig } from "@/lib/groq/env";
-import { designPlanSchema } from "@/lib/sites/design-plan";
+import { designPlanSchema, parseDesignPlanPayload } from "@/lib/sites/design-plan";
 import type { LeadSiteInput } from "@/lib/sites/build-generation-prompt";
 import {
   GeneratedSiteContentError,
@@ -95,7 +95,7 @@ export async function generateDesignPlan(prompt: string) {
         },
         { role: "user", content: prompt },
       ], jsonSchema);
-      const parsed = designPlanSchema.parse(JSON.parse(stripMarkdownFence(response.content)));
+      const parsed = parseDesignPlanPayload(JSON.parse(stripMarkdownFence(response.content)));
       return { plan: validateDesignPlan(parsed), response, attempts: attempt };
     } catch (error) {
       lastError = error;
