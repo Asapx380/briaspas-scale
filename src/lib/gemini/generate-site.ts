@@ -12,6 +12,7 @@ import {
   buildHtmlGenerationUserPrompt,
   processGeneratedSiteHtml,
 } from "@/lib/sites/process-generated-site-html";
+import { parseRetryAfterHeader } from "@/lib/sites/provider-http-retry";
 import type { GeneratedSiteAllowlist } from "@/lib/sites/sanitize-generated-html";
 
 type GeminiGenerateContentResponse = {
@@ -24,7 +25,7 @@ type GeminiGenerateContentResponse = {
 };
 
 export class GeminiRequestError extends Error {
-  constructor(readonly upstreamStatus: number) {
+  constructor(readonly upstreamStatus: number, readonly retryAfterSeconds?: number) {
     super("A geração do site pela Gemini falhou.");
     this.name = "GeminiRequestError";
   }
@@ -65,7 +66,11 @@ async function callGemini(
   });
 
   // Limites Free variam por projeto/modelo. `429 RESOURCE_EXHAUSTED` indica quota (RPM, TPM ou RPD), não bug no HTML.
-  if (!response.ok) throw new GeminiRequestError(response.status);
+  if (!response.ok) {
+    const retryAfterSeconds =
+      response.status === 429 ? parseRetryAfterHeader(response.headers.get("retry-after")) : undefined;
+    throw new GeminiRequestError(response.status, retryAfterSeconds);
+  }
 
   const payload = (await response.json()) as GeminiGenerateContentResponse;
   const content = payload.candidates?.[0]?.content?.parts

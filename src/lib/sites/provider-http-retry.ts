@@ -18,3 +18,28 @@ export function readProviderRetryAfterSeconds(error: unknown) {
   }
   return undefined;
 }
+
+export async function runWithRateLimitRetries<T>(
+  task: () => Promise<T>,
+  options: {
+    respectRateLimit: boolean;
+    maxRetries: number;
+    defaultWaitSeconds: number;
+    sleep: (milliseconds: number) => Promise<void>;
+  },
+) {
+  let retries = 0;
+  while (true) {
+    try {
+      return await task();
+    } catch (error) {
+      const is429 = (error as { upstreamStatus?: number }).upstreamStatus === 429;
+      if (!options.respectRateLimit || !is429 || retries >= options.maxRetries) {
+        throw error;
+      }
+      const waitSeconds = readProviderRetryAfterSeconds(error) ?? options.defaultWaitSeconds;
+      await options.sleep(waitSeconds * 1_000);
+      retries += 1;
+    }
+  }
+}

@@ -12,6 +12,7 @@ import {
   buildHtmlGenerationUserPrompt,
   processGeneratedSiteHtml,
 } from "@/lib/sites/process-generated-site-html";
+import { parseRetryAfterHeader } from "@/lib/sites/provider-http-retry";
 import type { GeneratedSiteAllowlist } from "@/lib/sites/sanitize-generated-html";
 
 const CHAT_COMPLETIONS_URL = "https://api.openai.com/v1/chat/completions";
@@ -23,7 +24,7 @@ type OpenAiChatResponse = {
 };
 
 export class OpenAiRequestError extends Error {
-  constructor(readonly upstreamStatus: number) {
+  constructor(readonly upstreamStatus: number, readonly retryAfterSeconds?: number) {
     super("A geração do site pela OpenAI falhou.");
     this.name = "OpenAiRequestError";
   }
@@ -47,7 +48,11 @@ async function requestOpenAi(messages: ChatMessage[], maxCompletionTokens: numbe
     signal: AbortSignal.timeout(45_000),
   });
 
-  if (!response.ok) throw new OpenAiRequestError(response.status);
+  if (!response.ok) {
+    const retryAfterSeconds =
+      response.status === 429 ? parseRetryAfterHeader(response.headers.get("retry-after")) : undefined;
+    throw new OpenAiRequestError(response.status, retryAfterSeconds);
+  }
 
   const payload = (await response.json()) as OpenAiChatResponse;
   const content = payload.choices?.[0]?.message?.content;

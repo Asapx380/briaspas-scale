@@ -24,10 +24,15 @@ export function classifySampleGenerationFailure(error: unknown) {
   const groq = error as { upstreamStatus?: number; name?: string };
   if (name === "GroqRequestError" || name === "OpenAiRequestError" || name === "GeminiRequestError") {
     const status = typeof groq.upstreamStatus === "number" ? groq.upstreamStatus : undefined;
+    const retryAfterSeconds =
+      typeof (groq as { retryAfterSeconds?: number }).retryAfterSeconds === "number"
+        ? (groq as { retryAfterSeconds: number }).retryAfterSeconds
+        : undefined;
     return {
       failureKind: "provider" as const,
       error: name,
       providerHttpStatus: status,
+      providerRetryAfterSeconds: retryAfterSeconds,
       providerFailure:
         status === 401 || status === 403
           ? "auth"

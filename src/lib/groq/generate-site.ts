@@ -12,6 +12,7 @@ import {
   processGeneratedSiteHtml,
 } from "@/lib/sites/process-generated-site-html";
 import type { GeneratedSiteValidationIssue } from "@/lib/sites/generated-site-validation";
+import { parseRetryAfterHeader } from "@/lib/sites/provider-http-retry";
 import type { GeneratedSiteAllowlist } from "@/lib/sites/sanitize-generated-html";
 import { z } from "zod";
 
@@ -25,7 +26,11 @@ type GroqChatResponse = {
 type ChatMessage = { role: "system" | "user"; content: string };
 
 export class GroqRequestError extends Error {
-  constructor(readonly upstreamStatus: number, readonly upstreamMessage?: string) {
+  constructor(
+    readonly upstreamStatus: number,
+    readonly upstreamMessage?: string,
+    readonly retryAfterSeconds?: number,
+  ) {
     super(upstreamMessage ? `A geração do site pela Groq falhou: ${upstreamMessage}` : "A geração do site pela Groq falhou.");
     this.name = "GroqRequestError";
   }
@@ -60,7 +65,9 @@ async function requestGroq(messages: ChatMessage[], jsonSchema?: Record<string, 
 
   if (!response.ok) {
     const payload = await response.json().catch(() => null) as { error?: { message?: string } } | null;
-    throw new GroqRequestError(response.status, payload?.error?.message);
+    const retryAfterSeconds =
+      response.status === 429 ? parseRetryAfterHeader(response.headers.get("retry-after")) : undefined;
+    throw new GroqRequestError(response.status, payload?.error?.message, retryAfterSeconds);
   }
 
   const payload = (await response.json()) as GroqChatResponse;
