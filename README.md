@@ -1,68 +1,42 @@
 # Briaspas Scale
 
-Portfólio de produto — CRM de prospecção para negócios locais.
+CRM de prospecção para negócios locais. Interface em português, marca Briaspas.
 
+Produção: [https://briaspas-scale.vercel.app](https://briaspas-scale.vercel.app)
 
-## Problema
+O ambiente público usa **dados demonstrativos** (nada de lead real). Dá para ver a landing e o CRM em `/demonstracao`.
 
-Equipes que vendem sites e serviços para empresas locais costumam espalhar o trabalho entre planilhas, ferramentas de geração de página, anotações soltas e follow-ups no WhatsApp. O contexto do lead se perde, a proposta demora a sair e o funil fica difícil de acompanhar.
+Hospedagem só na Vercel.
 
-O **Briaspas Scale** concentra busca/importação de empresas, geração de **site-demo por lead**, CRM visual e publicação em link exclusivo — do primeiro contato até o projeto vendido, com dados isolados por workspace.
+## Para quem
 
-## Demonstração
+Quem vende site ou serviço para comércio local e hoje espalha o trabalho entre planilha, gerador de página e conversa no WhatsApp. O lead entra, fica no funil e, se fizer sentido, ganha um site-demo no próprio link.
 
-**Produção:** https://briaspas-scale.vercel.app
+MVP em validação. O que está em `main` é o que está listado abaixo — sem prometer tela que ainda não entrou.
 
-Ambiente público com **dados demonstrativos** (sem leads reais). Explore a landing, o CRM em `/demonstracao` e o fluxo descrito abaixo.
+## O que está no ar
 
-| Visão | Captura |
-| --- | --- |
-| Hero e proposta de valor | ![Landing — hero](./docs/images/landing-hero.png) |
-| CRM demonstrativo (kanban) | ![Demonstração — kanban](./docs/images/demonstracao-kanban.png) |
-| Jornada comercial | ![Landing — jornada](./docs/images/landing-jornada.png) |
-| Recursos do produto | ![Landing — recursos](./docs/images/landing-cta.png) |
+- **Auth** — login, cadastro e recuperação de senha (Supabase Auth). Dados isolados por workspace, com RLS.
+- **Leads** — busca por nicho e cidade (Google Places; Foursquare como fallback), CSV e cadastro manual.
+- **CRM** — kanban, lixeira e potencial comercial.
+- **Abordagem** — texto, CTA e abertura no WhatsApp via `wa.me`. Histórico rápido desta sessão no navegador. A Cloud API oficial da Meta **não está conectada** (adiado).
+- **Sites por lead** — briefing no card, upload de ZIP, prévia privada, publicação em `/empresa/[slug]`, visitas no link e alerta de lead quente (2+ visitas em 24 h). Galeria em **Meus sites**.
+- **Google Maps** — consulta temporária para conferência, quando a chave está configurada. Telefone, endereço e nota da API não são gravados.
+- **Projetos, agendamentos e equipe** — as telas existem; ainda em evolução.
 
-## O que já funciona
+A tela **Criar site** (gerar HTML automaticamente) **não faz parte do produto em `main`**. O CRM usa briefing + ZIP. Há código de geração no repositório, mas essa UI ainda não entrou.
 
-| Recurso | Status |
-| --- | --- |
-| Login, cadastro e recuperação de senha (Supabase Auth) | Disponível |
-| Busca/importação de leads (Foursquare, CSV, manual) | Disponível |
-| CRM visual, kanban fluido, lixeira e potencial comercial | Disponível |
-| Mensagens de abordagem, CTA e abertura direta no WhatsApp | Disponível |
-| Geração, revisão e publicação de site-demo (`/empresa/[slug]`) | Disponível |
-| Prévia privada antes de publicar | Disponível |
-| Registro de visitas e alerta de lead quente (2+ visitas em 24 h) | Disponível |
-| Consulta temporária ao Google Maps, com atribuição e link oficial | Disponível quando configurada |
-| Follow-up e histórico rápido nesta sessão do navegador | Disponível |
-| Galeria de sites-demo e mini-demo de prospecção | Disponível |
-| **Projetos** e tarefas pós-venda | **Em evolução** |
-| **Agenda** e organização da equipe | **Em evolução / em breve** |
-| Integração **WhatsApp / Meta** oficial | **Adiado** (UI preparada; API oficial não conectada) |
-
-Documentação operacional: [`docs/importacao-de-leads.md`](./docs/importacao-de-leads.md), [`docs/geracao-de-sites.md`](./docs/geracao-de-sites.md), [`docs/modelo-completo-do-lead.md`](./docs/modelo-completo-do-lead.md).
+Mais detalhe operacional: [`docs/importacao-de-leads.md`](./docs/importacao-de-leads.md), [`docs/geracao-de-sites.md`](./docs/geracao-de-sites.md), [`docs/modelo-completo-do-lead.md`](./docs/modelo-completo-do-lead.md).
 
 ## Stack
 
-- **Next.js 16** (App Router)
-- **React 19**
-- **TypeScript**
-- **Tailwind CSS 4**
-- **Supabase** — Auth, Postgres e **RLS** por workspace
-- **Vercel** — hospedagem de produção
+- Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4
+- Supabase — Auth, Postgres e RLS por workspace
+- Vercel — único host de produção
 
-Desenvolvimento com Turbopack; build de produção com Webpack (`npm run build`).
+Desenvolvimento com Turbopack (`npm run dev`). Build de produção com Webpack (`npm run build`).
 
-## Decisões técnicas (segurança)
-
-- **Upload de site em ZIP:** limites de tamanho (arquivo e descompactado), número máximo de arquivos, lista fechada de extensões, exigência de `index.html` na raiz, detecção de **zip bomb** (taxa de compressão e tamanhos validados com `yauzl`) e bloqueio de **path traversal** (`..`, barras absolutas, extensões não permitidas). Ver [`src/lib/sites/uploaded-site-zip.ts`](./src/lib/sites/uploaded-site-zip.ts) e [`docs/geracao-de-sites.md`](./docs/geracao-de-sites.md).
-- **Prévia privada:** token aleatório com hash SHA-256 armazenado no banco, expiração (~30 min) e cookie de escopo por slug; comparação em tempo constante. Ver [`src/lib/sites/site-preview-token.ts`](./src/lib/sites/site-preview-token.ts).
-- **HTML gerado por IA:** sanitização com allowlist (`sanitize-html`) antes de persistir ou servir.
-- **Isolamento por workspace:** consultas autenticadas amarradas ao `workspace_id` do membro; políticas RLS no Supabase (auditoria em [`docs/auditoria-rls.sql`](./docs/auditoria-rls.sql)).
-- **Segredos:** chaves de provedor só em variáveis de ambiente do servidor; script `npm run security:secrets` impede vazamento no bundle cliente.
-- **Google Maps / Places:** a consulta retorna até três resultados temporários para conferência e não persiste telefone, endereço, site, nota ou avaliações fornecidos pela API. A interface mostra a atribuição e direciona para o Maps oficial.
-
-## Executar localmente
+## Rodar local
 
 ```bash
 npm install
@@ -71,41 +45,48 @@ npm run dev
 
 Abra http://localhost:3000.
 
-Configure `.env.local` a partir de [`.env.example`](./.env.example):
+Copie [`.env.example`](./.env.example) para `.env.local`. O mínimo para auth:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_sua-chave
 ```
 
-Use apenas a chave **publicável** — nunca `service_role` no cliente. Esquema e migrations: [`supabase/README.md`](./supabase/README.md). Deploy: [`docs/deploy-vercel.md`](./docs/deploy-vercel.md).
+Use só a chave **publicável** — nunca `service_role` no cliente. Busca, briefing, Maps e o restante das chaves estão no mesmo arquivo de exemplo.
 
-O hook `commit-msg` (via `npm run hooks:install`) remove trailers `Co-authored-by` de agentes automaticamente.
+Esquema e migrations: [`supabase/README.md`](./supabase/README.md). Deploy: [`docs/deploy-vercel.md`](./docs/deploy-vercel.md).
+
+O hook `commit-msg` (via `npm run hooks:install`) remove trailers `Co-authored-by` de agentes.
 
 ## Testes
 
 ```bash
-npm test              # Vitest — sanitização, ZIP, tokens de prévia, templates, rate limit
+npm test              # Vitest
 npm run test:e2e      # Playwright — páginas públicas
 npm run lint
 npm run typecheck
 npm run build
 ```
 
-Tudo junto: **`npm run check`** (lint, typecheck, testes unitários e verificação de segredos).
+Tudo junto: **`npm run check`** (lint, typecheck, testes unitários e `security:secrets`).
 
-## Próximas evoluções
+## Notas de segurança (já no código)
 
-| Item | Descrição |
-| --- | --- |
-| **Histórico compartilhado** | Persistir atividades e tarefas de follow-up com migration, RLS e visão da equipe. |
-| **WhatsApp oficial** | Conectar a API oficial da Meta, após definição de conta, modelo de cobrança e política de consentimento. |
-| **Maps com confirmação manual** | Permitir que o usuário registre dados confirmados sem persistir conteúdo retornado diretamente pelo Google Places. |
+- ZIP de site: limite de tamanho (arquivo e descompactado), teto de arquivos, extensões fechadas, `index.html` na raiz, zip bomb e path traversal. Ver [`src/lib/sites/uploaded-site-zip.ts`](./src/lib/sites/uploaded-site-zip.ts).
+- Prévia privada: token aleatório com hash SHA-256, expiração (~30 min) e cookie por slug.
+- HTML gerado por IA (caminho de geração no código, não a tela **Criar site**): sanitização com allowlist (`sanitize-html`) antes de persistir ou servir.
+- Segredos de provedor só em variáveis de ambiente do servidor; `npm run security:secrets` impede vazamento no bundle do cliente.
 
-Planejamento amplo: [`plans/blueprint-briaspas-scale.md`](./plans/blueprint-briaspas-scale.md) e [`docs/plano-de-evolucao-em-partes.md`](./docs/plano-de-evolucao-em-partes.md).
+## Próximo
 
-## Repositório e licença
+- Histórico de follow-up compartilhado com a equipe (hoje o registro rápido é só nesta sessão).
+- WhatsApp Cloud API da Meta, se conta e política de consentimento fecharem.
+- Geração de HTML no produto — ainda fora de `main`.
 
-Repositório **público** no GitHub: https://github.com/Asapx380/briaspas-scale
+Planejamento: [`plans/blueprint-briaspas-scale.md`](./plans/blueprint-briaspas-scale.md) e [`docs/plano-de-evolucao-em-partes.md`](./docs/plano-de-evolucao-em-partes.md).
 
-Licença **MIT** — veja [`LICENSE`](./LICENSE). O produto continua em evolução; use a demonstração pública para avaliar e não inclua dados reais de clientes em issues ou PRs.
+## Licença
+
+Repositório público: https://github.com/Asapx380/briaspas-scale
+
+Licença **MIT** — [`LICENSE`](./LICENSE). Não cole dados reais de clientes em issues ou PRs; use a demonstração pública para avaliar.
