@@ -10,6 +10,7 @@ import {
 import { readHtmlRejectionIssues } from "@/lib/sites/generated-site-validation-issue";
 import {
   buildHtmlGenerationUserPrompt,
+  buildHtmlPromptWithValidatedDesignPlan,
   processGeneratedSiteHtml,
 } from "@/lib/sites/process-generated-site-html";
 import { parseRetryAfterHeader } from "@/lib/sites/provider-http-retry";
@@ -134,13 +135,7 @@ export async function generateLeadSite(
 ) {
   const startedAt = Date.now();
   const design = await generateDesignPlan(designPrompt);
-  const htmlPrompt = `${prompt}
-
-<plano-visual-validado>
-${JSON.stringify(design.plan, null, 2)}
-</plano-visual-validado>
-
-Siga exatamente o plano visual validado. Não troque suas cores, fontes, composição ou linguagem de formas.`;
+  const htmlPrompt = buildHtmlPromptWithValidatedDesignPlan(prompt, design.plan);
   let lastError: unknown;
   let lastValidationIssues: GeneratedSiteValidationIssue[] | null = null;
 

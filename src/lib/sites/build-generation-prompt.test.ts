@@ -86,5 +86,10 @@ describe("dados determinísticos do site", () => {
     expect(prompt).toContain('data-site-section="contact"');
     expect(prompt).toContain("Open Graph");
     expect(prompt).toContain("JSON-LD LocalBusiness");
+    expect(prompt).toContain("não publique lista, grade ou cards");
+    expect(prompt).toContain("Fale pelo WhatsApp para confirmar disponibilidade");
+    expect(prompt).toContain("contraste WCAG AA");
+    expect(prompt).not.toContain("4 a 6 itens típicos da categoria");
+    expect(prompt).not.toContain("Serviços que podem estar disponíveis");
   });
 });

@@ -82,8 +82,8 @@ Use este formato exato:
 }
 
 Fontes permitidas: Bebas Neue, DM Serif Display, Fraunces, Manrope, Outfit, Playfair Display, Inter, Lato, Nunito Sans, Source Sans 3, Work Sans.
-Inclua 4 a 6 serviços e 2 ou 3 diferenciais. Todos os textos devem ser objetivos: resumo até 300 caracteres, demais campos de texto até 120 caracteres. Cores devem ter contraste legível. Evite bege com terracota, preto com um único neon e cards repetidos.
+Inclua 4 a 6 serviços e 2 ou 3 diferenciais somente como briefing interno, com rótulos genéricos da categoria, sem tratamentos nomeados, pagamentos, promessas de resultado ou vantagens factuais. O HTML publicado não deve copiar essa lista como catálogo do negócio. Todos os textos devem ser objetivos: resumo até 300 caracteres, demais campos de texto até 120 caracteres. Cores do hero (texto e CTA) devem ter contraste AA contra fundo e gradiente. Evite bege com terracota, preto com um único neon e cards repetidos.
 ${hasPhotos ? "Há fotos reais; sugira valorizá-las." : "Não há fotos reais; use composição, cor e tipografia sem inventar imagens."}
-O HTML final usará seções com data-site-section (hero, services, contact e opcionais). O layoutConcept e os principles devem orientar hierarquia clara, CTA de WhatsApp visível e blocos que possam ser omitidos quando não houver dado real.
+O HTML final usará seções com data-site-section (hero, services, contact e opcionais). O layoutConcept e os principles devem orientar hierarquia clara, CTA de WhatsApp visível, contraste AA no hero e blocos omitidos quando não houver dado real.
 Retorne somente objeto JSON.`;
 }

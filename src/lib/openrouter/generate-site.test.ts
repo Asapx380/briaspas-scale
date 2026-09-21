@@ -145,8 +145,8 @@ describe("openrouter generateLeadSite pipeline", () => {
         "<h1>Cuidado com carinho para seu pet</h1><h1>Segundo título proibido</h1>",
       )
       .replace(
-        "<p>Consulte o estabelecimento para confirmar os serviços oferecidos.</p>",
-        "<p>Consulte o estabelecimento para confirmar os serviços oferecidos.</p><p>Funcionamos de segunda a sexta, das 9h às 18h.</p>",
+        "<p>Atendimento de petshop. Fale pelo WhatsApp para confirmar disponibilidade.</p>",
+        "<p>Atendimento de petshop. Fale pelo WhatsApp para confirmar disponibilidade.</p><p>Funcionamos de segunda a sexta, das 9h às 18h.</p>",
       )
       .replaceAll("https://wa.me/5511912345678", wa);
 

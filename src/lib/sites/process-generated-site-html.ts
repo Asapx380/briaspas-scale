@@ -1,3 +1,4 @@
+import type { DesignPlan } from "./design-plan";
 import {
   formatValidationIssuesForRetry,
   type GeneratedSiteValidationIssue,
@@ -11,9 +12,31 @@ import {
 } from "./generated-site-validation";
 import { sanitizeGeneratedHtml, type GeneratedSiteAllowlist } from "./sanitize-generated-html";
 
+export function visualDesignPlanForHtml(plan: DesignPlan): Omit<DesignPlan, "servicosSugeridos" | "diferenciais"> {
+  const visual: Omit<DesignPlan, "servicosSugeridos" | "diferenciais"> & Partial<
+    Pick<DesignPlan, "servicosSugeridos" | "diferenciais">
+  > = { ...plan };
+  delete visual.servicosSugeridos;
+  delete visual.diferenciais;
+  return visual;
+}
+
+export function buildHtmlPromptWithValidatedDesignPlan(prompt: string, plan: DesignPlan) {
+  return `${prompt}
+
+<plano-visual-validado>
+${JSON.stringify(visualDesignPlanForHtml(plan), null, 2)}
+</plano-visual-validado>
+
+Siga o plano visual somente para cores, fontes, composição e linguagem de formas.
+Não copie servicosSugeridos nem diferenciais: o lead não tem catálogo nem diferenciais verificáveis nesses campos.
+Não invente lista de serviços específicos, pagamentos, promessas de resultado ou diferenciais factuais.
+No hero, texto e CTA precisam de contraste AA contra qualquer fundo ou gradiente.`;
+}
+
 export function buildGeneratedSiteRetryPromptSuffix(issues: GeneratedSiteValidationIssue[]) {
   const lines = formatValidationIssuesForRetry(issues);
-  return `\n\nA tentativa anterior falhou na validação automática. Corrija todos os pontos abaixo sem inventar dados:\n${lines.map((line) => `- ${line}`).join("\n")}`;
+  return `\n\nA tentativa anterior falhou na validação automática. Corrija todos os pontos abaixo sem inventar dados (sem catálogo de serviços, pagamentos, promessas de resultado ou diferenciais factuais; mantenha contraste AA no hero):\n${lines.map((line) => `- ${line}`).join("\n")}`;
 }
 
 const GENERIC_HTML_RETRY_SUFFIX =

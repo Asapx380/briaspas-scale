@@ -98,7 +98,7 @@ describe("validateGeneratedSiteContent", () => {
 
   it("rejeita lorem ipsum", () => {
     const html = readFixture("valid-minimal.html").replace(
-      "Banho e tosa",
+      "Atendimento de petshop",
       "Lorem ipsum banho",
     );
     expectSingleError(html, sampleLead, "lorem");
@@ -185,7 +185,7 @@ describe("validateGeneratedSiteContent", () => {
 
   it("rejeita números que não vêm do lead", () => {
     const html = readFixture("valid-minimal.html").replace(
-      "Banho e tosa",
+      "Atendimento de petshop",
       "Mais de 500 clientes satisfeitos",
     );
     expectSingleError(html, sampleLead, "números");
@@ -228,5 +228,53 @@ describe("validateGeneratedSiteContent", () => {
       '<section data-site-section="testimonials"><p>Cliente feliz</p></section></main>',
     );
     expectSingleError(html, sampleLead, "testimonials");
+  });
+
+  it("rejeita catálogo de serviços que o lead não possui", () => {
+    const html = readFixture("valid-minimal.html").replace(
+      "<p>Atendimento de petshop. Fale pelo WhatsApp para confirmar disponibilidade.</p>",
+      "<ul><li>Clareamento Dental</li><li>Implantes</li><li>Ortodontia Invisível</li><li>Limpeza</li><li>Facetas</li></ul>",
+    );
+    expectSingleError(html, sampleLead, "serviços específicos");
+  });
+
+  it("rejeita formas de pagamento inventadas", () => {
+    const html = readFixture("valid-minimal.html").replace(
+      "Fale conosco pelo WhatsApp.",
+      "Aceitamos Pix, boleto e cartão de crédito.",
+    );
+    expectSingleError(html, sampleLead, "pagamento");
+  });
+
+  it("rejeita promessas de resultado e tecnologia", () => {
+    const html = readFixture("valid-minimal.html").replace(
+      "<h1>Cuidado com carinho para seu pet</h1>",
+      "<h1>Garantimos sorriso perfeito com tecnologia de ponta</h1>",
+    );
+    expectSingleError(html, sampleLead, "promessas de resultado");
+  });
+
+  it("rejeita diferenciais factuais sem fonte no lead", () => {
+    const html = readFixture("valid-minimal.html").replace(
+      "Atendimento de petshop",
+      "Nossa equipe especializada oferece atendimento humanizado",
+    );
+    expectSingleError(html, sampleLead, "diferenciais factuais");
+  });
+
+  it("rejeita FAQ com pagamentos, preços ou tratamentos", () => {
+    const html = readFixture("valid-minimal.html").replace(
+      "Como confirmo a disponibilidade?",
+      "Vocês aceitam Pix e fazem clareamento?",
+    );
+    expectSingleError(html, sampleLead, "FAQ");
+  });
+
+  it("rejeita hero com texto sem contraste AA no gradiente", () => {
+    const html = readFixture("valid-minimal.html").replace(
+      "[data-site-section=\"hero\"] {\n        background: #0f3d3e;\n        color: #f4fbfb;\n      }",
+      "[data-site-section=\"hero\"] {\n        background: linear-gradient(#ffffff, #f2f2f2);\n        color: #f7f7f7;\n      }",
+    );
+    expectSingleError(html, sampleLead, "contraste AA");
   });
 });

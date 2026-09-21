@@ -4,6 +4,8 @@ import {
   type LeadSiteInput,
 } from "./build-generation-prompt";
 import type { DesignPlan } from "./design-plan";
+import { collectInventedContentIssues } from "./generated-site-content-claims";
+import { collectHeroContrastIssues, contrastRatio } from "./generated-site-hero-contrast";
 import type { GeneratedSiteAllowlist } from "./sanitize-generated-html";
 
 /** Recorte explícito dos campos do lead usados na validação do HTML gerado. */
@@ -275,21 +277,6 @@ export function enforceLeadLinks(value: string, guardrails: GeneratedSiteAllowli
   );
 }
 
-function colorChannels(value: string) {
-  return [1, 3, 5].map((index) => Number.parseInt(value.slice(index, index + 2), 16) / 255);
-}
-
-function luminance(value: string) {
-  return colorChannels(value)
-    .map((channel) => channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4)
-    .reduce((sum, channel, index) => sum + channel * [0.2126, 0.7152, 0.0722][index], 0);
-}
-
-function contrastRatio(first: string, second: string) {
-  const [light, dark] = [luminance(first), luminance(second)].sort((a, b) => b - a);
-  return (light + 0.05) / (dark + 0.05);
-}
-
 export function validateDesignPlan(plan: DesignPlan) {
   if (
     contrastRatio(plan.colors.text, plan.colors.background) < 4.5 ||
@@ -501,6 +488,9 @@ export function collectGeneratedSiteContentIssues(html: string, lead: GeneratedS
   } else if (sectionIds.includes("location") && mapSources.length === 0) {
     push("map.missing_iframe", "A seção \"location\" precisa do iframe com a URL de mapa do lead.");
   }
+
+  issues.push(...collectInventedContentIssues(document, lead));
+  issues.push(...collectHeroContrastIssues(document));
 
   return issues;
 }
