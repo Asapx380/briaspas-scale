@@ -37,6 +37,7 @@ export function sanitizeGeneratedHtml(value: string, allowlist: GeneratedSiteAll
       rect: ["x", "y", "width", "height", "rx", "fill", "stroke"],
       line: ["x1", "x2", "y1", "y2", "stroke"],
       polyline: ["points", "fill", "stroke"],
+      section: ["data-site-section"],
       "*": ["id", "class", "role", "aria-*"],
     },
     allowedSchemes: ["http", "https"],

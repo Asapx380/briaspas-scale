@@ -64,4 +64,32 @@ describe("dados determinísticos do site", () => {
     expect(prompt).toContain("não é foto do estabelecimento");
     expect(prompt).toContain("crédito pequeno e visível");
   });
+
+  it("exige marcadores data-site-section no prompt de HTML", () => {
+    const prompt = buildLeadSitePrompt({
+      companyName: "Empresa demonstrativa",
+      category: "petshop",
+      phone: "(11) 90000-0000",
+      address: null,
+      instagram: null,
+      websiteUrl: null,
+      googleMapsUrl: null,
+      photoUrls: [],
+      stockPhoto: null,
+      rating: null,
+      reviewCount: null,
+    });
+
+    expect(prompt).toContain("data-site-section");
+    expect(prompt).toContain('data-site-section="hero"');
+    expect(prompt).toContain('data-site-section="services"');
+    expect(prompt).toContain('data-site-section="contact"');
+    expect(prompt).toContain("Open Graph");
+    expect(prompt).toContain("JSON-LD LocalBusiness");
+    expect(prompt).toContain("não publique lista, grade ou cards");
+    expect(prompt).toContain("Fale pelo WhatsApp para confirmar disponibilidade");
+    expect(prompt).toContain("contraste WCAG AA");
+    expect(prompt).not.toContain("4 a 6 itens típicos da categoria");
+    expect(prompt).not.toContain("Serviços que podem estar disponíveis");
+  });
 });
