@@ -1,15 +1,15 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, PlayCircle } from "@phosphor-icons/react";
+import { ArrowRight, PlayCircle, CheckCircle } from "@phosphor-icons/react/dist/ssr";
+import { AnimatedBackground } from "@/components/marketing/animated-background";
+import { MobileNavigation } from "@/components/marketing/mobile-navigation";
 import { HeroMock } from "@/components/marketing/hero-mock";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default function SonicWaveformHero() {
   return (
     <section className="relative min-h-[100dvh] overflow-hidden bg-[var(--marketing-hero-bg)] text-[var(--text)]">
-      <div className="landing-ambient pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_22%,rgba(0,113,227,0.14),transparent_34%)]" />
+      <AnimatedBackground />
       {/* Header stays fully opaque — landing-enter opacity must not wrap CTAs. */}
       <header className="relative z-20 mx-auto flex h-20 w-full max-w-7xl items-center justify-between gap-2 px-5 sm:gap-5 sm:px-8">
         <Link href="/" className="flex shrink-0 items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[var(--brand)]" aria-label="Briaspas Scale">
@@ -25,7 +25,7 @@ export default function SonicWaveformHero() {
           <ThemeToggle />
           <Link
             href="/login"
-            className="marketing-ghost-cta marketing-touch-target inline-flex rounded-full px-3 text-sm font-medium sm:px-4"
+            className="marketing-ghost-cta marketing-touch-target hidden rounded-full px-3 text-sm font-medium sm:inline-flex sm:px-4"
           >
             Entrar
           </Link>
@@ -35,13 +35,14 @@ export default function SonicWaveformHero() {
           >
             Começar grátis
           </Link>
+          <MobileNavigation />
         </div>
       </header>
 
-      <div className="relative z-10 mx-auto grid min-h-[calc(100dvh-5rem)] w-full max-w-7xl items-center gap-12 px-5 py-12 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:py-16">
+      <div className="relative z-10 mx-auto grid min-h-[calc(100dvh-5rem)] w-full max-w-7xl items-center gap-12 px-5 pt-12 pb-24 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:pt-16">
         <div className="max-w-xl">
-          <p className="landing-enter motion-delay-1 marketing-eyebrow text-sm font-semibold">Prospecção para freelancers e agências</p>
-          <h1 className="landing-enter motion-delay-2 mt-5 text-4xl leading-[1.03] font-bold tracking-[-0.05em] text-balance sm:text-5xl lg:text-6xl">Chegue ao lead com uma proposta concreta.</h1>
+          <p className="landing-enter motion-delay-1 marketing-eyebrow marketing-hero-badge text-xs font-semibold sm:text-sm"><span aria-hidden /> Prospecção para freelancers e agências</p>
+          <h1 className="landing-enter motion-delay-2 mt-5 text-4xl leading-[1.03] font-bold tracking-[-0.05em] text-balance sm:text-5xl lg:text-6xl">Chegue ao lead com uma <span className="marketing-hero-highlight">proposta concreta.</span></h1>
           <p className="landing-enter motion-delay-3 mt-6 max-w-lg text-base leading-7 text-[var(--text-3)] sm:text-lg">Encontre negócios locais, apresente um site personalizado e acompanhe cada oportunidade até o fechamento.</p>
           <div className="landing-enter motion-delay-4 mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
@@ -59,6 +60,11 @@ export default function SonicWaveformHero() {
               <span>Ver demonstração</span>
             </Link>
           </div>
+          <ul className="landing-enter motion-delay-5 mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs font-medium text-[var(--text-3)]" aria-label="Sobre esta fase">
+            {["Grátis durante o MVP", "Demonstração sem cadastro"].map((text) => (
+              <li key={text} className="flex items-center gap-1.5"><CheckCircle size={15} className="text-[var(--brand-on-soft)]" aria-hidden />{text}</li>
+            ))}
+          </ul>
         </div>
 
         <div className="landing-preview-enter motion-delay-5 relative min-w-0 w-full rounded-[28px] border border-[var(--border)] bg-[var(--hero-panel-bg)] p-3 shadow-[0_28px_80px_rgba(15,23,42,0.13)] backdrop-blur-sm sm:p-5">
