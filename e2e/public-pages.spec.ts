@@ -32,14 +32,10 @@ test("galeria sites-demo revela cartões e abre as três prévias", async ({ pag
   const cards = gallery.locator(".demo-gallery-card[data-reveal]");
   await expect(cards).toHaveCount(3);
 
-  await expect
-    .poll(async () => {
-      const opacities = await cards.evaluateAll((nodes) =>
-        nodes.map((node) => window.getComputedStyle(node).opacity),
-      );
-      return opacities.every((value) => value === "1");
-    })
-    .toBe(true);
+  for (const card of await cards.all()) {
+    await card.scrollIntoViewIfNeeded();
+    await expect(card).toHaveCSS("opacity", "1");
+  }
 
   for (const [index, item] of DEMO_GALLERY_ITEMS.entries()) {
     await page.goto("/#sites-demo");
@@ -212,7 +208,7 @@ test("mantém os caminhos principais acessíveis", async ({ page }) => {
   expect(privacyResponse.ok()).toBeTruthy();
 });
 
-for (const width of [375, 768, 1280]) {
+for (const width of [320, 375, 768, 1280]) {
   test(`mantém o cabeçalho dentro da viewport em ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
