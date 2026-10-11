@@ -32,7 +32,8 @@ export function JourneyScrollSync() {
       });
     };
 
-    const isDesktop = () => window.matchMedia("(min-width: 1024px)").matches;
+    const media = window.matchMedia("(min-width: 1024px)");
+    const isDesktop = () => media.matches;
 
     const applyMode = () => {
       if (!isDesktop()) {
@@ -51,12 +52,12 @@ export function JourneyScrollSync() {
       setActive(Number(root.dataset.activeStep ?? "0"));
     };
 
-    applyMode();
-
     if (!("IntersectionObserver" in window)) {
-      applyMode();
+      root.removeAttribute("data-journey-enhanced");
       return;
     }
+
+    applyMode();
 
     const ratios = new Map<Element, number>();
 
@@ -76,7 +77,7 @@ export function JourneyScrollSync() {
             bestIndex = index;
           }
         });
-        setActive(bestIndex);
+        if (bestRatio > 0) setActive(bestIndex);
       },
       {
         root: null,
@@ -85,7 +86,6 @@ export function JourneyScrollSync() {
       },
     );
 
-    const media = window.matchMedia("(min-width: 1024px)");
     const onMediaChange = () => {
       applyMode();
       if (isDesktop()) {
@@ -105,6 +105,7 @@ export function JourneyScrollSync() {
     return () => {
       media.removeEventListener("change", onMediaChange);
       observer.disconnect();
+      root.removeAttribute("data-journey-enhanced");
     };
   }, []);
 

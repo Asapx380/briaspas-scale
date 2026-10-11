@@ -43,7 +43,6 @@ export function DemoGallerySection() {
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover object-top transition-transform duration-500 ease-[var(--ease-out)]"
-                  priority={index === 0}
                 />
               </div>
               <div className="flex flex-1 flex-col gap-3 p-5 sm:p-6">

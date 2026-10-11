@@ -14,7 +14,7 @@ export function HeroMock() {
           </div>
         </div>
 
-        <div className="relative bg-[linear-gradient(180deg,#f8fbff_0%,#eef4fb_100%)] p-3 sm:p-4">
+        <div className="relative bg-[var(--preview-canvas-bg)] p-3 sm:p-4">
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3 shadow-sm sm:p-4">
             <div className="flex items-center justify-between gap-2 border-b border-[var(--border)] pb-3">
               <div className="flex min-w-0 items-center gap-2">

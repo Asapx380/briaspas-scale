@@ -1,7 +1,8 @@
 "use client";
 
 import { Buildings } from "@phosphor-icons/react";
-import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useMarketingInView } from "@/components/marketing/use-marketing-in-view";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 type DemoPhase = 1 | 2 | 3 | 4;
@@ -47,7 +48,7 @@ function getTabVisible() {
 
 export function HeroLeadCard() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(rootRef, { amount: 0.15 });
+  const inView = useMarketingInView(rootRef, 0.15);
   const reduceMotion = useReducedMotion();
   const hydrated = useSyncExternalStore(
     () => () => {},

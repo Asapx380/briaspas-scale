@@ -1,6 +1,7 @@
 "use client";
 
-import { LayoutGroup, motion, useInView, useReducedMotion } from "motion/react";
+import { LayoutGroup, motion, useReducedMotion } from "motion/react";
+import { useMarketingInView } from "@/components/marketing/use-marketing-in-view";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 type ChipTier = "quente" | "morno";
@@ -141,7 +142,7 @@ function KanbanCard({
 
 export function JourneyKanbanLive() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(rootRef, { amount: 0.2 });
+  const inView = useMarketingInView(rootRef, 0.2);
   const reduceMotion = useReducedMotion();
   const hydrated = useSyncExternalStore(
     () => () => {},
@@ -195,13 +196,14 @@ export function JourneyKanbanLive() {
     }
 
     let cancelled = false;
-    const timers: number[] = [];
+    const timers = new Set<number>();
 
     const later = (fn: () => void, ms: number) => {
       const id = window.setTimeout(() => {
+        timers.delete(id);
         if (!cancelled) fn();
       }, ms);
-      timers.push(id);
+      timers.add(id);
     };
 
     const startCycle = () => {
