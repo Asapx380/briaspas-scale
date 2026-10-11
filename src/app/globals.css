@@ -29,6 +29,11 @@
   --border-strong: rgba(15, 23, 42, 0.14);
   --surface-hover: rgba(15, 23, 42, 0.05);
   --marketing-hero-bg: #f4f7fb;
+  --ambient-blue: rgba(0, 113, 227, 0.19);
+  --ambient-violet: rgba(112, 87, 230, 0.13);
+  --ambient-line: rgba(0, 91, 181, 0.12);
+  --ambient-dot: #0071e3;
+  --hero-highlight: linear-gradient(110deg, #005bb5, #5d43b6);
   --marketing-soft-bg: #f4f7fb;
   --hero-panel-bg: rgba(255, 255, 255, 0.55);
   --header-bg: rgba(255, 255, 255, 0.82);
@@ -133,6 +138,11 @@
   --border-strong: rgba(226, 232, 240, 0.2);
   --surface-hover: rgba(255, 255, 255, 0.07);
   --marketing-hero-bg: #0f1620;
+  --ambient-blue: rgba(20, 124, 240, 0.27);
+  --ambient-violet: rgba(133, 95, 255, 0.2);
+  --ambient-line: rgba(110, 182, 255, 0.13);
+  --ambient-dot: #9acbff;
+  --hero-highlight: linear-gradient(110deg, #8cc6ff, #c4aaff);
   --marketing-soft-bg: #111924;
   --hero-panel-bg: rgba(21, 27, 36, 0.72);
   --header-bg: rgba(21, 27, 36, 0.86);
@@ -359,9 +369,162 @@ body {
   animation-delay: var(--motion-delay, 0ms);
 }
 
-.landing-ambient {
-  animation: ambient-drift 14s var(--ease-in-out) infinite;
-  will-change: transform, opacity;
+.marketing-background {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.marketing-background-art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  contain: paint;
+}
+
+.marketing-background-glow {
+  position: absolute;
+  width: min(85vw, 900px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  animation: ambient-drift 18s ease-in-out infinite;
+}
+
+.marketing-background-glow-blue {
+  top: -35%;
+  right: -15%;
+  background: radial-gradient(circle, var(--ambient-blue), transparent 68%);
+}
+
+.marketing-background-glow-violet {
+  bottom: -55%;
+  left: -20%;
+  background: radial-gradient(circle, var(--ambient-violet), transparent 68%);
+  animation-direction: reverse;
+  animation-duration: 24s;
+}
+
+.marketing-background-grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(var(--ambient-line) 1px, transparent 1px), linear-gradient(90deg, var(--ambient-line) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse at 85% 30%, black, transparent 72%);
+  opacity: 0.55;
+}
+
+.marketing-background-orbit {
+  position: absolute;
+  width: min(76vw, 1000px);
+  aspect-ratio: 1;
+  top: -28%;
+  right: -18%;
+  border: 1px solid var(--ambient-line);
+  border-radius: 50%;
+  animation: ambient-orbit 48s linear infinite;
+}
+
+.marketing-background-orbit-two {
+  width: min(58vw, 760px);
+  top: -12%;
+  right: -9%;
+  animation-duration: 36s;
+  animation-direction: reverse;
+}
+
+.marketing-background-orbit span {
+  position: absolute;
+  top: 50%;
+  left: -3px;
+  width: 6px;
+  height: 6px;
+  background: var(--ambient-dot);
+  border-radius: 50%;
+  box-shadow: 0 0 20px var(--ambient-blue);
+}
+
+@keyframes ambient-orbit {
+  to { transform: rotate(360deg); }
+}
+
+.marketing-background-art * {
+  animation-play-state: paused;
+}
+
+.marketing-background[data-running="true"][data-paused="false"] .marketing-background-art * {
+  animation-play-state: running;
+}
+
+.marketing-background-control {
+  position: absolute;
+  z-index: 30;
+  right: max(1.25rem, calc((100% - 76rem) / 2));
+  bottom: 1rem;
+  display: inline-flex;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--text-3);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.marketing-background-control:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+}
+
+.marketing-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--header-bg);
+}
+
+.marketing-hero-badge > span {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.marketing-hero-highlight {
+  color: var(--brand-on-soft);
+  background: var(--hero-highlight);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.marketing-mobile-nav {
+  position: absolute;
+  top: calc(100% - 0.25rem);
+  left: 1.25rem;
+  right: 1.25rem;
+  display: grid;
+  padding: 0.5rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 1.25rem;
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+}
+
+.marketing-mobile-nav[hidden] { display: none; }
+
+@media (max-width: 639px) {
+  .marketing-background-orbit-two { display: none; }
+}
+
+@media (forced-colors: active) {
+  .marketing-hero-highlight { -webkit-text-fill-color: currentColor; }
+  .marketing-background-art { display: none; }
 }
 
 .motion-delay-1 { --motion-delay: 80ms; }
@@ -643,10 +806,16 @@ body {
 
   [data-reveal][data-motion-ready="true"],
   [data-reveal="clip"][data-motion-ready="true"] {
-    clip-path: none;
-    transform: none;
-    transition: opacity 200ms ease;
+    opacity: 1 !important;
+    clip-path: none !important;
+    transform: none !important;
+    transition: none !important;
   }
+
+  .marketing-background-art * { animation: none !important; }
+  .marketing-background-control { display: none; }
+  .marketing-button:active,
+  .journey-row:hover .journey-icon { transform: none; }
 
   .marketing-button,
   .marketing-button-primary,
